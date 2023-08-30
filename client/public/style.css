@@ -1,0 +1,306 @@
+:root {
+    --primary-blue: rgb(0, 43, 92);
+    --primary-gray: rgb(204, 208, 209);
+    --primary-orange: rgb(237, 139, 0);
+    --primary-light-blue: rgb(0, 146, 188);
+    --secondary-blue: rgb(68, 84, 106);
+    --secondary-gray: rgb(231, 230, 230);
+    --secondary-red: rgb(135, 73, 73);
+    --secondary-green: rgb(87, 131, 93);
+    --tertiary-blue: rgb(34, 42, 53);
+    --tertiary-gray: rgb(127, 127, 127);
+    --white: rgb(255, 255, 255);
+    --black: rgb(0, 0, 0);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 {
+    margin: 10px;
+    text-align: center;
+}
+
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.grid-less {
+    margin: 10px;
+}
+
+.grid-less tr,
+.grid-less thead,
+.grid-less th,
+.grid-less tbody,
+.grid-less td {
+    border: none;
+}
+
+.grid-less th, .grid-less td {
+    text-align: left;
+    padding: 5px;
+}
+
+.grid-less th {
+    margin-right: 25px;
+    color: var(--secondary-blue);
+}
+
+/* .full-table {
+
+} */
+
+.full-table thead {
+    background-color: var(--secondary-blue);
+    color: var(--white);
+    text-align: center;
+    font-weight: normal;
+}
+
+.full-table th {
+    border-bottom: var(--black) 2px solid;
+    padding: 10px 10px;
+    text-align: center;
+}
+
+.full-table td {
+    border-bottom: var(--black) 1px solid;
+    padding: 5px 10px;
+    background-color: var(--white);
+    text-align: center;
+}
+
+button {
+    padding: 5px 10px;
+    font-size: 18px;
+    border-radius: 5px;
+    color: var(--white);
+    background-color: var(--secondary-blue);
+    border: none;
+    margin: 0 3px;
+}
+
+button:active {
+    background-color: var(--white);
+    color: var(--secondary-blue);
+}
+
+label,
+select {
+    margin: 5px;
+}
+
+input {
+    padding: 3px;
+}
+
+select {
+    padding: 5px;
+}
+
+menu {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 20px 0 20px;
+}
+
+.main-content {
+    display: flex;
+}
+
+.site-container {
+    display: flex;
+}
+
+.content {
+    flex-grow: 1;
+    margin: 40px
+}
+
+.card {
+    background-color: var(--secondary-gray);
+    padding: 30px 10px 10px 10px;
+    position: relative;
+    margin: 5px;
+}
+
+.card-title {
+    background-color: var(--secondary-blue);
+    color: var(--white);
+    width: calc(100% - 30px);
+    padding: 3px 15px;
+    text-transform: uppercase;
+    font-weight: normal;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.flex-left {
+    display: flex;
+    justify-content: left;
+    flex-wrap: wrap;
+}
+
+.flex-right {
+    display: flex;
+    justify-content: right;
+}
+
+.flex-vertical {
+    display: flex;
+    flex-direction: column;
+}
+
+.align-top {
+    align-items: start;
+}
+
+.grow-item {
+    flex-grow: 10;
+}
+
+/* Toggle Switch */
+/* ||||||||||||| */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* The slider */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--white);
+    -webkit-transition: .2s;
+    transition: .2s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: var(--secondary-blue);
+    -webkit-transition: .2s;
+    transition: .2s;
+}
+
+input:checked+.slider {
+    background-color: var(--secondary-blue);
+}
+
+input:checked+.slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+    background-color: var(--white);
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+/* Radio Buttons */
+/* ||||||||||||| */
+/* Customize the label (the container) */
+.radio-container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Hide the browser's default radio button */
+.radio-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+/* Create a custom radio button */
+.radio-checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: var(--white);
+    border: 2px solid var(--secondary-blue);
+    border-radius: 50%;
+}
+
+/* On mouse-over, add a grey background color */
+.radio-container:hover input~.radio-checkmark {
+    background-color: #ccc;
+}
+
+/* When the radio button is checked, add a blue background */
+.radio-container input:checked~.radio-checkmark {
+    background-color: var(--white);
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.radio-checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.radio-container input:checked~.radio-checkmark:after {
+    display: block;
+}
+
+/* Style the indicator (dot/circle) */
+.radio-container .radio-checkmark:after {
+    top: 2px;
+    left: 2px;
+    width: 21px;
+    height: 21px;
+    border-radius: 50%;
+    background: var(--secondary-blue);
+}

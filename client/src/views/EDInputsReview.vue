@@ -137,12 +137,13 @@
                                     </table>
                                     <p>Location(s):</p>
                                     <SmartTable :jsonData="selectedAssets" :advancedSearchEnabled="false"
-                                        :excludedColumns="['destinations']" :id="1"/>
+                                        :excludedColumns="['destinations']" :id="1" />
                                 </div>
                             </div>
                         </div>
                         <div class="card">
                             <h4 class="card-title">Processing Times</h4>
+                            <button @click="resetProcessingTimeChanges">Reset All Changes</button>
                             <div class="flex-between">
                                 <div>
                                     <table class="grid-less">
@@ -160,9 +161,7 @@
                                             <th>Apply to all?*</th>
                                             <td>
                                                 <label class="switch">
-                                                    <input type="checkbox"
-                                                        @input="e => this.processTimeSettings.applyToAll = e.target.checked"
-                                                        checked>
+                                                    <input type="checkbox" @input="applyToAllChange" checked>
                                                     <span class="slider round"></span>
                                                 </label>
                                             </td>
@@ -195,9 +194,9 @@
                                                             <th><i class="bi bi-hash"></i> Number of Samples*</th>
                                                             <td>
                                                                 <input type="number"
-                                                                    :value="processTimeSettings.elements[0].values.length"
+                                                                    :value="Object.keys(processTimeSettings.elements[selectedAssets[0].asset_id].values).length"
                                                                     class="process-time-input"
-                                                                    @input="handleNumberOfSamplesChange" :data-index="0">
+                                                                    @input="handleNumberOfSamplesChange($event, selectedAssets[0].asset_id)">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -206,9 +205,10 @@
                                                             <td>
                                                                 <div class="flex-left">
                                                                     <input
-                                                                        v-for="value in this.processTimeSettings.elements[0].values"
+                                                                        v-for="(value, key) in this.processTimeSettings.elements[selectedAssets[0].asset_id].values"
                                                                         class="process-time-input" type="number" step="0.01"
-                                                                        :value="value">
+                                                                        :value="value"
+                                                                        @input="handleProcessTimeDataChange(key, $event)">
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -216,16 +216,16 @@
                                                 </div>
                                             </div>
                                             <div v-else>
-                                                <div v-for="(element, index) in processTimeSettings.elements">
-                                                    <p>{{ element.names[0] }}</p>
+                                                <div v-for="(element, asset_id) in processTimeSettings.elements">
+                                                    <p>{{ element.name }}</p>
                                                     <table class="grid-less">
                                                         <tr>
                                                             <th><i class="bi bi-hash"></i> Number of Samples*</th>
                                                             <td>
-                                                                <input type="number" :value="element.values.length"
+                                                                <input type="number"
+                                                                    :value="Object.keys(element.values).length"
                                                                     class="process-time-input"
-                                                                    @input="handleNumberOfSamplesChange"
-                                                                    :data-index="index">
+                                                                    @input="handleNumberOfSamplesChange($event, asset_id)">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -233,9 +233,10 @@
                                                                 (minutes)*</th>
                                                             <td>
                                                                 <div class="flex-left">
-                                                                    <input v-for="value in element.values"
+                                                                    <input v-for="(value, key) in element.values"
                                                                         class="process-time-input" type="number" step="0.01"
-                                                                        :value="value">
+                                                                        :value="value"
+                                                                        @input="handleProcessTimeDataChange(key, $event)">
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -461,8 +462,10 @@
                                     class="bi bi-plus-circle-fill"></i></button>
                         </div>
                         <div id="routing" class="collapsable">
-                            <SmartTable :jsonData="routingData" :advancedSearchEnabled="false"
-                                        :excludedColumns="['destinations']" :id="2"/>
+                            <div v-if="routingData">
+                                <SmartTable :jsonData="routingData.map(item => item.routing)" :advancedSearchEnabled="false"
+                                    :excludedColumns="['destinations']" :id="2" />
+                            </div>
                             <!-- <div class="flex-right">
                             <button @click="goToCollapsable('assignment-materials')">Back</button>
                             <button @click="goToCollapsable('routing-queuing-prioritization')">Next</button>
@@ -566,9 +569,12 @@ export default {
                 default: true,
                 applyToAll: true,
                 discrete: true,
-                elements: []
+                elements: {},
+                ids: []
             },
-            processTimeData: null
+            processTimeData: null,
+            backupProcessTimeData: null,
+            changedProcessTimeData: [],
         }
     },
     mixins: [titleMixin],
@@ -602,6 +608,7 @@ export default {
         },
         async getOperationToLocationData() {
             let data = await dataRequest("/api/experiment/operation-to-location/" + this.experimentID, "GET");
+            console.log(data);
             this.operationToLocationData = data;
         },
         async getHoursOfOperationData() {
@@ -610,11 +617,12 @@ export default {
         },
         async getProcessTimeData() {
             let data = await dataRequest("/api/experiment/process-time/" + this.experimentID, "GET");
+            this.backupProcessTimeData = JSON.parse(JSON.stringify(data));
+            console.log(data);
             this.processTimeData = data;
         },
         async getRoutingData() {
             let data = await dataRequest("/api/experiment/routing/" + this.experimentID, "GET");
-            console.log(data);
             this.routingData = data;
         },
         async getData() {
@@ -763,7 +771,6 @@ export default {
         selectedOperationChange() {
             let validExperimentAssets = this.assetData.filter(item => item.asset.operation_to_locations.length > 0);
             // operation to location may need to be iterated in the future
-            console.log(this.taskSequenceData[this.selectedOperation]);
             let selectedExperimentAssets = validExperimentAssets.filter(item => item.asset.operation_to_locations[0].operation_id == this.taskSequenceData[this.selectedOperation].task_sequence.operation_id);
             if (selectedExperimentAssets.length > 0) {
                 let selectedAssets = selectedExperimentAssets.map(item => item.asset);
@@ -773,38 +780,165 @@ export default {
             }
             this.processTimeElementChange();
         },
+        applyToAllChange(e) {
+            this.processTimeSettings.applyToAll = e.target.checked;
+            this.processTimeElementChange();
+        },
         processTimeElementChange() {
-            if (this.processTimeSettings.applyToAll) {
-                this.processTimeSettings.elements = [];
-                let processTimes = this.processTimeData.filter(e => e.process_time.asset_id == this.selectedAssets[0].asset_id);
-                this.processTimeSettings.elements.push({
-                    names: this.selectedAssets.map(e => e.display_name),
-                    values: processTimes.map(e => e.process_time.process_time)
+            // if (this.processTimeSettings.applyToAll) {
+            //     this.processTimeSettings.elements = {};
+            //     let processTimes = this.processTimeData.filter(e => e.process_time.asset_id == this.selectedAssets[0].asset_id);
+            //     this.processTimeSettings.elements.push({
+            //         names: this.selectedAssets.map(e => e.display_name),
+            //         values: processTimes.map(e => e.process_time.process_time)
+            //     })
+            // } else {
+            this.processTimeSettings.elements = {};
+            this.selectedAssets.forEach(asset => {
+                let processTimes = this.processTimeData.filter(e => e.process_time.asset_id == asset.asset_id);
+                this.processTimeSettings.elements[asset.asset_id] = {
+                    name: asset.display_name,
+                    values: {}
+                }
+                processTimes.forEach(e => {
+                    this.processTimeSettings.elements[asset.asset_id].values[e.experiment_process_time_id] = e.process_time.process_time;
                 })
-            } else {
-                this.processTimeSettings.elements = [];
-                this.selectedAssets.forEach(asset => {
-                    let processTimes = this.processTimeData.filter(e => e.process_time.asset_id == asset.asset_id);
-                    this.processTimeSettings.elements.push({
-                        names: [asset.display_name],
-                        values: processTimes.map(e => e.process_time.process_time)
+            })
+            // }
+        },
+        processTimeDataChange(mode, { process_time, experiment_process_time_id, operation_id, asset_id }) {
+            process_time = parseFloat(process_time);
+            // experiment_process_time_id = parseInt(experiment_process_time_id);
+            operation_id = parseInt(operation_id);
+            asset_id = parseInt(asset_id);
+            if (mode == "add" && operation_id !== undefined && asset_id !== undefined) {
+                if (process_time || Number.isNaN(process_time)) {process_time = 0}
+                console.log(process_time);
+                let entryIds = this.processTimeData.filter(e => e.process_time.asset_id == asset_id && e.process_time.operation_id == operation_id).map(e => e.experiment_process_time_id);
+                let backupTimes = this.backupProcessTimeData.filter(e => e.process_time.asset_id == asset_id && e.process_time.operation_id == operation_id).filter(e => entryIds.indexOf(e.experiment_process_time_id) == -1);
+                if (backupTimes.length > 0) {
+                    let entry = this.processTimeData[this.processTimeData.push(backupTimes[0]) - 1];
+                    let index = this.changedProcessTimeData.findIndex(e => e.experiment_process_time_id == backupTimes[0].experiment_process_time_id);
+                    if (index !== -1 && this.changedProcessTimeData[index].method == 'DELETE') {
+                        if (process_time) {
+                            entry.process_time.process_time = process_time;
+                            this.changedProcessTimeData[index].method = 'WRITE';
+                            this.changedProcessTimeData[index].process_time = process_time;
+                        } else {
+                            this.changedProcessTimeData.splice(index, 1);
+                        }
+                    } else {
+                        throw new Error('Adding Entry Failed: No Delete Record Exists');
+                    }
+                } else {
+                    let id = "new-" + Math.floor(Math.random() * 1000000);
+                    this.processTimeData.push({
+                        experiment_process_time_id: id,
+                        process_time: {
+                            process_time: process_time,
+                            asset_id: asset_id,
+                            operation_id: operation_id
+                        }
+                    })
+                    console.log(this.processTimeData[this.processTimeData.length - 1])
+                    this.changedProcessTimeData.push({
+                        process_time: process_time,
+                        experiment_process_time_id: id,
+                        asset_id: asset_id,
+                        operation_id: operation_id,
+                        method: 'WRITE'
+                    });
+                }
+            } else if (mode == "remove" && experiment_process_time_id !== undefined) {
+                let data = this.processTimeData.find(e => e.experiment_process_time_id == experiment_process_time_id);
+                this.processTimeData.splice(this.processTimeData.findIndex(e => e.experiment_process_time_id == experiment_process_time_id), 1);
+                let index = this.changedProcessTimeData.findIndex(e => e.experiment_process_time_id == experiment_process_time_id);
+                if (experiment_process_time_id.toString().includes('new')) {
+                    this.changedProcessTimeData.splice(index, 1);
+                } else {
+                    if (index == -1) {
+                        this.changedProcessTimeData.push({
+                            process_time: 0,
+                            experiment_process_time_id: experiment_process_time_id,
+                            asset_id: data.process_time.asset_id,
+                            operation_id: data.process_time.operation_id,
+                            method: 'DELETE'
+                        });
+                    } else {
+                        this.changedProcessTimeData[index].method = 'DELETE'
+                    }
+                }
+            } else if (mode == "change" && process_time !== undefined && experiment_process_time_id !== undefined) {
+                let data = this.processTimeData.find(e => e.experiment_process_time_id == experiment_process_time_id);
+                data.process_time.process_time = process_time;
+                let processTimeEntry = this.changedProcessTimeData.find(e => e.experiment_process_time_id == experiment_process_time_id);
+                if (!processTimeEntry) {
+                    this.changedProcessTimeData.push({
+                        experiment_process_time_id: experiment_process_time_id,
+                        asset_id: data.process_time.asset_id,
+                        operation_id: data.process_time.operation_id,
+                        process_time: process_time,
+                        method: 'WRITE'
+                    });
+                } else {
+                    processTimeEntry.process_time = process_time;
+                }
+            } else if (mode == "overwrite" && operation_id !== undefined && asset_id !== undefined) {
+                let template = this.processTimeData.filter(e => e.process_time.operation_id == operation_id && e.process_time.asset_id == asset_id);
+                let assetIds = this.operationToLocationData.filter(e => e.operation_to_location.operation_id == operation_id).map(e => e.operation_to_location.asset_id);
+                assetIds.splice(assetIds.indexOf(asset_id), 1);
+                assetIds.forEach(id => {
+                    this.processTimeData.filter(e => e.process_time.operation_id == operation_id && e.process_time.asset_id == id).forEach(entry => {
+                        this.processTimeDataChange("remove", { experiment_process_time_id: entry.experiment_process_time_id });
+                    })
+                    template.forEach(entry => {
+                        this.processTimeDataChange("add", { operation_id: operation_id, asset_id: id, process_time: entry.process_time.process_time })
                     })
                 })
+            } else {
+                throw new Error('Incorrect Inputs Provided: ' + operation_id + " " + asset_id + " " + experiment_process_time_id + " " + process_time);
             }
         },
-        handleNumberOfSamplesChange({ target }) {
-            let samples = parseInt(target.value);
-            let values = this.processTimeSettings.elements[target.dataset.index].values;
-            if (samples > values.length) {
-                for (let i = values.length; i < samples; i++) {
-                    values.push(0);
+        handleNumberOfSamplesChange({ target }, asset_id) {
+            if (this.processTimeSettings.applyToAll) {
+                let selectedOperation = this.taskSequenceData[this.selectedOperation];
+                let samples = parseInt(target.value);
+                let keys = Object.keys(this.processTimeSettings.elements[asset_id].values);
+                if (samples > keys.length) {
+                    for (let i = keys.length; i < samples; i++) {
+                        this.processTimeDataChange("add", { operation_id: selectedOperation.task_sequence.operation_id, asset_id: asset_id });
+                    }
+                } else if (samples < keys.length) {
+                    let stop = keys.length;
+                    for (let i = samples; i < stop; i++) {
+                        this.processTimeDataChange("remove", { experiment_process_time_id: keys[i] });
+                    }
                 }
-            } else if (samples < values.length) {
-                let stop = values.length;
-                for (let i = samples; i < stop; i++) {
-                    values.pop();
+                this.processTimeDataChange("overwrite", { operation_id: selectedOperation.task_sequence.operation_id, asset_id: asset_id });
+            } else {
+                let selectedOperation = this.taskSequenceData[this.selectedOperation];
+                let samples = parseInt(target.value);
+                let keys = Object.keys(this.processTimeSettings.elements[asset_id].values);
+                if (samples > keys.length) {
+                    for (let i = keys.length; i < samples; i++) {
+                        this.processTimeDataChange("add", { operation_id: selectedOperation.task_sequence.operation_id, asset_id: asset_id });
+                    }
+                } else if (samples < keys.length) {
+                    let stop = keys.length;
+                    for (let i = samples; i < stop; i++) {
+                        this.processTimeDataChange("remove", { experiment_process_time_id: keys[i] });
+                    }
                 }
             }
+            this.processTimeElementChange();
+        },
+        handleProcessTimeDataChange(id, e) {
+            this.processTimeDataChange("change", { experiment_process_time_id: id, process_time: e.target.value });
+            this.processTimeElementChange();
+        },
+        resetProcessingTimeChanges() {
+            this.processTimeData = this.backupProcessTimeData;
+            this.changedProcessTimeData = [];
         },
         startDrag(e, task) {
             e.dataTransfer.dropEffect = 'move';
@@ -979,4 +1113,5 @@ export default {
     border: none;
     margin: 4px;
     width: 50px;
-}</style>
+}
+</style>

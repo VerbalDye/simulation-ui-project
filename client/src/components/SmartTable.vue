@@ -16,11 +16,16 @@
         <table>
             <thead>
                 <tr>
+                    <th v-if="toggleEnabled">
+                        <div v-if="toggleSettings.title">{{ toggleSettings.title }}</div>
+                        <i v-else class="bi bi-check2-square"></i>
+                    </th>
                     <th v-for="key in headerData" @click="handleHeaderClick">{{ key }}</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="row in displayData">
+                    <td v-if="toggleEnabled"><input type="checkbox" :checked="toggleSettings.checkedDefault" @input="handleToggleChange(row, $event)" :name="row[Object.keys(row)[0]]"></td>
                     <td v-for="item in row">{{ item }}</td>
                 </tr>
             </tbody>
@@ -39,8 +44,12 @@ export default {
         }
     },
     name: 'SmartTable',
-    props: ['jsonData', 'advancedSearchEnabled', 'excludedColumns', 'id'],
+    props: ['jsonData', 'advancedSearchEnabled', 'excludedColumns', 'id', 'toggleEnabled', 'toggleSettings'],
+    emits: ['selection-change'],
     methods: {
+        handleToggleChange(row, { target }) {
+            this.$emit('toggle-change', { checked: target.checked , data: row });
+        },
         handleSearchChange() {
             let searchVal = document.getElementById("smart-table-search-" + this.id).value;
             this.displayData = [];
@@ -102,6 +111,17 @@ export default {
             return 0;
         }
     },
+    mounted() {
+        if (this.toggleEnabled) {
+            if (this.toggleSettings) {
+                if(!this.toggleSettings.checkedDefault) {
+                    this.toggleSettings.checkedDefault = false
+                }
+            } else {
+                this.toggleSettings = { checkedDefault: false }
+            }
+        }
+    },
     watch: {
         jsonData: function (newVal, oldVal) {
             if (this.jsonData.length > 0 && this.jsonData[0] !== undefined) {
@@ -118,6 +138,9 @@ export default {
                 })
             } else {
                 this.headerData = [];
+            }
+            if (this.toggleEnabled) {
+                
             }
         }
     }

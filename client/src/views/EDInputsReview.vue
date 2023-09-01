@@ -137,7 +137,9 @@
                                     </table>
                                     <p>Location(s):</p>
                                     <SmartTable :jsonData="selectedAssets" :advancedSearchEnabled="false"
-                                        :excludedColumns="['destinations']" :id="1" />
+                                        @toggle-change="assetInclusionChange" :excludedColumns="['destinations']" :id="1"
+                                        :toggleEnabled="true"
+                                        :toggleSettings="{ title: 'Include?', checkedDefault: true }" />
                                 </div>
                             </div>
                         </div>
@@ -151,7 +153,7 @@
                                             <th>Use Default?*</th>
                                             <td>
                                                 <label class="switch">
-                                                    <input type="checkbox" checked
+                                                    <input type="checkbox" checked name="process-time-default-input"
                                                         @input="e => this.processTimeSettings.default = e.target.checked">
                                                     <span class="slider round"></span>
                                                 </label>
@@ -161,7 +163,8 @@
                                             <th>Apply to all?*</th>
                                             <td>
                                                 <label class="switch">
-                                                    <input type="checkbox" @input="applyToAllChange" checked>
+                                                    <input type="checkbox" @input="applyToAllChange" checked
+                                                        name="process-time-apply-to-all-input">
                                                     <span class="slider round"></span>
                                                 </label>
                                             </td>
@@ -195,8 +198,9 @@
                                                             <td>
                                                                 <input type="number"
                                                                     :value="Object.keys(processTimeSettings.elements[selectedAssets[0].asset_id].values).length"
-                                                                    class="process-time-input"
-                                                                    @input="handleNumberOfSamplesChange($event, selectedAssets[0].asset_id)">
+                                                                    class="small-number-input"
+                                                                    :name="'samples-' + selectedAssets[0].asset_id"
+                                                                    @input="handleNumberOfSamplesChange(selectedAssets[0].asset_id, $event)">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -206,8 +210,8 @@
                                                                 <div class="flex-left">
                                                                     <input
                                                                         v-for="(value, key) in this.processTimeSettings.elements[selectedAssets[0].asset_id].values"
-                                                                        class="process-time-input" type="number" step="0.01"
-                                                                        :value="value"
+                                                                        class="small-number-input" type="number" step="0.01"
+                                                                        :value="value" :name="'times-' + key"
                                                                         @input="handleProcessTimeDataChange(key, $event)">
                                                                 </div>
                                                             </td>
@@ -224,8 +228,8 @@
                                                             <td>
                                                                 <input type="number"
                                                                     :value="Object.keys(element.values).length"
-                                                                    class="process-time-input"
-                                                                    @input="handleNumberOfSamplesChange($event, asset_id)">
+                                                                    class="small-number-input" :name="'samples-' + asset_id"
+                                                                    @input="handleNumberOfSamplesChange(asset_id, $event)">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -234,8 +238,8 @@
                                                             <td>
                                                                 <div class="flex-left">
                                                                     <input v-for="(value, key) in element.values"
-                                                                        class="process-time-input" type="number" step="0.01"
-                                                                        :value="value"
+                                                                        class="small-number-input" type="number" step="0.01"
+                                                                        :value="value" :name="'times-' + key"
                                                                         @input="handleProcessTimeDataChange(key, $event)">
                                                                 </div>
                                                             </td>
@@ -291,7 +295,7 @@
                                         <th>Use Default?*</th>
                                         <td>
                                             <label class="switch">
-                                                <input type="checkbox">
+                                                <input type="checkbox" name="hoo-default-input">
                                                 <span class="slider round"></span>
                                             </label>
                                         </td>
@@ -519,7 +523,138 @@
                             class="bi bi-plus-circle-fill"></i></button>
                 </div>
                 <div id="demand" class="collapsable">
-                    TBD
+                    <div class="card">
+                        <h4 class="card-title">Demand Input</h4>
+                        <table class="grid-less">
+                            <tr>
+                                <th>Use Backlog?*</th>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="demand-backlog-input"
+                                            @input="e => this.demandSettings.backlog = e.target.checked">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Use Default?*</th>
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" name="demand-default-input" checked
+                                            @input="e => this.demandSettings.default = e.target.checked">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                            </tr>
+                        </table>
+                        <div v-if="!demandSettings.default">
+                            <div v-if="!demandSettings.backlog">
+                                <h4>Daily Target</h4>
+                                <table class="grid-less">
+                                    <tr>
+                                        <th>Min</th>
+                                        <td><input type="number" class="small-number-input" step="1"
+                                                name="demand-target-min-input"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Max</th>
+                                        <td><input type="number" class="small-number-input" step="1"
+                                                name="demand-target-max-input"></td>
+                                    </tr>
+                                </table>
+                                <h4>Job Mix (%)</h4>
+                                <table class="grid-less">
+                                    <tr v-for="({ job_mix }) in jobMixData">
+                                        <th>{{ job_mix.display_name }}</th>
+                                        <td><input type="number" class="small-number-input" step="1" @input="handleJobMixChange"
+                                                :name="'demand-mix-' + job_mix.job_type + '-input'" :value="job_mix.percent"></td>
+                                    </tr>
+                                </table>
+                                <h4>Delivery Days</h4>
+                                <table class="grid-less">
+                                    <tr>
+                                        <th>Sun</th>
+                                        <td>
+                                            <label class="switch">
+                                                <input type="checkbox" name="demand-delivery-sun-input" checked
+                                                    @input="e => this.demandSettings.default = e.target.checked">
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Mon</th>
+                                        <td>
+                                            <label class="switch">
+                                                <input type="checkbox" name="demand-delivery-mon-input" checked
+                                                    @input="e => this.demandSettings.default = e.target.checked">
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Tue</th>
+                                        <td>
+                                            <label class="switch">
+                                                <input type="checkbox" name="demand-delivery-tue-input" checked
+                                                    @input="e => this.demandSettings.default = e.target.checked">
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Wed</th>
+                                        <td>
+                                            <label class="switch">
+                                                <input type="checkbox" name="demand-delivery-wed-input" checked
+                                                    @input="e => this.demandSettings.default = e.target.checked">
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Thu</th>
+                                        <td>
+                                            <label class="switch">
+                                                <input type="checkbox" name="demand-delivery-thu-input" checked
+                                                    @input="e => this.demandSettings.default = e.target.checked">
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Fri</th>
+                                        <td>
+                                            <label class="switch">
+                                                <input type="checkbox" name="demand-delivery-fri-input" checked
+                                                    @input="e => this.demandSettings.default = e.target.checked">
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Sat</th>
+                                        <td>
+                                            <label class="switch">
+                                                <input type="checkbox" name="demand-delivery-sat-input" checked
+                                                    @input="e => this.demandSettings.default = e.target.checked">
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div v-else>
+                                <div>
+                                    <label for="backlog-input">Upload Backlog</label>
+                                    <input type="file" name="backlog-input" id="backlog-input" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                                </div>
+                                <div class="flex-right">
+                                    <button @click="uploadBacklog" >Upload</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="flex-right">
                         <button @click="goToCollapsable('transportation')">Back</button>
                         <button @click="goToCollapsable('review')">Next</button>
@@ -562,6 +697,7 @@ export default {
             formattedTaskSequenceData: null,
             assetData: null,
             routingData: null,
+            jobMixData: null,
             selectedOperation: 0,
             selectedAssets: null,
             hoursOfOperationData: null,
@@ -572,9 +708,14 @@ export default {
                 elements: {},
                 ids: []
             },
+            demandSettings: {
+                default: true,
+                backlog: false
+            },
             processTimeData: null,
             backupProcessTimeData: null,
             changedProcessTimeData: [],
+            excludedAssets: []
         }
     },
     mixins: [titleMixin],
@@ -603,12 +744,10 @@ export default {
         },
         async getAssetData() {
             let data = await dataRequest("/api/experiment/asset/" + this.experimentID, "GET");
-            console.log(data);
             this.assetData = data;
         },
         async getOperationToLocationData() {
             let data = await dataRequest("/api/experiment/operation-to-location/" + this.experimentID, "GET");
-            console.log(data);
             this.operationToLocationData = data;
         },
         async getHoursOfOperationData() {
@@ -618,18 +757,23 @@ export default {
         async getProcessTimeData() {
             let data = await dataRequest("/api/experiment/process-time/" + this.experimentID, "GET");
             this.backupProcessTimeData = JSON.parse(JSON.stringify(data));
-            console.log(data);
             this.processTimeData = data;
         },
         async getRoutingData() {
             let data = await dataRequest("/api/experiment/routing/" + this.experimentID, "GET");
             this.routingData = data;
         },
+        async getJobMixData() {
+            let data = await dataRequest("/api/experiment/job-mix/" + this.experimentID, "GET");
+            console.log(data)
+            this.jobMixData = data;
+        },
         async getData() {
             this.getExperimentID();
             this.getHoursOfOperationData();
             this.getOperationToLocationData();
             this.getRoutingData();
+            this.getJobMixData();
             await this.getAssetData();
             await this.getTaskSequenceData();
             await this.getProcessTimeData();
@@ -641,8 +785,32 @@ export default {
             siteSelectionEl.checked = true;
         },
         async saveAllChanges() {
-            await dataRequest("/api/experiment/site/" + this.experimentID, "PUT", JSON.stringify({ site_id: this.selectedSite }));
+            return await Promise.all([
+                dataRequest("/api/experiment/site/" + this.experimentID, "PUT", JSON.stringify({ site_id: this.selectedSite })),
+                this.saveProcessTimeChanges()
+            ])
         },
+        async saveProcessTimeChanges() {
+            let postProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'POST');
+            let putProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'PUT');
+            let deleteProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'DELETE').map(e => parseInt(e.experiment_process_time_id));
+            console.log("POST ", JSON.stringify(postProcessTimeData));
+            console.log("PUT ", JSON.stringify(putProcessTimeData));
+            console.log("DELETE", JSON.stringify(deleteProcessTimeData));
+            if (postProcessTimeData.length) {
+                await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "POST", JSON.stringify({ data: postProcessTimeData }))
+            }
+            if (putProcessTimeData.length) {
+                await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "PUT", JSON.stringify({ data: putProcessTimeData }))
+            }
+            if (deleteProcessTimeData.length) {
+                await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "DELETE", JSON.stringify({ data: deleteProcessTimeData }))
+            }
+        },
+        uploadBacklog() {
+            let backlogInput = document.getElementById("backlog-input");
+            console.log(backlogInput.files[0]);
+        },  
         formatTaskSequenceData(data) {
             const formattedData = [];
             const completedPhases = [];
@@ -785,14 +953,6 @@ export default {
             this.processTimeElementChange();
         },
         processTimeElementChange() {
-            // if (this.processTimeSettings.applyToAll) {
-            //     this.processTimeSettings.elements = {};
-            //     let processTimes = this.processTimeData.filter(e => e.process_time.asset_id == this.selectedAssets[0].asset_id);
-            //     this.processTimeSettings.elements.push({
-            //         names: this.selectedAssets.map(e => e.display_name),
-            //         values: processTimes.map(e => e.process_time.process_time)
-            //     })
-            // } else {
             this.processTimeSettings.elements = {};
             this.selectedAssets.forEach(asset => {
                 let processTimes = this.processTimeData.filter(e => e.process_time.asset_id == asset.asset_id);
@@ -804,16 +964,13 @@ export default {
                     this.processTimeSettings.elements[asset.asset_id].values[e.experiment_process_time_id] = e.process_time.process_time;
                 })
             })
-            // }
         },
         processTimeDataChange(mode, { process_time, experiment_process_time_id, operation_id, asset_id }) {
             process_time = parseFloat(process_time);
-            // experiment_process_time_id = parseInt(experiment_process_time_id);
             operation_id = parseInt(operation_id);
             asset_id = parseInt(asset_id);
             if (mode == "add" && operation_id !== undefined && asset_id !== undefined) {
-                if (process_time || Number.isNaN(process_time)) {process_time = 0}
-                console.log(process_time);
+                if (!process_time) { process_time = 0 }
                 let entryIds = this.processTimeData.filter(e => e.process_time.asset_id == asset_id && e.process_time.operation_id == operation_id).map(e => e.experiment_process_time_id);
                 let backupTimes = this.backupProcessTimeData.filter(e => e.process_time.asset_id == asset_id && e.process_time.operation_id == operation_id).filter(e => entryIds.indexOf(e.experiment_process_time_id) == -1);
                 if (backupTimes.length > 0) {
@@ -822,7 +979,7 @@ export default {
                     if (index !== -1 && this.changedProcessTimeData[index].method == 'DELETE') {
                         if (process_time) {
                             entry.process_time.process_time = process_time;
-                            this.changedProcessTimeData[index].method = 'WRITE';
+                            this.changedProcessTimeData[index].method = 'PUT';
                             this.changedProcessTimeData[index].process_time = process_time;
                         } else {
                             this.changedProcessTimeData.splice(index, 1);
@@ -840,13 +997,12 @@ export default {
                             operation_id: operation_id
                         }
                     })
-                    console.log(this.processTimeData[this.processTimeData.length - 1])
                     this.changedProcessTimeData.push({
                         process_time: process_time,
                         experiment_process_time_id: id,
                         asset_id: asset_id,
                         operation_id: operation_id,
-                        method: 'WRITE'
+                        method: 'POST'
                     });
                 }
             } else if (mode == "remove" && experiment_process_time_id !== undefined) {
@@ -878,7 +1034,7 @@ export default {
                         asset_id: data.process_time.asset_id,
                         operation_id: data.process_time.operation_id,
                         process_time: process_time,
-                        method: 'WRITE'
+                        method: 'PUT'
                     });
                 } else {
                     processTimeEntry.process_time = process_time;
@@ -892,53 +1048,48 @@ export default {
                         this.processTimeDataChange("remove", { experiment_process_time_id: entry.experiment_process_time_id });
                     })
                     template.forEach(entry => {
-                        this.processTimeDataChange("add", { operation_id: operation_id, asset_id: id, process_time: entry.process_time.process_time })
+                        this.processTimeDataChange("add", { operation_id: operation_id, asset_id: id, process_time: entry.process_time.process_time });
                     })
                 })
             } else {
                 throw new Error('Incorrect Inputs Provided: ' + operation_id + " " + asset_id + " " + experiment_process_time_id + " " + process_time);
             }
+            console.log(this.changedProcessTimeData);
         },
-        handleNumberOfSamplesChange({ target }, asset_id) {
+        handleNumberOfSamplesChange(asset_id, { target }) {
+            let selectedOperation = this.taskSequenceData[this.selectedOperation];
+            let samples = parseInt(target.value);
+            let keys = Object.keys(this.processTimeSettings.elements[asset_id].values);
+            if (samples > keys.length) {
+                for (let i = keys.length; i < samples; i++) {
+                    this.processTimeDataChange("add", { operation_id: selectedOperation.task_sequence.operation_id, asset_id: asset_id });
+                }
+            } else if (samples < keys.length) {
+                let stop = keys.length;
+                for (let i = samples; i < stop; i++) {
+                    this.processTimeDataChange("remove", { experiment_process_time_id: keys[i] });
+                }
+            }
             if (this.processTimeSettings.applyToAll) {
-                let selectedOperation = this.taskSequenceData[this.selectedOperation];
-                let samples = parseInt(target.value);
-                let keys = Object.keys(this.processTimeSettings.elements[asset_id].values);
-                if (samples > keys.length) {
-                    for (let i = keys.length; i < samples; i++) {
-                        this.processTimeDataChange("add", { operation_id: selectedOperation.task_sequence.operation_id, asset_id: asset_id });
-                    }
-                } else if (samples < keys.length) {
-                    let stop = keys.length;
-                    for (let i = samples; i < stop; i++) {
-                        this.processTimeDataChange("remove", { experiment_process_time_id: keys[i] });
-                    }
-                }
                 this.processTimeDataChange("overwrite", { operation_id: selectedOperation.task_sequence.operation_id, asset_id: asset_id });
-            } else {
-                let selectedOperation = this.taskSequenceData[this.selectedOperation];
-                let samples = parseInt(target.value);
-                let keys = Object.keys(this.processTimeSettings.elements[asset_id].values);
-                if (samples > keys.length) {
-                    for (let i = keys.length; i < samples; i++) {
-                        this.processTimeDataChange("add", { operation_id: selectedOperation.task_sequence.operation_id, asset_id: asset_id });
-                    }
-                } else if (samples < keys.length) {
-                    let stop = keys.length;
-                    for (let i = samples; i < stop; i++) {
-                        this.processTimeDataChange("remove", { experiment_process_time_id: keys[i] });
-                    }
-                }
             }
             this.processTimeElementChange();
         },
         handleProcessTimeDataChange(id, e) {
+            let selectedOperation = this.taskSequenceData[this.selectedOperation];
+            let data = this.processTimeData.find(e => e.experiment_process_time_id == id);
             this.processTimeDataChange("change", { experiment_process_time_id: id, process_time: e.target.value });
+            if (this.processTimeSettings.applyToAll) {
+                this.processTimeDataChange("overwrite", { operation_id: selectedOperation.task_sequence.operation_id, asset_id: data.process_time.asset_id })
+            }
             this.processTimeElementChange();
         },
         resetProcessingTimeChanges() {
             this.processTimeData = this.backupProcessTimeData;
             this.changedProcessTimeData = [];
+        },
+        handleJobMixChange(e) {
+            
         },
         startDrag(e, task) {
             e.dataTransfer.dropEffect = 'move';
@@ -962,11 +1113,14 @@ export default {
             this.formattedTaskSequenceData.sort((a, b) => a.position - b.position);
             this.taskContainsOperation();
         },
-        taskContainsOperation() {
-            this.formattedTaskSequenceData.forEach(task => {
-                console.log(task);
-
-            })
+        assetInclusionChange(e) {
+            let index = this.excludedAssets.indexOf(e.data.asset_id);
+            if (index !== -1 && e.checked) {
+                this.excludedAssets.splice(index, 1);
+            } else if (!e.checked && index == -1) {
+                this.excludedAssets.push(e.data.asset_id);
+            }
+            console.log(this.excludedAssets);
         },
         operationMapSelectionChange(e) {
             console.log(e);
@@ -1109,7 +1263,7 @@ export default {
     font-size: 80px;
 }
 
-.process-time-input {
+.small-number-input {
     border: none;
     margin: 4px;
     width: 50px;

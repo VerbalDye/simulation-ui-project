@@ -2,7 +2,8 @@ const router = require('express').Router();
 
 const experimentRoutes = require('./experimentRoutes');
 const assetRoutes = require('./assetRoutes');
-const HoursOfOperationRoutes = require('./hoursOfOperationRoutes');
+const hoursOfOperationRoutes = require('./hoursOfOperationRoutes');
+const jobMixRoutes = require('./jobMixRoutes');
 const operationToLocationRoutes = require('./operationToLocation');
 const phasesRoutes = require('./phasesRoutes');
 const processTimeRoutes = require('./processTimeRoutes');
@@ -12,7 +13,8 @@ const taskSequenceRoutes = require('./taskSequenceRoutes');
 
 router.use('/', experimentRoutes);
 router.use('/asset', assetRoutes);
-router.use('/hours-of-operation', HoursOfOperationRoutes);
+router.use('/hours-of-operation', hoursOfOperationRoutes);
+router.use('/job-mix', jobMixRoutes);
 router.use('/operation-to-location', operationToLocationRoutes);
 router.use('/phases', phasesRoutes);
 router.use('/process-time', processTimeRoutes);

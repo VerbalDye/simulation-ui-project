@@ -566,8 +566,10 @@
                                 <table class="grid-less">
                                     <tr v-for="({ job_mix }) in jobMixData">
                                         <th>{{ job_mix.display_name }}</th>
-                                        <td><input type="number" class="small-number-input" step="1" @input="handleJobMixChange"
-                                                :name="'demand-mix-' + job_mix.job_type + '-input'" :value="job_mix.percent"></td>
+                                        <td><input type="number" class="small-number-input" step="1"
+                                                @input="handleJobMixChange(job_mix.job_mix_id, $event)"
+                                                :name="'demand-mix-' + job_mix.job_type + '-input'"
+                                                :value="job_mix.percent" min="0" max="100"></td>
                                     </tr>
                                 </table>
                                 <h4>Delivery Days</h4>
@@ -647,10 +649,11 @@
                             <div v-else>
                                 <div>
                                     <label for="backlog-input">Upload Backlog</label>
-                                    <input type="file" name="backlog-input" id="backlog-input" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                                    <input type="file" name="backlog-input" id="backlog-input"
+                                        accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
                                 </div>
                                 <div class="flex-right">
-                                    <button @click="uploadBacklog" >Upload</button>
+                                    <button @click="uploadBacklog">Upload</button>
                                 </div>
                             </div>
                         </div>
@@ -710,7 +713,8 @@ export default {
             },
             demandSettings: {
                 default: true,
-                backlog: false
+                backlog: false,
+                lastJobMixIDs: [],
             },
             processTimeData: null,
             backupProcessTimeData: null,
@@ -794,9 +798,6 @@ export default {
             let postProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'POST');
             let putProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'PUT');
             let deleteProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'DELETE').map(e => parseInt(e.experiment_process_time_id));
-            console.log("POST ", JSON.stringify(postProcessTimeData));
-            console.log("PUT ", JSON.stringify(putProcessTimeData));
-            console.log("DELETE", JSON.stringify(deleteProcessTimeData));
             if (postProcessTimeData.length) {
                 await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "POST", JSON.stringify({ data: postProcessTimeData }))
             }
@@ -810,7 +811,7 @@ export default {
         uploadBacklog() {
             let backlogInput = document.getElementById("backlog-input");
             console.log(backlogInput.files[0]);
-        },  
+        },
         formatTaskSequenceData(data) {
             const formattedData = [];
             const completedPhases = [];
@@ -965,6 +966,7 @@ export default {
                 })
             })
         },
+        // Later convert to beautiful function to handle any data change
         processTimeDataChange(mode, { process_time, experiment_process_time_id, operation_id, asset_id }) {
             process_time = parseFloat(process_time);
             operation_id = parseInt(operation_id);
@@ -1088,8 +1090,32 @@ export default {
             this.processTimeData = this.backupProcessTimeData;
             this.changedProcessTimeData = [];
         },
-        handleJobMixChange(e) {
-            
+        handleJobMixChange(id, { target }) {
+            if (this.demandSettings.lastJobMixIDs.length == 0) {
+                let placeholderEntry = this.jobMixData.filter(e => e.job_mix.job_mix_id !== id)[0];
+                this.demandSettings.lastJobMixIDs.push(placeholderEntry.job_mix.job_mix_id);
+                this.demandSettings.lastJobMixIDs.push(id);
+            } else if (this.demandSettings.lastJobMixIDs[0] == id || this.demandSettings.lastJobMixIDs[1] !== id) {
+                this.demandSettings.lastJobMixIDs.shift()
+                this.demandSettings.lastJobMixIDs.push(id);
+            }
+            console.log(id, this.demandSettings.lastJobMixIDs);
+            let targetPercent = parseInt(target.value);
+            let targetEntry = this.jobMixData.find(e => e.job_mix.job_mix_id == id);
+            let lastTargetEntry = this.jobMixData.find(e => e.job_mix.job_mix_id == this.demandSettings.lastJobMixIDs[0]);
+            let slackEntry = this.jobMixData.find(e => this.demandSettings.lastJobMixIDs.indexOf(e.job_mix.job_mix_id) == -1);
+            if (targetPercent > 100 || targetPercent < 0) {
+                throw new Error('Percent Out of Bounds: Must be between 0-100')
+            } else {
+                if (targetPercent + lastTargetEntry.job_mix.percent < 100) {
+                    slackEntry.job_mix.percent = 100 - (targetPercent + lastTargetEntry.job_mix.percent);
+                    targetEntry.job_mix.percent = targetPercent;
+                } else {
+                    slackEntry.job_mix.percent = 0;
+                    lastTargetEntry.job_mix.percent = 100 - targetPercent;
+                    targetEntry.job_mix.percent = targetPercent;
+                }
+            }
         },
         startDrag(e, task) {
             e.dataTransfer.dropEffect = 'move';
@@ -1120,7 +1146,6 @@ export default {
             } else if (!e.checked && index == -1) {
                 this.excludedAssets.push(e.data.asset_id);
             }
-            console.log(this.excludedAssets);
         },
         operationMapSelectionChange(e) {
             console.log(e);
@@ -1267,5 +1292,4 @@ export default {
     border: none;
     margin: 4px;
     width: 50px;
-}
-</style>
+}</style>

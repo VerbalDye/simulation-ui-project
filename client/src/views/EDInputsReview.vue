@@ -138,8 +138,7 @@
                                     <p>Location(s):</p>
                                     <SmartTable :jsonData="selectedAssets" :advancedSearchEnabled="false"
                                         @toggle-change="assetInclusionChange" :excludedColumns="['destinations']" :id="1"
-                                        :toggleEnabled="true"
-                                        :toggleSettings="{ title: 'Include?', checkedDefault: true }" />
+                                        :toggle="'Include?'" :toggleData="this.selectedAssetInclusion" />
                                 </div>
                             </div>
                         </div>
@@ -351,7 +350,12 @@
                                 class="bi bi-plus-circle-fill"></i></button>
                     </div>
                     <div id="assignment-cores-tools" class="collapsable">
-                        TBD
+                        <div>
+                            <button disabled>Upload Core List</button>
+                            <SmartTable :jsonData="coreModelData" :advancedSearchEnabled="false" :id="3"
+                                @toggle-change="coreUsageChange" :toggle="'Use?'"
+                                :toggleData="this.selectedAssetInclusion" />
+                        </div>
                         <div class="flex-right">
                             <button @click="goToCollapsable('availability-equipment-machines')">Back</button>
                             <button @click="goToCollapsable('assignment-materials')">Next</button>
@@ -568,8 +572,8 @@
                                         <th>{{ job_mix.display_name }}</th>
                                         <td><input type="number" class="small-number-input" step="1"
                                                 @input="handleJobMixChange(job_mix.job_mix_id, $event)"
-                                                :name="'demand-mix-' + job_mix.job_type + '-input'"
-                                                :value="job_mix.percent" min="0" max="100"></td>
+                                                :name="'demand-mix-' + job_mix.job_type + '-input'" :value="job_mix.percent"
+                                                min="0" max="100"></td>
                                     </tr>
                                 </table>
                                 <h4>Delivery Days</h4>
@@ -701,6 +705,7 @@ export default {
             assetData: null,
             routingData: null,
             jobMixData: null,
+            coreModelData: null,
             selectedOperation: 0,
             selectedAssets: null,
             hoursOfOperationData: null,
@@ -719,7 +724,8 @@ export default {
             processTimeData: null,
             backupProcessTimeData: null,
             changedProcessTimeData: [],
-            excludedAssets: []
+            excludedAssets: [],
+            selectedAssetInclusion: null
         }
     },
     mixins: [titleMixin],
@@ -748,6 +754,7 @@ export default {
         },
         async getAssetData() {
             let data = await dataRequest("/api/experiment/asset/" + this.experimentID, "GET");
+            // console.log(data);
             this.assetData = data;
         },
         async getOperationToLocationData() {
@@ -769,16 +776,23 @@ export default {
         },
         async getJobMixData() {
             let data = await dataRequest("/api/experiment/job-mix/" + this.experimentID, "GET");
-            console.log(data)
+            // console.log(data)
             this.jobMixData = data;
+        },
+        async getCoreModelData() {
+            let data = await dataRequest("/api/core-model", "GET");
+            console.log(data);
+            this.coreModelData = data;
         },
         async getData() {
             this.getExperimentID();
+            this.getCoreModelData();
             this.getHoursOfOperationData();
             this.getOperationToLocationData();
             this.getRoutingData();
             this.getJobMixData();
             await this.getAssetData();
+            this.excludedAssets = this.assetData.filter(e => e.asset.capacity == 0).map(e => e.asset.asset_id);
             await this.getTaskSequenceData();
             await this.getProcessTimeData();
             this.selectedOperationChange();
@@ -791,7 +805,8 @@ export default {
         async saveAllChanges() {
             return await Promise.all([
                 dataRequest("/api/experiment/site/" + this.experimentID, "PUT", JSON.stringify({ site_id: this.selectedSite })),
-                this.saveProcessTimeChanges()
+                this.saveProcessTimeChanges(),
+                this.saveAssetInclusionData(),
             ])
         },
         async saveProcessTimeChanges() {
@@ -807,6 +822,18 @@ export default {
             if (deleteProcessTimeData.length) {
                 await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "DELETE", JSON.stringify({ data: deleteProcessTimeData }))
             }
+        },
+        async saveAssetInclusionData() {
+            let enabledAssets = this.assetData.filter(e => e.asset.capacity == 0 && this.excludedAssets.indexOf(e.asset.asset_id) == -1).map(e => e.asset).map(({ capacity, ...rest }) => { 
+                rest["capacity"] = "RESET"
+                return rest
+            });
+            let disabledAssets = this.assetData.filter(e => this.excludedAssets.indexOf(e.asset.asset_id) !== -1).map(e => e.asset).map(({ capacity, ...rest }) => { 
+                rest["capacity"] = 0
+                return rest
+            });
+            let assets = enabledAssets.concat(disabledAssets);
+            await dataRequest("/api/experiment/asset/bulk/" + this.experimentID, "PUT", JSON.stringify({ data: assets }));
         },
         uploadBacklog() {
             let backlogInput = document.getElementById("backlog-input");
@@ -944,6 +971,7 @@ export default {
             if (selectedExperimentAssets.length > 0) {
                 let selectedAssets = selectedExperimentAssets.map(item => item.asset);
                 this.selectedAssets = selectedAssets.map(({ operation_to_locations, ...rest }) => rest);
+                this.selectedAssetInclusion = this.selectedAssets.map(e => this.excludedAssets.indexOf(e.asset_id) == -1);
             } else {
                 this.selectedAssets = [{ Status: "No Associated Assets" }];
             }
@@ -1056,7 +1084,6 @@ export default {
             } else {
                 throw new Error('Incorrect Inputs Provided: ' + operation_id + " " + asset_id + " " + experiment_process_time_id + " " + process_time);
             }
-            console.log(this.changedProcessTimeData);
         },
         handleNumberOfSamplesChange(asset_id, { target }) {
             let selectedOperation = this.taskSequenceData[this.selectedOperation];
@@ -1099,7 +1126,6 @@ export default {
                 this.demandSettings.lastJobMixIDs.shift()
                 this.demandSettings.lastJobMixIDs.push(id);
             }
-            console.log(id, this.demandSettings.lastJobMixIDs);
             let targetPercent = parseInt(target.value);
             let targetEntry = this.jobMixData.find(e => e.job_mix.job_mix_id == id);
             let lastTargetEntry = this.jobMixData.find(e => e.job_mix.job_mix_id == this.demandSettings.lastJobMixIDs[0]);
@@ -1140,6 +1166,14 @@ export default {
             this.taskContainsOperation();
         },
         assetInclusionChange(e) {
+            let index = this.excludedAssets.indexOf(e.data.asset_id);
+            if (index !== -1 && e.checked) {
+                this.excludedAssets.splice(index, 1);
+            } else if (!e.checked && index == -1) {
+                this.excludedAssets.push(e.data.asset_id);
+            }
+        },
+        coreUsageChange(e) {
             let index = this.excludedAssets.indexOf(e.data.asset_id);
             if (index !== -1 && e.checked) {
                 this.excludedAssets.splice(index, 1);
@@ -1292,4 +1326,5 @@ export default {
     border: none;
     margin: 4px;
     width: 50px;
-}</style>
+}
+</style>

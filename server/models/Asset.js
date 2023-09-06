@@ -39,6 +39,9 @@ Asset.init(
         dim_height_feet: {
             type: DataTypes.INTEGER
         },
+        capacity: {
+            type: DataTypes.INTEGER
+        },
         is_default: {
             type: DataTypes.BOOLEAN,
             allowNull: false,

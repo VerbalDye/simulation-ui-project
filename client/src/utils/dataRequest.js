@@ -7,7 +7,7 @@ let dataRequest = async function (url, method, body) {
     return fetch(url, options)
         .then(response => {
             if (response.redirected) {
-                return response;
+                window.location = response.url;
             } else if (response.ok) {
                 if (response.status == 200) {
                 return response.json()
@@ -25,7 +25,7 @@ let dataRequest = async function (url, method, body) {
             }
         }).catch(function (error) {
             // Informs user of failure
-            let html = "We appear to be having trouble reaching the Database. Check your connection and try agian. \n" + error;
+            let html = "We appear to be having trouble reaching the Database. Check your connection and try again. \n" + error;
             window.alert(html);
             return;
         });

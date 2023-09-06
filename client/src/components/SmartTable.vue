@@ -13,19 +13,17 @@
         <button v-if="this.advancedSearchEnabled" @click="handleOpenAdvancedSearch">Advanced Search</button>
     </div>
     <div class="table-container">
-        <table>
+        <table v-if="jsonData">
             <thead>
                 <tr>
-                    <th v-if="toggleEnabled">
-                        <div v-if="toggleSettings.title">{{ toggleSettings.title }}</div>
-                        <i v-else class="bi bi-check2-square"></i>
-                    </th>
+                    <th v-if="toggle">{{ toggle }}</th>
                     <th v-for="key in headerData" @click="handleHeaderClick">{{ key }}</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="row in displayData">
-                    <td v-if="toggleEnabled"><input type="checkbox" :checked="toggleSettings.checkedDefault" @input="handleToggleChange(row, $event)" :name="row[Object.keys(row)[0]]"></td>
+                <tr v-for="(row, index) in displayData">
+                    <td v-if="toggle"><input type="checkbox" :checked="toggleData[index]" :class="'smart-table-' + id + '-toggle-input'"
+                            @input="handleToggleChange(row, $event)" :name="'toggle-' + index"></td>
                     <td v-for="item in row">{{ item }}</td>
                 </tr>
             </tbody>
@@ -40,15 +38,16 @@ export default {
             headerData: [],
             displayData: [],
             headerNameClicked: null,
-            advancedSearchSelected: false
+            advancedSearchSelected: false,
+            selectedIndices: []
         }
     },
     name: 'SmartTable',
-    props: ['jsonData', 'advancedSearchEnabled', 'excludedColumns', 'id', 'toggleEnabled', 'toggleSettings'],
+    props: ['jsonData', 'advancedSearchEnabled', 'excludedColumns', 'id', 'toggle', 'toggleData'],
     emits: ['selection-change'],
     methods: {
         handleToggleChange(row, { target }) {
-            this.$emit('toggle-change', { checked: target.checked , data: row });
+            this.$emit('toggle-change', { checked: target.checked, data: row });
         },
         handleSearchChange() {
             let searchVal = document.getElementById("smart-table-search-" + this.id).value;
@@ -74,7 +73,6 @@ export default {
                 this.displayData.forEach((item, index) => {
                     if (!item[searchElement.id.split("-search")[0]].toString().toLowerCase().includes(queryTerm.toLowerCase())) {
                         delete this.displayData[index];
-                        console.log(this.jsonData)
                     }
                 })
             })
@@ -109,39 +107,48 @@ export default {
                 return 1;
             }
             return 0;
-        }
-    },
-    mounted() {
-        if (this.toggleEnabled) {
-            if (this.toggleSettings) {
-                if(!this.toggleSettings.checkedDefault) {
-                    this.toggleSettings.checkedDefault = false
-                }
-            } else {
-                this.toggleSettings = { checkedDefault: false }
-            }
-        }
-    },
-    watch: {
-        jsonData: function (newVal, oldVal) {
-            if (this.jsonData.length > 0 && this.jsonData[0] !== undefined) {
+        },
+        dataSetup() {
+            if (this.jsonData && this.jsonData.length > 0 && this.jsonData[0] !== undefined) {
                 this.headerData = Object.keys(this.jsonData[0]);
                 this.displayData = [...this.jsonData]
                 this.excludedColumns.forEach(column => {
                     let index = this.headerData.indexOf(column);
                     if (index !== -1) {
                         this.headerData.splice(index, 1);
+                        this.displayData.forEach(entry => {
+                            delete entry[column];
+                        })
                     }
-                    this.displayData.forEach(data => {
-                        delete data[column];
-                    })
                 })
             } else {
                 this.headerData = [];
             }
-            if (this.toggleEnabled) {
-                
+        }
+    },
+    mounted() {
+        if (this.toggleEnabled) {
+            if (this.toggleSettings) {
+                if (!this.toggleSettings.checkedDefault) {
+                    this.toggleSettings.checkedDefault = false
+                }
+            } else {
+                this.toggleSettings = { checkedDefault: false }
             }
+        }
+        this.dataSetup();
+    },
+    watch: {
+        jsonData: function (newVal, oldVal) {
+            this.dataSetup();
+        },
+        toggleData: function (newVal, oldVal) {
+            let toggleInputs = Array.from(document.querySelectorAll('.smart-table-' + this.id + '-toggle-input'));
+            toggleInputs.forEach((input, index) => {
+                if (newVal.length > index) {
+                    input.checked = newVal[index]
+                }
+            })
         }
     }
 }

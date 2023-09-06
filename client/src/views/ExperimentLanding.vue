@@ -56,10 +56,11 @@ export default {
     components: { Sidebar, Header },
     methods: {
         async getRecentExperiments() {
-            let user = await auth.getProfile()
-            console.log(user);
+            let user = await auth.getProfile();
             let data = await dataRequest("/api/experiment/user/" + user.user_id, "GET");
-            this.recentExperiments = [...data];
+            if (data.length) {
+                this.recentExperiments = [...data];
+            }
         }
     },
     mounted() {

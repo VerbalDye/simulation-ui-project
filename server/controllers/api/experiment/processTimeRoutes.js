@@ -65,7 +65,6 @@ router.post('/bulk/:id', (req, res) => {
 })
 
 router.put('/bulk/:id', (req, res) => {
-    console.log(req.body)
     req.body.data.forEach(item => {
         ProcessTime.create({
             asset_id: item.asset_id,

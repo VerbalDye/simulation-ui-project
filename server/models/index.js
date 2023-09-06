@@ -1,6 +1,7 @@
 const Asset = require('./Asset');
 const Cell = require('./Cell');
 const Core = require('./Core');
+const CoreModel = require('./CoreModel');
 const CoreSoakTime = require('./CoreSoakTime');
 const Experiment = require('./Experiment');
 const ExperimentAsset = require('./ExperimentAsset');
@@ -13,6 +14,8 @@ const ExperimentRouting = require('./ExperimentRouting');
 const ExperimentSite = require('./ExperimentSite');
 const ExperimentTaskSequence = require('./ExperimentTaskSequence');
 const HoursOfOperation = require('./HoursOfOperation');
+const JobCore = require('./JobCore');
+const JobLocation = require('./JobLocation');
 const JobMix = require('./JobMix');
 const ModelObject = require('./Model');
 const Operation = require('./Operation');
@@ -28,6 +31,18 @@ const TaskSequence = require('./TaskSequence');
 const Users = require('./Users');
 
 // Core-Model Associations
+ModelObject.hasMany(CoreModel, {
+    foreignKey: 'model_number'
+});
+CoreModel.belongsTo(ModelObject, {
+    foreignKey: 'model_number'
+});
+Core.hasMany(CoreModel, {
+    foreignKey: 'core_number'
+});
+CoreModel.belongsTo(Core, {
+    foreignKey: 'core_number'
+});
 ModelObject.hasMany(Core, {
     foreignKey: 'model_number'
 });
@@ -302,6 +317,7 @@ module.exports = {
     Asset,
     Cell,
     Core,
+    CoreModel,
     CoreSoakTime,
     Experiment,
     ExperimentAsset,
@@ -314,6 +330,8 @@ module.exports = {
     ExperimentSite,
     ExperimentTaskSequence,
     HoursOfOperation,
+    JobCore,
+    JobLocation,
     JobMix,
     ModelObject,
     Operation,

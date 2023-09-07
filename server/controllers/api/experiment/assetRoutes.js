@@ -108,6 +108,7 @@ router.put('/bulk/:id', (req, res) => {
             .then(dbAssetData => {
                 if (dbAssetData) {
                     let changeKeys = Object.keys(asset).filter(key => asset[key] == "RESET");
+                    console.log("!!\n!!\n!!\n!!\n!!\n!!\n!!\n!!");
                     changeKeys.forEach(key => {
                         asset[key] = dbAssetData[key];
                     });
@@ -234,7 +235,7 @@ router.put('/bulk/:id', (req, res) => {
                                 }),
                             ])
                                 .then(dbPromiseData => {
-                                    console.log(`!!\n!!\n!!\n!!\n!!\n!!\n!!\n!!\n!!\n!!\n!!\n`)
+                                    if (req.body.iteration)
                                     ExperimentAsset.update({
                                         asset_id: dbNewAssetData.asset_id
                                     }, {
@@ -250,16 +251,12 @@ router.put('/bulk/:id', (req, res) => {
                                 })
                         })
                 } else {
-                    Asset.update(
+                    Asset.update(asset,
                         {
-                            capacity: 0
-                        }
-                        , {
                             where: {
                                 asset_id: target_asset.asset_id
                             }
-                        }
-                    )
+                        })
                         .catch(err => {
                             console.log(err);
                             res.status(400).json(err);

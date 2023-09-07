@@ -6,12 +6,7 @@
         <div class="content">
             <h1>3. Inputs Definition & Review</h1>
             <div id="input-collapsables">
-                <div class="flex-between collapsable-header">
-                    <h2>Site Selection</h2>
-                    <button class="collapse-button" @click="handleCollapse('site-selection', $event)"><i
-                            class="bi bi-dash-circle-fill"></i></button>
-                </div>
-                <div id="site-selection" class="collapsable open">
+                <Collapsable title="Site Selection" name="site" next="phases-cells-operations" :defaultOpen="true">
                     <form
                         @change="this.selectedSite = document.querySelector(`input[name='site-selection']:checked`).value">
                         <label v-for="site in siteData" :for="site.site_id" class="radio-container">
@@ -21,22 +16,10 @@
                             {{ site.site_name }}
                         </label>
                     </form>
-                    <div class="flex-right">
-                        <button @click="goToCollapsable('phases-cells-operations')">Next</button>
-                    </div>
-                </div>
-                <div class="flex-between collapsable-header">
-                    <h2>Production Process</h2>
-                    <button class="collapse-button" @click="handleCollapse('production-process-settings', $event)"><i
-                            class="bi bi-plus-circle-fill"></i></button>
-                </div>
-                <div id="production-process-settings" class="collapsable">
-                    <div class="flex-between collapsable-header">
-                        <h3>Phases, Cells, & Operations</h3>
-                        <button class="collapse-button" @click="handleCollapse('phases-cells-operations', $event)"><i
-                                class="bi bi-plus-circle-fill"></i></button>
-                    </div>
-                    <div id="phases-cells-operations" class="collapsable">
+                </Collapsable>
+                <Collapsable title="Production Process" name="production-process-settings">
+                    <Collapsable title="Phases, Cells, & Operations" name="phases-cells-operations" back="site"
+                        next="locations-processing-times" :heading="3">
                         <div>
                             <div v-for="(task, index) in formattedTaskSequenceData" class="drop-zone"
                                 @drop="onDrop($event, index)" @dragover.prevent @dragenter.prevent>
@@ -54,17 +37,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="flex-right">
-                            <button @click="goToCollapsable('site-selection')">Back</button>
-                            <button @click="goToCollapsable('locations-processing-times')">Next</button>
-                        </div>
-                    </div>
-                    <div class="flex-between collapsable-header">
-                        <h3>Locations & Processing Times</h3>
-                        <button class="collapse-button" @click="handleCollapse('locations-processing-times', $event)"><i
-                                class="bi bi-plus-circle-fill"></i></button>
-                    </div>
-                    <div id="locations-processing-times" class="collapsable">
+                    </Collapsable>
+                    <Collapsable title="Locations & Processing Times" name="locations-processing-times"
+                        back="phases-cells-operations" next="buildings" :heading="3">
                         <div class="flex-between align-top">
                             <div class="flex-vertical">
                                 <div class="card">
@@ -257,24 +232,11 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="flex-right">
-                            <button @click="goToCollapsable('phases-cells-operations')">Back</button>
-                            <button @click="goToCollapsable('availability-buildings')">Next</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex-between collapsable-header">
-                    <h2>Resources</h2>
-                    <button class="collapse-button" @click="handleCollapse('resource-assignment', $event)"><i
-                            class="bi bi-plus-circle-fill"></i></button>
-                </div>
-                <div id="resource-assignment" class="collapsable">
-                    <div class="flex-between collapsable-header">
-                        <h2>Buildings</h2>
-                        <button class="collapse-button" @click="handleCollapse('availability-buildings', $event)"><i
-                                class="bi bi-plus-circle-fill"></i></button>
-                    </div>
-                    <div id="availability-buildings" class="collapsable">
+                    </Collapsable>
+                </Collapsable>
+                <Collapsable title="Resources" name="resources">
+                    <Collapsable title="Buildings" name="buildings" next="equipment-machines"
+                        back="locations-processing-times" :heading="3">
                         <div class="flex-between">
                             <div class="flex-between">
                                 <i class="bi bi-building-fill-gear large-icon"></i>
@@ -326,72 +288,22 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="flex-right">
-                            <button @click="goToCollapsable('locations-processing-times')">Back</button>
-                            <button @click="goToCollapsable('availability-equipment-machines')">Next</button>
-                        </div>
-                    </div>
-                    <div class="flex-between collapsable-header">
-                        <h2>Equipment/Machines</h2>
-                        <button class="collapse-button"
-                            @click="handleCollapse('availability-equipment-machines', $event)"><i
-                                class="bi bi-plus-circle-fill"></i></button>
-                    </div>
-                    <div id="availability-equipment-machines" class="collapsable">
-                        TBD
-                        <div class="flex-right">
-                            <button @click="goToCollapsable('availability-buildings')">Back</button>
-                            <button @click="goToCollapsable('assignment-cores-tools')">Next</button>
-                        </div>
-                    </div>
-                    <div class="flex-between collapsable-header">
-                        <h2>Cores & Tools</h2>
-                        <button class="collapse-button" @click="handleCollapse('assignment-cores-tools', $event)"><i
-                                class="bi bi-plus-circle-fill"></i></button>
-                    </div>
-                    <div id="assignment-cores-tools" class="collapsable">
+                    </Collapsable>
+                    <Collapsable title="Equipment/Machines" name="equipment-machines" next="cores-tools" back="buildings"
+                        :heading="3">TBD</Collapsable>
+                    <Collapsable title="Cores & Tools" name="cores-tools" next="materials" back="equipment-machines" :heading="3">
                         <div>
                             <button disabled>Upload Core List</button>
-                            <SmartTable :jsonData="coreModelData" :advancedSearchEnabled="false" :id="3"
-                                @toggle-change="coreUsageChange" :toggle="'Use?'"
-                                :toggleData="this.selectedAssetInclusion" />
+                            <div v-if="coreModelData">
+                            <SmartTable :jsonData="coreModelData" :advancedSearchEnabled="false" :id="3"/>
+                            </div>
                         </div>
-                        <div class="flex-right">
-                            <button @click="goToCollapsable('availability-equipment-machines')">Back</button>
-                            <button @click="goToCollapsable('assignment-materials')">Next</button>
-                        </div>
-                    </div>
-                    <div class="flex-between collapsable-header">
-                        <h2>Materials</h2>
-                        <button class="collapse-button" @click="handleCollapse('assignment-materials', $event)"><i
-                                class="bi bi-plus-circle-fill"></i></button>
-                    </div>
-                    <div id="assignment-materials" class="collapsable">
-                        TBD
-                        <div class="flex-right">
-                            <button @click="goToCollapsable('assignment-cores-tools')">Back</button>
-                            <button @click="goToCollapsable('assignment-labor')">Next</button>
-                        </div>
-                    </div>
-                    <div class="flex-between collapsable-header">
-                        <h2>Labor</h2>
-                        <button class="collapse-button" @click="handleCollapse('assignment-labor', $event)"><i
-                                class="bi bi-plus-circle-fill"></i></button>
-                    </div>
-                    <div id="assignment-labor" class="collapsable">
-                        TBD
-                        <div class="flex-right">
-                            <button @click="goToCollapsable('assignment-materials')">Back</button>
-                            <button @click="goToCollapsable('routing')">Next</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex-between collapsable-header">
-                    <h2>Routing, Queuing, & Prioritization</h2>
-                    <button class="collapse-button" @click="handleCollapse('routing-queuing-prioritization', $event)"><i
-                            class="bi bi-plus-circle-fill"></i></button>
-                </div>
-                <div id="routing-queuing-prioritization" class="collapsable">
+                    </Collapsable>
+                    <Collapsable title="Materials" name="materials" next="labor" back="cores-tools" :heading="3">TBD
+                    </Collapsable>
+                    <Collapsable title="Labor" name="labor" next="routing" back="materials" :heading="3">TBD</Collapsable>
+                </Collapsable>
+                <Collapsable title="Routing, Queuing, and Prioritization" name="routing-queuing-prioritization">
                     <div class="flex-between">
                         <div class="card">
                             <h4 class="card-title">Phases, Cells, & Operations</h4>
@@ -464,69 +376,18 @@
                         </div>
                     </div>
                     <div>
-                        <div class="flex-between collapsable-header">
-                            <h2>Routing</h2>
-                            <button class="collapse-button" @click="handleCollapse('routing', $event)"><i
-                                    class="bi bi-plus-circle-fill"></i></button>
-                        </div>
-                        <div id="routing" class="collapsable">
+                        <Collapsable title="Routing" name="routing" back="labor" next="queuing">
                             <div v-if="routingData">
                                 <SmartTable :jsonData="routingData.map(item => item.routing)" :advancedSearchEnabled="false"
                                     :excludedColumns="['destinations']" :id="2" />
                             </div>
-                            <!-- <div class="flex-right">
-                            <button @click="goToCollapsable('assignment-materials')">Back</button>
-                            <button @click="goToCollapsable('routing-queuing-prioritization')">Next</button>
-                        </div> -->
-                        </div>
-                        <div class="flex-between collapsable-header">
-                            <h2>Queuing</h2>
-                            <button class="collapse-button" @click="handleCollapse('queuing', $event)"><i
-                                    class="bi bi-plus-circle-fill"></i></button>
-                        </div>
-                        <div id="queuing" class="collapsable">
-                            TBD
-                            <!-- <div class="flex-right">
-                            <button @click="goToCollapsable('assignment-materials')">Back</button>
-                            <button @click="goToCollapsable('routing-queuing-prioritization')">Next</button>
-                        </div> -->
-                        </div>
-                        <div class="flex-between collapsable-header">
-                            <h2>Priority</h2>
-                            <button class="collapse-button" @click="handleCollapse('priority', $event)"><i
-                                    class="bi bi-plus-circle-fill"></i></button>
-                        </div>
-                        <div id="priority" class="collapsable">
-                            TBD
-                            <!-- <div class="flex-right">
-                            <button @click="goToCollapsable('assignment-materials')">Back</button>
-                            <button @click="goToCollapsable('routing-queuing-prioritization')">Next</button>
-                        </div> -->
-                        </div>
+                        </Collapsable>
+                        <Collapsable title="Queuing" name="queuing" back="routing" next="priority">TBD</Collapsable>
+                        <Collapsable title="Priority" name="priority" back="queuing" next="transportation">TBD</Collapsable>
                     </div>
-                    <div class="flex-right">
-                        <button @click="goToCollapsable('assignment-labor')">Back</button>
-                        <button @click="goToCollapsable('transportation')">Next</button>
-                    </div>
-                </div>
-                <div class="flex-between collapsable-header">
-                    <h2>Transportation</h2>
-                    <button class="collapse-button" @click="handleCollapse('transportation', $event)"><i
-                            class="bi bi-plus-circle-fill"></i></button>
-                </div>
-                <div id="transportation" class="collapsable">
-                    TBD
-                    <div class="flex-right">
-                        <button @click="goToCollapsable('routing-queuing-prioritization')">Back</button>
-                        <button @click="goToCollapsable('demand')">Next</button>
-                    </div>
-                </div>
-                <div class="flex-between collapsable-header">
-                    <h2>Demand</h2>
-                    <button class="collapse-button" @click="handleCollapse('demand', $event)"><i
-                            class="bi bi-plus-circle-fill"></i></button>
-                </div>
-                <div id="demand" class="collapsable">
+                </Collapsable>
+                <Collapsable title="Transportation" name="transportation" back="priority" next="demand">TBD</Collapsable>
+                <Collapsable title="Demand" name="demand" back="transportation" next="review">
                     <div class="card">
                         <h4 class="card-title">Demand Input</h4>
                         <table class="grid-less">
@@ -662,22 +523,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="flex-right">
-                        <button @click="goToCollapsable('transportation')">Back</button>
-                        <button @click="goToCollapsable('review')">Next</button>
-                    </div>
-                </div>
-                <div class="flex-between collapsable-header">
-                    <h2>Review</h2>
-                    <button class="collapse-button" @click="handleCollapse('review', $event)"><i
-                            class="bi bi-plus-circle-fill"></i></button>
-                </div>
-                <div id="review" class="collapsable">
-                    TBD
-                    <div class="flex-right">
-                        <button @click="goToCollapsable('demand')">Back</button>
-                    </div>
-                </div>
+                </Collapsable>
+                <Collapsable title="Review" name="review" back="demand">TBD</Collapsable>
             </div>
             <div class="flex-right"><button @click="clickBack">Back</button><button @click="clickNext">Next</button></div>
         </div>
@@ -691,6 +538,7 @@ import Sidebar from '@/components/Sidebar.vue';
 import ExperimentDesignerSidebar from '@/components/ExperimentDesignerSidebar.vue';
 import LayoutMaker from '@/components/LayoutMaker.vue';
 import SmartTable from '@/components/SmartTable.vue';
+import Collapsable from '@/components/Collapsable.vue';
 import dataRequest from '@/utils/dataRequest';
 export default {
     data() {
@@ -706,6 +554,7 @@ export default {
             routingData: null,
             jobMixData: null,
             coreModelData: null,
+            jobListData: null,
             selectedOperation: 0,
             selectedAssets: null,
             hoursOfOperationData: null,
@@ -730,7 +579,7 @@ export default {
     },
     mixins: [titleMixin],
     title: 'Experiment Designer',
-    components: { Sidebar, Header, ExperimentDesignerSidebar, ExperimentDesignerSidebar, LayoutMaker, SmartTable },
+    components: { Sidebar, Header, ExperimentDesignerSidebar, ExperimentDesignerSidebar, LayoutMaker, SmartTable, Collapsable },
     methods: {
         getExperimentID() {
             this.experimentID = window.location.href.split("/")[window.location.href.split("/").length - 1];
@@ -779,6 +628,11 @@ export default {
             // console.log(data)
             this.jobMixData = data;
         },
+        async getJobListData() {
+            let data = await dataRequest("/api/experiment/job-list/" + this.experimentID, "GET");
+            console.log(data)
+            this.jobListData = data;
+        },
         async getCoreModelData() {
             let data = await dataRequest("/api/core-model", "GET");
             console.log(data);
@@ -791,6 +645,7 @@ export default {
             this.getOperationToLocationData();
             this.getRoutingData();
             this.getJobMixData();
+            this.getJobListData();
             await this.getAssetData();
             this.excludedAssets = this.assetData.filter(e => e.asset.capacity == 0).map(e => e.asset.asset_id);
             await this.getTaskSequenceData();
@@ -824,19 +679,22 @@ export default {
             }
         },
         async saveAssetInclusionData() {
-            let enabledAssets = this.assetData.filter(e => e.asset.capacity == 0 && this.excludedAssets.indexOf(e.asset.asset_id) == -1).map(e => e.asset).map(({ capacity, ...rest }) => { 
+            let enabledAssets = this.assetData.filter(e => e.asset.capacity == 0 && this.excludedAssets.indexOf(e.asset.asset_id) == -1).map(e => e.asset).map(({ capacity, ...rest }) => {
                 rest["capacity"] = "RESET"
                 return rest
             });
-            let disabledAssets = this.assetData.filter(e => this.excludedAssets.indexOf(e.asset.asset_id) !== -1).map(e => e.asset).map(({ capacity, ...rest }) => { 
+            let disabledAssets = this.assetData.filter(e => this.excludedAssets.indexOf(e.asset.asset_id) !== -1).map(e => e.asset).map(({ capacity, ...rest }) => {
                 rest["capacity"] = 0
                 return rest
             });
             let assets = enabledAssets.concat(disabledAssets);
             await dataRequest("/api/experiment/asset/bulk/" + this.experimentID, "PUT", JSON.stringify({ data: assets }));
         },
-        uploadBacklog() {
+        async uploadBacklog() {
             let backlogInput = document.getElementById("backlog-input");
+            let formData = new FormData();
+            formData.append('file', backlogInput.files[0]);
+            await dataRequest("/api/experiment/backlog/file/" + this.experimentID, "POST", formData)
             console.log(backlogInput.files[0]);
         },
         formatTaskSequenceData(data) {
@@ -901,40 +759,6 @@ export default {
                 }
             }
             return nextIndex;
-        },
-        handleCollapse(element, event) {
-            let iEl = event.currentTarget.firstChild;
-            const collapsableEl = document.getElementById(element);
-            if (iEl.classList.contains("bi-plus-circle-fill")) {
-                iEl.classList.remove("bi-plus-circle-fill");
-                iEl.classList.add("bi-dash-circle-fill");
-                collapsableEl.classList.add("open");
-            } else {
-                iEl.classList.remove("bi-dash-circle-fill");
-                iEl.classList.add("bi-plus-circle-fill");
-                collapsableEl.classList.remove("open");
-            }
-        },
-        goToCollapsable(id) {
-            let openCollapsables = document.querySelectorAll(".open");
-            let nextTarget = document.getElementById(id);
-            openCollapsables.forEach(collapsable => {
-                let header = collapsable.previousSibling.children[1].firstChild
-                header.classList.remove("bi-dash-circle-fill");
-                header.classList.add("bi-plus-circle-fill");
-                collapsable.classList.remove("open");
-            });
-            while (nextTarget) {
-                if (nextTarget.classList.contains("collapsable")) {
-                    let header = nextTarget.previousSibling.children[1].firstChild
-                    nextTarget.classList.add("open");
-                    header.classList.remove("bi-plus-circle-fill");
-                    header.classList.add("bi-dash-circle-fill");
-                }
-                nextTarget = nextTarget.parentElement;
-            }
-            let top = document.getElementById(id).previousSibling.offsetTop;
-            window.scrollTo({ top: top, left: 0, behavior: 'smooth' });
         },
         async clickBack() {
             await this.saveAllChanges();
@@ -1187,10 +1011,7 @@ export default {
     },
     mounted() {
         this.getData();
-    },
-    // watch: {
-
-    // }
+    }
 }
 </script>
 
@@ -1326,5 +1147,4 @@ export default {
     border: none;
     margin: 4px;
     width: 50px;
-}
-</style>
+}</style>

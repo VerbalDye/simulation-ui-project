@@ -15,6 +15,7 @@ const ExperimentSite = require('./ExperimentSite');
 const ExperimentTaskSequence = require('./ExperimentTaskSequence');
 const HoursOfOperation = require('./HoursOfOperation');
 const JobCore = require('./JobCore');
+const JobList = require('./JobList');
 const JobLocation = require('./JobLocation');
 const JobMix = require('./JobMix');
 const ModelObject = require('./Model');
@@ -69,6 +70,32 @@ Site.hasMany(HoursOfOperation, {
 HoursOfOperation.belongsTo(Site, {
     foreignKey: 'site_id',
     onDelete: 'CASCADE'
+});
+
+// JobList associations
+ModelObject.hasMany(JobList, {
+    foreignKey: 'model_number'
+});
+JobList.belongsTo(ModelObject, {
+    foreignKey: 'model_number'
+});
+Operation.hasMany(JobList, {
+    foreignKey: 'current_task'
+});
+JobList.belongsTo(Operation, {
+    foreignKey: 'current_task'
+});
+Operation.hasMany(JobList, {
+    foreignKey: 'next_task'
+});
+JobList.belongsTo(Operation, {
+    foreignKey: 'next_task'
+});
+JobMix.hasMany(JobList, {
+    foreignKey: 'job_mix_id'
+});
+JobList.belongsTo(JobMix, {
+    foreignKey: 'job_mix_id'
 });
 
 // Operation-Asset
@@ -208,6 +235,15 @@ ExperimentHoo.belongsTo(HoursOfOperation, {
     foreignKey: 'hours_of_operation_id'
 });
 
+// Experiment-JobList
+Experiment.hasMany(JobList, {
+    foreignKey: 'experiment_id'
+});
+JobList.belongsTo(Experiment, {
+    foreignKey: 'experiment_id',
+    onDelete: 'CASCADE'
+});
+
 // Experiment-JobMix
 Experiment.hasMany(ExperimentJobMix, {
     foreignKey: 'experiment_id'
@@ -331,6 +367,7 @@ module.exports = {
     ExperimentTaskSequence,
     HoursOfOperation,
     JobCore,
+    JobList,
     JobLocation,
     JobMix,
     ModelObject,

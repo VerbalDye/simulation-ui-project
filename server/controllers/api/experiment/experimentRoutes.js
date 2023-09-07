@@ -11,6 +11,7 @@ const {
     ExperimentRouting,
     ExperimentSite,
     ExperimentTaskSequence,
+    JobList,
     Scenario,
     ScenarioFilter,
     Sessions,
@@ -156,6 +157,31 @@ router.post('/from/:id', (req, res) => {
                                             experiment_id: dbExperimentData.experiment_id,
                                             iteration_number: item.iteration_number,
                                             core_soak_time_id: item.core_soak_time_id
+                                        })
+                                    })
+                                    return
+                                }),
+                            JobList.findAll({
+                                where: {
+                                    experiment_id: req.params.id
+                                }
+                            })
+                                .then(dbJobListData => {
+                                    dbJobListData.forEach(item => {
+                                        JobList.create({
+                                            experiment_id: dbExperimentData.experiment_id,
+                                            job_number: item.job_number,
+                                            iteration_number: item.iteration_number,
+                                            model_number: item.model_number,
+                                            job_mix_id: item.job_mix_id,
+                                            start: item.start,
+                                            current_task: item.current_task,
+                                            need_transit: item.need_transit,
+                                            transit_type: item.transit_type,
+                                            resource_type: item.resource_type,
+                                            next_type: item.next_type,
+                                            resource_keep: item.resource,
+                                            qc_pass: item.qc_pass
                                         })
                                     })
                                     return

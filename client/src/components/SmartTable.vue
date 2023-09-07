@@ -39,7 +39,8 @@ export default {
             displayData: [],
             headerNameClicked: null,
             advancedSearchSelected: false,
-            selectedIndices: []
+            selectedIndices: [],
+            excluded: []
         }
     },
     name: 'SmartTable',
@@ -112,7 +113,7 @@ export default {
             if (this.jsonData && this.jsonData.length > 0 && this.jsonData[0] !== undefined) {
                 this.headerData = Object.keys(this.jsonData[0]);
                 this.displayData = [...this.jsonData]
-                this.excludedColumns.forEach(column => {
+                this.excluded.forEach(column => {
                     let index = this.headerData.indexOf(column);
                     if (index !== -1) {
                         this.headerData.splice(index, 1);
@@ -127,14 +128,8 @@ export default {
         }
     },
     mounted() {
-        if (this.toggleEnabled) {
-            if (this.toggleSettings) {
-                if (!this.toggleSettings.checkedDefault) {
-                    this.toggleSettings.checkedDefault = false
-                }
-            } else {
-                this.toggleSettings = { checkedDefault: false }
-            }
+        if(this.excludedColumns) {
+            this.excluded = this.excluded.concat(this.excludedColumns);
         }
         this.dataSetup();
     },

@@ -1,9 +1,26 @@
+let isJSON = function(text) {
+    if (typeof text !== "string") {
+        return false;
+    }
+    try {
+        JSON.parse(text);
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
 let dataRequest = async function (url, method, body) {
     let options = { method: method };
     if (body) {
-        options.body = body;
-        options.headers = { "Content-Type": "application/json" }
-    }
+        if (isJSON(body)) {
+            options.body = body;
+            options.headers = { "Content-Type": "application/json" }
+        } else {
+            options.body = body;
+            options.headers = { "Content-Type": "multipart/form-data" }
+        }
+    } 
     return fetch(url, options)
         .then(response => {
             if (response.redirected) {

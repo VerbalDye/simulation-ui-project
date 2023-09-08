@@ -130,177 +130,223 @@ router.post('/from/:id', (req, res) => {
                 })
                     .then(dbExperimentData => {
                         Promise.allSettled([
-                            ExperimentAsset.findAll({
-                                where: {
-                                    experiment_id: req.params.id
-                                }
-                            })
-                                .then(dbExperimentAssetData => {
-                                    dbExperimentAssetData.forEach(item => {
-                                        ExperimentAsset.create({
-                                            experiment_id: dbExperimentData.experiment_id,
-                                            iteration_number: item.iteration_number,
-                                            asset_id: item.asset_id
-                                        })
-                                    })
-                                    return
-                                }),
-                            ExperimentCoreSoakTime.findAll({
-
-                                where: {
-                                    experiment_id: req.params.id
-                                }
-                            })
-                                .then(dbExperimentCoreSoakTimeData => {
-                                    dbExperimentCoreSoakTimeData.forEach(item => {
-                                        ExperimentCoreSoakTime.create({
-                                            experiment_id: dbExperimentData.experiment_id,
-                                            iteration_number: item.iteration_number,
-                                            core_soak_time_id: item.core_soak_time_id
-                                        })
-                                    })
-                                    return
-                                }),
-                            JobList.findAll({
-                                where: {
-                                    experiment_id: req.params.id
-                                }
-                            })
-                                .then(dbJobListData => {
-                                    dbJobListData.forEach(item => {
-                                        JobList.create({
-                                            experiment_id: dbExperimentData.experiment_id,
-                                            job_number: item.job_number,
-                                            iteration_number: item.iteration_number,
-                                            model_number: item.model_number,
-                                            job_mix_id: item.job_mix_id,
-                                            start: item.start,
-                                            current_task: item.current_task,
-                                            need_transit: item.need_transit,
-                                            transit_type: item.transit_type,
-                                            resource_type: item.resource_type,
-                                            next_type: item.next_type,
-                                            resource_keep: item.resource,
-                                            qc_pass: item.qc_pass
-                                        })
-                                    })
-                                    return
-                                }),
-                            ExperimentHoo.findAll({
-
-                                where: {
-                                    experiment_id: req.params.id
-                                }
-                            })
-                                .then(dbExperimentHooData => {
-                                    dbExperimentHooData.forEach(item => {
-                                        ExperimentHoo.create({
-                                            experiment_id: dbExperimentData.experiment_id,
-                                            iteration_number: item.iteration_number,
-                                            hours_of_operation_id: item.hours_of_operation_id
-                                        })
-                                    })
-                                    return
-                                }),
-                            ExperimentJobMix.findAll({
-
-                                where: {
-                                    experiment_id: req.params.id
-                                }
-                            })
-                                .then(dbExperimentJobMixData => {
-                                    dbExperimentJobMixData.forEach(item => {
-                                        ExperimentJobMix.create({
-                                            experiment_id: dbExperimentData.experiment_id,
-                                            iteration_number: item.iteration_number,
-                                            job_mix_id: item.job_mix_id
-                                        })
-                                    })
-                                    return
-                                }),
-                            ExperimentOpToLoc.findAll({
-
-                                where: {
-                                    experiment_id: req.params.id
-                                }
-                            })
-                                .then(dbExperimentOpToLocData => {
-                                    dbExperimentOpToLocData.forEach(item => {
-                                        ExperimentOpToLoc.create({
-                                            experiment_id: dbExperimentData.experiment_id,
-                                            iteration_number: item.iteration_number,
-                                            operation_to_location_id: item.operation_to_location_id
-                                        })
-                                    })
-                                    return
-                                }),
-                            ExperimentProcessTime.findAll({
-                                where: {
-                                    experiment_id: req.params.id
-                                }
-                            })
-                                .then(dbExperimentProcessTimeData => {
-                                    dbExperimentProcessTimeData.forEach(item => {
-                                        ExperimentProcessTime.create({
-                                            experiment_id: dbExperimentData.experiment_id,
-                                            iteration_number: item.iteration_number,
-                                            process_time_id: item.process_time_id
-                                        })
-                                    })
-                                    return
-                                }),
-                            ExperimentRouting.findAll({
-                                where: {
-                                    experiment_id: req.params.id
-                                }
-                            })
-                                .then(dbExperimentRoutingData => {
-                                    dbExperimentRoutingData.forEach(item => {
-                                        ExperimentRouting.create({
-                                            experiment_id: dbExperimentData.experiment_id,
-                                            iteration_number: item.iteration_number,
-                                            routing_id: item.routing_id
-                                        })
-                                    })
-                                    return
-                                }),
-                            ExperimentSite.findAll({
-
-                                where: {
-                                    experiment_id: req.params.id
-                                }
-                            })
-                                .then(dbExperimentSiteData => {
-                                    dbExperimentSiteData.forEach(item => {
-                                        ExperimentSite.create({
-                                            experiment_id: dbExperimentData.experiment_id,
-                                            site_id: item.site_id
-                                        })
-                                    })
-                                    return
-                                }),
-                            ExperimentTaskSequence.findAll({
-
-                                where: {
-                                    experiment_id: req.params.id
-                                }
-                            })
-                                .then(dbExperimentTaskSequenceData => {
-                                    dbExperimentTaskSequenceData.forEach(item => {
-                                        ExperimentTaskSequence.create({
-                                            experiment_id: dbExperimentData.experiment_id,
-                                            iteration_number: item.iteration_number,
-                                            task_sequence_id: item.task_sequence_id
-                                        })
-                                    })
-                                    return
+                            new Promise(resolve => {
+                                ExperimentAsset.findAll({
+                                    where: {
+                                        experiment_id: req.params.id
+                                    }
                                 })
+                                    .then(async dbExperimentAssetData => {
+                                        let updates = [];
+                                        for (item of dbExperimentAssetData) {
+                                            updates.push(
+                                                ExperimentAsset.create({
+                                                    experiment_id: dbExperimentData.experiment_id,
+                                                    iteration_number: item.iteration_number,
+                                                    asset_id: item.asset_id
+                                                })
+                                            )
+                                        }
+                                        await Promise.allSettled(updates);
+                                        resolve();
+                                    })
+                            }),
+                            new Promise(resolve => {
+                                ExperimentCoreSoakTime.findAll({
+                                    where: {
+                                        experiment_id: req.params.id
+                                    }
+                                })
+                                    .then(async dbExperimentCoreSoakTimeData => {
+                                        let updates = [];
+                                        for (item of dbExperimentCoreSoakTimeData) {
+                                            await ExperimentCoreSoakTime.create({
+                                                experiment_id: dbExperimentData.experiment_id,
+                                                iteration_number: item.iteration_number,
+                                                core_soak_time_id: item.core_soak_time_id
+                                            })
+                                        }
+                                        await Promise.allSettled(updates);
+                                        resolve();
+                                    })
+                            }),
+                            new Promise(resolve => {
+                                JobList.findAll({
+                                    where: {
+                                        experiment_id: req.params.id
+                                    }
+                                })
+                                    .then(async dbJobListData => {
+                                        let updates = [];
+                                        for (item of dbJobListData) {
+                                            await JobList.create({
+                                                experiment_id: dbExperimentData.experiment_id,
+                                                job_number: item.job_number,
+                                                iteration_number: item.iteration_number,
+                                                model_number: item.model_number,
+                                                job_mix_id: item.job_mix_id,
+                                                start: item.start,
+                                                current_task: item.current_task,
+                                                need_transit: item.need_transit,
+                                                transit_type: item.transit_type,
+                                                resource_type: item.resource_type,
+                                                next_type: item.next_type,
+                                                resource_keep: item.resource,
+                                                qc_pass: item.qc_pass
+                                            })
+                                        }
+                                        await Promise.allSettled(updates);
+                                        resolve();
+                                    })
+                            }),
+                            new Promise(resolve => {
+                                ExperimentHoo.findAll({
+                                    where: {
+                                        experiment_id: req.params.id
+                                    }
+                                })
+                                    .then(async dbExperimentHooData => {
+                                        let updates = []
+                                        for (item of dbExperimentHooData) {
+                                            updates.push(
+                                                ExperimentHoo.create({
+                                                    experiment_id: dbExperimentData.experiment_id,
+                                                    iteration_number: item.iteration_number,
+                                                    hours_of_operation_id: item.hours_of_operation_id
+                                                })
+                                            )
+                                        }
+                                        await Promise.allSettled(updates);
+                                        resolve();
+                                    })
+                            }),
+                            new Promise(resolve => {
+                                ExperimentJobMix.findAll({
+                                    where: {
+                                        experiment_id: req.params.id
+                                    }
+                                })
+                                    .then(async dbExperimentJobMixData => {
+                                        let updates = [];
+                                        for (item of dbExperimentJobMixData) {
+                                            updates.push(
+                                                ExperimentJobMix.create({
+                                                    experiment_id: dbExperimentData.experiment_id,
+                                                    iteration_number: item.iteration_number,
+                                                    job_mix_id: item.job_mix_id
+                                                })
+                                            )
+                                        }
+                                        await Promise.allSettled(updates);
+                                        resolve();
+                                    })
+                            }),
+                            new Promise(resolve => {
+                                ExperimentOpToLoc.findAll({
+                                    where: {
+                                        experiment_id: req.params.id
+                                    }
+                                })
+                                    .then(async dbExperimentOpToLocData => {
+                                        let updates = [];
+                                        for (item of dbExperimentOpToLocData) {
+                                            updates.push(
+                                                ExperimentOpToLoc.create({
+                                                    experiment_id: dbExperimentData.experiment_id,
+                                                    iteration_number: item.iteration_number,
+                                                    operation_to_location_id: item.operation_to_location_id
+                                                })
+                                            )
+                                        }
+                                        await Promise.allSettled(updates);
+                                        resolve();
+                                    })
+                            }),
+                            new Promise(resolve => {
+                                ExperimentProcessTime.findAll({
+                                    where: {
+                                        experiment_id: req.params.id
+                                    }
+                                })
+                                    .then(async dbExperimentProcessTimeData => {
+                                        let updates = [];
+                                        for (item of dbExperimentProcessTimeData) {
+                                            updates.push(
+                                                ExperimentProcessTime.create({
+                                                    experiment_id: dbExperimentData.experiment_id,
+                                                    iteration_number: item.iteration_number,
+                                                    process_time_id: item.process_time_id
+                                                })
+                                            )
+                                        }
+                                        await Promise.allSettled(updates);
+                                        resolve();
+                                    })
+                            }),
+                            new Promise(resolve => {
+                                ExperimentRouting.findAll({
+                                    where: {
+                                        experiment_id: req.params.id
+                                    }
+                                })
+                                    .then(async dbExperimentRoutingData => {
+                                        let updates = [];
+                                        for (item of dbExperimentRoutingData) {
+                                            updates.push(
+                                                ExperimentRouting.create({
+                                                    experiment_id: dbExperimentData.experiment_id,
+                                                    iteration_number: item.iteration_number,
+                                                    routing_id: item.routing_id
+                                                })
+                                            )
+                                        }
+                                        await Promise.allSettled(updates);
+                                        resolve();
+                                    })
+                            }),
+                            new Promise(resolve => {
+                                ExperimentSite.findAll({
+                                    where: {
+                                        experiment_id: req.params.id
+                                    }
+                                })
+                                    .then(async dbExperimentSiteData => {
+                                        let updates = [];
+                                        for (item of dbExperimentSiteData) {
+                                            updates.push(
+                                                ExperimentSite.create({
+                                                    experiment_id: dbExperimentData.experiment_id,
+                                                    site_id: item.site_id
+                                                })
+                                            )
+                                        }
+                                        await Promise.allSettled(updates);
+                                        resolve();
+                                    })
+                            }),
+                            new Promise(resolve => {
+                                ExperimentTaskSequence.findAll({
+                                    where: {
+                                        experiment_id: req.params.id
+                                    }
+                                })
+                                    .then(async dbExperimentTaskSequenceData => {
+                                        let updates = [];
+                                        for (item of dbExperimentTaskSequenceData) {
+                                            updates.push(
+                                                ExperimentTaskSequence.create({
+                                                    experiment_id: dbExperimentData.experiment_id,
+                                                    iteration_number: item.iteration_number,
+                                                    task_sequence_id: item.task_sequence_id
+                                                })
+                                            )
+                                        }
+                                        await Promise.allSettled(updates);
+                                        resolve();
+                                    })
+                            })
                         ])
-                            .then(dbExperimentResponses => {
-                                // if (!dbExperimentData[0]) {
-                                //     res.status(400).json({ message: 'Something went wrong. Check submitted values and try again.' });
-                                //     return;
-                                // }
+                            .then(promiseResponse => {
                                 res.json(dbExperimentData);
                             })
                     })
@@ -314,13 +360,12 @@ router.post('/from/:id', (req, res) => {
 
 router.put('/:id', (req, res) => {
     Experiment.update(req.body, {
-
         where: {
             experiment_id: req.params.id
         }
     })
         .then(dbExperimentData => {
-            if (!dbExperimentData[0]) {
+            if (!dbExperimentData) {
                 res.status(404).json({ message: 'No experiment found with this ID' });
                 return;
             }

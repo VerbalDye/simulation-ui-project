@@ -1,4 +1,5 @@
 <template>
+    <LoadingModal :display="loading" />
     <Header />
     <div class="site-container">
         <Sidebar />
@@ -64,6 +65,7 @@ import Header from '@/components/Header.vue';
 import titleMixin from '../mixins/titleMixin';
 import Sidebar from '@/components/Sidebar.vue';
 import ExperimentDesignerSidebar from '@/components/ExperimentDesignerSidebar.vue';
+import LoadingModal from '@/components/LoadingModal.vue';
 import dataRequest from '@/utils/dataRequest';
 export default {
     data() {
@@ -73,12 +75,13 @@ export default {
                 analysis_type: [],
                 experiment_type: [],
                 department: []
-            }
+            },
+            loading: false
         }
     },
     mixins: [titleMixin],
     title: 'Experiment Designer',
-    components: { Sidebar, Header, ExperimentDesignerSidebar, ExperimentDesignerSidebar },
+    components: { Sidebar, Header, ExperimentDesignerSidebar, ExperimentDesignerSidebar, LoadingModal },
     methods: {
         async getScenarioData() {
             let data = await dataRequest("/api/scenario/", "GET");
@@ -160,6 +163,7 @@ export default {
         async clickNext() {
             const scenarioSelectionEl = document.querySelector('input[name="scenario-selection"]:checked');
             if (scenarioSelectionEl) {
+                this.loading = true;
                 let data = await dataRequest("/api/experiment/from/" + scenarioSelectionEl.value, "POST");
                 this.$router.push("/experiments/design/experiment-configuration/" + data.experiment_id);
             }

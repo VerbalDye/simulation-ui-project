@@ -1,3 +1,4 @@
+const Arrival = require('./Arrival');
 const Asset = require('./Asset');
 const Cell = require('./Cell');
 const Core = require('./Core');
@@ -7,6 +8,7 @@ const Experiment = require('./Experiment');
 const ExperimentAsset = require('./ExperimentAsset');
 const ExperimentCoreSoakTime = require('./ExperimentCoreSoakTime');
 const ExperimentHoo = require('./ExperimentHoo');
+const ExperimentInfo = require('./ExperimentInfo');
 const ExperimentJobMix = require('./ExperimentJobMix');
 const ExperimentOpToLoc = require('./ExperimentOpToLoc');
 const ExperimentProcessTime = require('./ExperimentProcessTime');
@@ -23,6 +25,7 @@ const Operation = require('./Operation');
 const OperationToLocation = require('./OperationToLocation');
 const Phases = require('./Phases');
 const ProcessTime = require('./ProcessTime');
+const ResourceUtilization = require('./ResourceUtilization');
 const Routing = require('./Routing');
 const Scenario = require('./Scenario');
 const ScenarioFilter = require('./ScenarioFilter');
@@ -138,6 +141,15 @@ Asset.belongsToMany(Asset, {
     as: 'destinations'
 });
 
+// Resource Utilization-Asset
+Asset.hasMany(ResourceUtilization, {
+    foreignKey: 'asset_id'
+});
+ResourceUtilization.belongsTo(Asset, {
+    foreignKey: 'asset_id',
+    onDelete: 'CASCADE'
+});
+
 // Operation-Task Sequence
 Cell.hasMany(TaskSequence, {
     foreignKey: 'cell_id'
@@ -220,7 +232,7 @@ ExperimentCoreSoakTime.belongsTo(CoreSoakTime, {
     foreignKey: 'core_soak_time_id'
 });
 
-// Experiment-CoreSoakTime
+// Experiment-Hours of Operation
 Experiment.hasMany(ExperimentHoo, {
     foreignKey: 'experiment_id'
 });
@@ -233,6 +245,15 @@ HoursOfOperation.hasMany(ExperimentHoo, {
 });
 ExperimentHoo.belongsTo(HoursOfOperation, {
     foreignKey: 'hours_of_operation_id'
+});
+
+// Experiment-Info
+Experiment.hasMany(ExperimentInfo, {
+    foreignKey: 'experiment_id'
+});
+ExperimentInfo.belongsTo(Experiment, {
+    foreignKey: 'experiment_id',
+    onDelete: 'CASCADE'
 });
 
 // Experiment-JobList
@@ -289,6 +310,16 @@ ExperimentProcessTime.belongsTo(ProcessTime, {
     foreignKey: 'process_time_id'
 });
 
+// Experiment-Resource Utilization
+Experiment.hasMany(ResourceUtilization, {
+    foreignKey: 'experiment_id'
+});
+ResourceUtilization.belongsTo(Experiment, {
+    foreignKey: 'experiment_id',
+    onDelete: 'CASCADE'
+});
+
+// Experiment-Routing
 Experiment.hasMany(ExperimentRouting, {
     foreignKey: 'experiment_id'
 });
@@ -350,6 +381,7 @@ ExperimentTaskSequence.belongsTo(TaskSequence, {
 });
 
 module.exports = { 
+    Arrival,
     Asset,
     Cell,
     Core,
@@ -359,6 +391,7 @@ module.exports = {
     ExperimentAsset,
     ExperimentCoreSoakTime,
     ExperimentHoo,
+    ExperimentInfo,
     ExperimentJobMix,
     ExperimentOpToLoc,
     ExperimentProcessTime,
@@ -375,6 +408,7 @@ module.exports = {
     OperationToLocation,
     Phases,
     ProcessTime,
+    ResourceUtilization,
     Routing,
     Scenario,
     ScenarioFilter,

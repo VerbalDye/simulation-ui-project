@@ -1,4 +1,5 @@
 <template>
+    <LoadingModal :display="loading"/>
     <Header />
     <div class="site-container">
         <Sidebar />
@@ -42,7 +43,7 @@
                         back="phases-cells-operations" next="buildings" :heading="3">
                         <div class="flex-between align-top">
                             <div class="flex-vertical">
-                                <div class="card">
+                                <div class="card-with-title">
                                     <h4 class="card-title">Phases, Cells, & Operations</h4>
                                     <div class="view-window">
                                         <div v-for="(task, index) in formattedTaskSequenceData" class="drop-zone">
@@ -76,7 +77,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div v-if="this.assetData && this.taskSequenceData" class="card">
+                                <div v-if="this.assetData && this.taskSequenceData" class="card-with-title">
                                     <h4 class="card-title">Plant Layout</h4>
                                     <LayoutMaker mode="operation-map" :assetData="assetData"
                                         :selectedOperation="taskSequenceData[selectedOperation]"
@@ -88,7 +89,7 @@
                                     <button @click="clickPreviousOperation"><i class="bi bi-arrow-left"></i></button>
                                     <button @click="clickNextOperation"><i class="bi bi-arrow-right"></i></button>
                                 </div>
-                                <div class="card">
+                                <div class="card-with-title">
                                     <h4 class="card-title">Location Data</h4>
                                     <table v-if="taskSequenceData" class="grid-less">
                                         <tr>
@@ -117,7 +118,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card">
+                        <div class="card-with-title">
                             <h4 class="card-title">Processing Times</h4>
                             <button @click="resetProcessingTimeChanges">Reset All Changes</button>
                             <div class="flex-between">
@@ -249,7 +250,7 @@
                                             e.site_id === this.selectedSite).zip }}</p>
                                 </div>
                             </div>
-                            <div class="card">
+                            <div class="card-with-title">
                                 <h4 class="card-title">Hours of Operation</h4>
                                 <table class="grid-less">
                                     <tr>
@@ -291,11 +292,14 @@
                     </Collapsable>
                     <Collapsable title="Equipment/Machines" name="equipment-machines" next="cores-tools" back="buildings"
                         :heading="3">TBD</Collapsable>
-                    <Collapsable title="Cores & Tools" name="cores-tools" next="materials" back="equipment-machines" :heading="3">
+                    <Collapsable title="Cores & Tools" name="cores-tools" next="materials" back="equipment-machines"
+                        :heading="3">
                         <div>
                             <button disabled>Upload Core List</button>
                             <div v-if="coreModelData">
-                            <SmartTable :jsonData="coreModelData" :advancedSearchEnabled="false" :id="3"/>
+                                <SmartTable :jsonData="coreModelData" :advancedSearchEnabled="false" :id="3"
+                                    @toggle-change="e => e.checked ? coreUsage[e.index] = true : coreUsage[e.index] = false"
+                                    toggle="Use?" :toggleData="this.coreUsage" />
                             </div>
                         </div>
                     </Collapsable>
@@ -305,7 +309,7 @@
                 </Collapsable>
                 <Collapsable title="Routing, Queuing, and Prioritization" name="routing-queuing-prioritization">
                     <div class="flex-between">
-                        <div class="card">
+                        <div class="card-with-title">
                             <h4 class="card-title">Phases, Cells, & Operations</h4>
                             <div class="view-window">
                                 <div v-for="(task, index) in formattedTaskSequenceData" class="drop-zone">
@@ -343,7 +347,7 @@
                             <button @click="clickPreviousOperation"><i class="bi bi-arrow-left"></i></button>
                             <button @click="clickNextOperation"><i class="bi bi-arrow-right"></i></button>
                         </div>
-                        <div v-if="assetData && taskSequenceData" class="card">
+                        <div v-if="assetData && taskSequenceData" class="card-with-title">
                             <div class="card-title">Plant Layout</div>
                             <LayoutMaker mode="routing-map" :assetData="assetData"
                                 :selectedOperation="taskSequenceData[selectedOperation]"
@@ -388,19 +392,9 @@
                 </Collapsable>
                 <Collapsable title="Transportation" name="transportation" back="priority" next="demand">TBD</Collapsable>
                 <Collapsable title="Demand" name="demand" back="transportation" next="review">
-                    <div class="card">
+                    <div class="card-with-title">
                         <h4 class="card-title">Demand Input</h4>
                         <table class="grid-less">
-                            <tr>
-                                <th>Use Backlog?*</th>
-                                <td>
-                                    <label class="switch">
-                                        <input type="checkbox" name="demand-backlog-input"
-                                            @input="e => this.demandSettings.backlog = e.target.checked">
-                                        <span class="slider round"></span>
-                                    </label>
-                                </td>
-                            </tr>
                             <tr>
                                 <th>Use Default?*</th>
                                 <td>
@@ -414,17 +408,26 @@
                         </table>
                         <div v-if="!demandSettings.default">
                             <div v-if="!demandSettings.backlog">
+                                <h4>Start Date</h4>
+                                <input type="date" :value="demandSettings.startDate" name="demand-start-date-input"
+                                    class="space" @input="e => demandSettings.startDate = e.target.value">
                                 <h4>Daily Target</h4>
                                 <table class="grid-less">
                                     <tr>
                                         <th>Min</th>
-                                        <td><input type="number" class="small-number-input" step="1"
-                                                name="demand-target-min-input"></td>
+                                        <td>
+                                            <input type="number" class="small-number-input" step="1"
+                                                name="demand-target-min-input" :value="demandSettings.dailyTarget.min"
+                                                @input="e => demandSettings.dailyTarget.max = e.target.value">
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Max</th>
-                                        <td><input type="number" class="small-number-input" step="1"
-                                                name="demand-target-max-input"></td>
+                                        <td>
+                                            <input type="number" class="small-number-input" step="1"
+                                                name="demand-target-max-input" :value="demandSettings.dailyTarget.max"
+                                                @input="e => demandSettings.dailyTarget.max = e.target.value">
+                                        </td>
                                     </tr>
                                 </table>
                                 <h4>Job Mix (%)</h4>
@@ -443,75 +446,118 @@
                                         <th>Sun</th>
                                         <td>
                                             <label class="switch">
-                                                <input type="checkbox" name="demand-delivery-sun-input" checked
-                                                    @input="e => this.demandSettings.default = e.target.checked">
+                                                <input type="checkbox" name="demand-delivery-sun-input"
+                                                    :checked="demandSettings.deliveryDays.sun.enabled"
+                                                    @input="e => demandSettings.deliveryDays.sun.enabled = e.target.checked">
                                                 <span class="slider round"></span>
                                             </label>
+                                        </td>
+                                        <td>
+                                            <input v-if="demandSettings.deliveryDays.sun.enabled" type="time"
+                                                :value="demandSettings.deliveryDays.sun.time"
+                                                @input="e => demandSettings.deliveryDays.sun.time = e.target.value">
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>Mon</th>
                                         <td>
                                             <label class="switch">
-                                                <input type="checkbox" name="demand-delivery-mon-input" checked
-                                                    @input="e => this.demandSettings.default = e.target.checked">
+                                                <input type="checkbox" name="demand-delivery-mon-input"
+                                                    :checked="demandSettings.deliveryDays.mon.enabled"
+                                                    @input="e => demandSettings.deliveryDays.mon.enabled = e.target.checked">
                                                 <span class="slider round"></span>
                                             </label>
+                                        </td>
+                                        <td>
+                                            <input v-if="demandSettings.deliveryDays.mon.enabled" type="time"
+                                                :value="demandSettings.deliveryDays.mon.time"
+                                                @input="e => demandSettings.deliveryDays.mon.time = e.target.value">
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>Tue</th>
                                         <td>
                                             <label class="switch">
-                                                <input type="checkbox" name="demand-delivery-tue-input" checked
-                                                    @input="e => this.demandSettings.default = e.target.checked">
+                                                <input type="checkbox" name="demand-delivery-tue-input"
+                                                    :checked="demandSettings.deliveryDays.tue.enabled"
+                                                    @input="e => demandSettings.deliveryDays.tue.enabled = e.target.checked">
                                                 <span class="slider round"></span>
                                             </label>
+                                        </td>
+                                        <td>
+                                            <input v-if="demandSettings.deliveryDays.tue.enabled" type="time"
+                                                :value="demandSettings.deliveryDays.tue.time"
+                                                @input="e => demandSettings.deliveryDays.tue.time = e.target.value">
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>Wed</th>
                                         <td>
                                             <label class="switch">
-                                                <input type="checkbox" name="demand-delivery-wed-input" checked
-                                                    @input="e => this.demandSettings.default = e.target.checked">
+                                                <input type="checkbox" name="demand-delivery-wed-input"
+                                                    :checked="demandSettings.deliveryDays.wed.enabled"
+                                                    @input="e => demandSettings.deliveryDays.wed.enabled = e.target.checked">
                                                 <span class="slider round"></span>
                                             </label>
+                                        </td>
+                                        <td>
+                                            <input v-if="demandSettings.deliveryDays.wed.enabled" type="time"
+                                                :value="demandSettings.deliveryDays.wed.time"
+                                                @input="e => demandSettings.deliveryDays.wed.time = e.target.value">
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>Thu</th>
                                         <td>
                                             <label class="switch">
-                                                <input type="checkbox" name="demand-delivery-thu-input" checked
-                                                    @input="e => this.demandSettings.default = e.target.checked">
+                                                <input type="checkbox" name="demand-delivery-thu-input"
+                                                    :checked="demandSettings.deliveryDays.thu.enabled"
+                                                    @input="e => demandSettings.deliveryDays.thu.enabled = e.target.checked">
                                                 <span class="slider round"></span>
                                             </label>
+                                        </td>
+                                        <td>
+                                            <input v-if="demandSettings.deliveryDays.thu.enabled" type="time"
+                                                :value="demandSettings.deliveryDays.thu.time"
+                                                @input="e => demandSettings.deliveryDays.thu.time = e.target.value">
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>Fri</th>
                                         <td>
                                             <label class="switch">
-                                                <input type="checkbox" name="demand-delivery-fri-input" checked
-                                                    @input="e => this.demandSettings.default = e.target.checked">
+                                                <input type="checkbox" name="demand-delivery-fri-input"
+                                                    :checked="demandSettings.deliveryDays.fri.enabled"
+                                                    @input="e => demandSettings.deliveryDays.fri.enabled = e.target.checked">
                                                 <span class="slider round"></span>
                                             </label>
+                                        </td>
+                                        <td>
+                                            <input v-if="demandSettings.deliveryDays.fri.enabled" type="time"
+                                                :value="demandSettings.deliveryDays.fri.time"
+                                                @input="e => demandSettings.deliveryDays.fri.time = e.target.value">
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>Sat</th>
                                         <td>
                                             <label class="switch">
-                                                <input type="checkbox" name="demand-delivery-sat-input" checked
-                                                    @input="e => this.demandSettings.default = e.target.checked">
+                                                <input type="checkbox" name="demand-delivery-sat-input"
+                                                    :checked="demandSettings.deliveryDays.sat.enabled"
+                                                    @input="e => demandSettings.deliveryDays.sat.enabled = e.target.checked">
                                                 <span class="slider round"></span>
                                             </label>
+                                        </td>
+                                        <td>
+                                            <input v-if="demandSettings.deliveryDays.sat.enabled" type="time"
+                                                :value="demandSettings.deliveryDays.sat.time"
+                                                @input="e => demandSettings.deliveryDays.sat.time = e.target.value">
                                         </td>
                                     </tr>
                                 </table>
                             </div>
                             <div v-else>
+                                <button @click="downloadTemplate">Download Template</button>
                                 <div>
                                     <label for="backlog-input">Upload Backlog</label>
                                     <input type="file" name="backlog-input" id="backlog-input"
@@ -539,7 +585,9 @@ import ExperimentDesignerSidebar from '@/components/ExperimentDesignerSidebar.vu
 import LayoutMaker from '@/components/LayoutMaker.vue';
 import SmartTable from '@/components/SmartTable.vue';
 import Collapsable from '@/components/Collapsable.vue';
+import LoadingModal from '@/components/LoadingModal.vue';
 import dataRequest from '@/utils/dataRequest';
+import dayjs from 'dayjs';
 export default {
     data() {
         return {
@@ -558,6 +606,7 @@ export default {
             selectedOperation: 0,
             selectedAssets: null,
             hoursOfOperationData: null,
+            loading: false,
             processTimeSettings: {
                 default: true,
                 applyToAll: true,
@@ -569,17 +618,32 @@ export default {
                 default: true,
                 backlog: false,
                 lastJobMixIDs: [],
+                deliveryDays: {
+                    mon: { enabled: true, time: "10:00" },
+                    tue: { enabled: true, time: "10:00" },
+                    wed: { enabled: true, time: "10:00" },
+                    thu: { enabled: true, time: "10:00" },
+                    fri: { enabled: true, time: "10:00" },
+                    sat: { enabled: false, time: "10:00" },
+                    sun: { enabled: false, time: "10:00" },
+                },
+                dailyTarget: {
+                    min: 45,
+                    max: 70
+                },
+                startDate: dayjs().format('YYYY-MM-DD').toString()
             },
             processTimeData: null,
             backupProcessTimeData: null,
             changedProcessTimeData: [],
             excludedAssets: [],
-            selectedAssetInclusion: null
+            selectedAssetInclusion: null,
+            coreUsage: []
         }
     },
     mixins: [titleMixin],
     title: 'Experiment Designer',
-    components: { Sidebar, Header, ExperimentDesignerSidebar, ExperimentDesignerSidebar, LayoutMaker, SmartTable, Collapsable },
+    components: { Sidebar, Header, ExperimentDesignerSidebar, ExperimentDesignerSidebar, LayoutMaker, SmartTable, Collapsable, LoadingModal },
     methods: {
         getExperimentID() {
             this.experimentID = window.location.href.split("/")[window.location.href.split("/").length - 1];
@@ -616,8 +680,21 @@ export default {
         },
         async getProcessTimeData() {
             let data = await dataRequest("/api/experiment/process-time/" + this.experimentID, "GET");
-            this.backupProcessTimeData = JSON.parse(JSON.stringify(data));
-            this.processTimeData = data;
+            // let iterations = []
+            // data.forEach(e => {
+            //     if (iterations.indexOf(e.iteration_number) == -1) {
+            //         iterations.push(e.iteration_number)
+            //     }
+            //     console.log(iterations);
+            // })
+            let secondIterationData = data.filter(e => e.iteration_number == 1);
+            if (secondIterationData.length > 0) {
+                this.backupProcessTimeData = JSON.parse(JSON.stringify(secondIterationData));
+                this.processTimeData = secondIterationData;
+            } else {
+                this.backupProcessTimeData = JSON.parse(JSON.stringify(data));
+                this.processTimeData = data;
+            }
         },
         async getRoutingData() {
             let data = await dataRequest("/api/experiment/routing/" + this.experimentID, "GET");
@@ -636,6 +713,7 @@ export default {
         async getCoreModelData() {
             let data = await dataRequest("/api/core-model", "GET");
             console.log(data);
+            this.coreUsage = data.map(e => true);
             this.coreModelData = data;
         },
         async getData() {
@@ -652,31 +730,44 @@ export default {
             await this.getProcessTimeData();
             this.selectedOperationChange();
             let experimentData = await this.getExperimentData();
+            if (experimentData.scenario.scenario_id == 8) {
+                this.demandSettings.backlog = true;
+            }
             await this.getSiteData();
             this.selectedSite = experimentData.experiment_site.site_id;
             const siteSelectionEl = document.querySelector('input[value="' + experimentData.experiment_site.site_id + '"]');
             siteSelectionEl.checked = true;
         },
+        downloadTemplate() {
+            window.open('/api/experiment/backlog/template');
+        },
         async saveAllChanges() {
+            this.loading = true;
             return await Promise.all([
                 dataRequest("/api/experiment/site/" + this.experimentID, "PUT", JSON.stringify({ site_id: this.selectedSite })),
                 this.saveProcessTimeChanges(),
                 this.saveAssetInclusionData(),
+                this.generateArrivalData()
             ])
         },
         async saveProcessTimeChanges() {
-            let postProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'POST');
-            let putProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'PUT');
-            let deleteProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'DELETE').map(e => parseInt(e.experiment_process_time_id));
-            if (postProcessTimeData.length) {
-                await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "POST", JSON.stringify({ data: postProcessTimeData }))
+            if (this.processTimeData[0].iteration_number == 1) {
+                let postProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'POST');
+                let putProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'PUT');
+                let deleteProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'DELETE').map(e => parseInt(e.process_time_id));
+                if (postProcessTimeData.length) {
+                    await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "POST", JSON.stringify({ data: postProcessTimeData, iteration_number: 1 }))
+                }
+                if (putProcessTimeData.length) {
+                    await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "PUT", JSON.stringify({ data: putProcessTimeData, iteration_number: 1 }))
+                }
+                if (deleteProcessTimeData.length) {
+                    await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "DELETE", JSON.stringify({ data: deleteProcessTimeData, iteration_number: 1 }))
+                }
+            } else {
+                await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "POST", JSON.stringify({ data: this.processTimeData.map(e => e.process_time), iteration_number: 1 }))
             }
-            if (putProcessTimeData.length) {
-                await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "PUT", JSON.stringify({ data: putProcessTimeData }))
-            }
-            if (deleteProcessTimeData.length) {
-                await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "DELETE", JSON.stringify({ data: deleteProcessTimeData }))
-            }
+
         },
         async saveAssetInclusionData() {
             let enabledAssets = this.assetData.filter(e => e.asset.capacity == 0 && this.excludedAssets.indexOf(e.asset.asset_id) == -1).map(e => e.asset).map(({ capacity, ...rest }) => {
@@ -696,6 +787,34 @@ export default {
             formData.append('file', backlogInput.files[0]);
             await dataRequest("/api/experiment/backlog/file/" + this.experimentID, "POST", formData)
             console.log(backlogInput.files[0]);
+        },
+        async generateArrivalData() {
+            let arrivalData = {
+                expId: this.experimentID,
+                numReplications: 3,
+                start_date: this.demandSettings.startDate,
+                min_jobs: this.demandSettings.dailyTarget.min,
+                max_jobs: this.demandSettings.dailyTarget.max,
+                stators: this.jobMixData.find(e => e.job_mix.job_type == "STATORS").job_mix.percent,
+                relines: this.jobMixData.find(e => e.job_mix.job_type == "RELINES").job_mix.percent,
+                rnd: this.jobMixData.find(e => e.job_mix.job_type == "R&D").job_mix.percent,
+                sun: this.demandSettings.deliveryDays.sun.enabled,
+                mon: this.demandSettings.deliveryDays.mon.enabled,
+                tues: this.demandSettings.deliveryDays.tue.enabled,
+                wed: this.demandSettings.deliveryDays.wed.enabled,
+                thur: this.demandSettings.deliveryDays.thu.enabled,
+                fri: this.demandSettings.deliveryDays.fri.enabled,
+                sat: this.demandSettings.deliveryDays.sat.enabled,
+                sun_time: this.demandSettings.deliveryDays.sun.time,
+                mon_time: this.demandSettings.deliveryDays.mon.time,
+                tues_time: this.demandSettings.deliveryDays.tue.time,
+                wed_time: this.demandSettings.deliveryDays.wed.time,
+                thur_time: this.demandSettings.deliveryDays.thu.time,
+                fri_time: this.demandSettings.deliveryDays.fri.time,
+                sat_time: this.demandSettings.deliveryDays.sat.time,
+            }
+            console.log(arrivalData);
+            await dataRequest("/api/experiment/arrival/generate", "POST", JSON.stringify(arrivalData));
         },
         formatTaskSequenceData(data) {
             const formattedData = [];
@@ -872,6 +991,7 @@ export default {
                             experiment_process_time_id: experiment_process_time_id,
                             asset_id: data.process_time.asset_id,
                             operation_id: data.process_time.operation_id,
+                            process_time_id: data.process_time_id,
                             method: 'DELETE'
                         });
                     } else {
@@ -888,6 +1008,7 @@ export default {
                         asset_id: data.process_time.asset_id,
                         operation_id: data.process_time.operation_id,
                         process_time: process_time,
+                        process_time_id: data.process_time_id,
                         method: 'PUT'
                     });
                 } else {
@@ -990,14 +1111,6 @@ export default {
             this.taskContainsOperation();
         },
         assetInclusionChange(e) {
-            let index = this.excludedAssets.indexOf(e.data.asset_id);
-            if (index !== -1 && e.checked) {
-                this.excludedAssets.splice(index, 1);
-            } else if (!e.checked && index == -1) {
-                this.excludedAssets.push(e.data.asset_id);
-            }
-        },
-        coreUsageChange(e) {
             let index = this.excludedAssets.indexOf(e.data.asset_id);
             if (index !== -1 && e.checked) {
                 this.excludedAssets.splice(index, 1);
@@ -1147,4 +1260,5 @@ export default {
     border: none;
     margin: 4px;
     width: 50px;
-}</style>
+}
+</style>

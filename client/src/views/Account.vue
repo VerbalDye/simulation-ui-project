@@ -1,8 +1,8 @@
 <template>
+    <Header />
     <div class="site-container">
         <Sidebar />
         <div class="content">
-            <Header />
             <h1>User Account</h1>
             <h3>First Name: {{ this.userAccount.first_name }}</h3>
             <h3>Last Name: {{ this.userAccount.last_name }}</h3>
@@ -30,7 +30,7 @@ export default {
     methods: {
         async getUserAccount() {
             let data = await dataRequest("/api/user/" + auth.getProfile().user_id, "GET");
-            this.userAccount = {...data};
+            this.userAccount = { ...data };
         },
         async handleDelete() {
             let data = await dataRequest("/api/user/" + auth.getProfile().user_id, "DELETE");

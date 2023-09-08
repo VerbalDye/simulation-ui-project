@@ -21,9 +21,10 @@ const routes = [
     component: () => import('../views/Login.vue')
   },
   {
-    path: '/signup',
-    name: 'signup',
-    component: () => import('../views/Signup.vue')
+    path: '/create-account',
+    name: 'create-account',
+    component: () => import('../views/CreateAccount.vue'),
+    meta: { requiresAdmin: true }
   },
   {
     path: '/account',
@@ -202,11 +203,16 @@ const router = createRouter({
 
 router.beforeEach((to, from) => {
     if (to.meta.requiresAuth && !auth.isLoggedIn()) {
+        console.log(from);
         return {
-            path: '/welcome',
+            path: '/login',
             query: { redirect: encodeURIComponent(to.fullPath) }
+        }
+    } else if (to.meta.requiresAdmin && !auth.isAdmin()) {
+        return {
+            path: '/'
         }
     }
 })
 
-export default router
+export default router;

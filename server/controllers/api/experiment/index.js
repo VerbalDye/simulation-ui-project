@@ -1,6 +1,7 @@
 const router = require('express').Router();
 
 const experimentRoutes = require('./experimentRoutes');
+const arrivalRoutes = require('./arrivalRoutes');
 const assetRoutes = require('./assetRoutes');
 const backlogRoutes = require('./backlogRoutes');
 const hoursOfOperationRoutes = require('./hoursOfOperationRoutes');
@@ -9,11 +10,14 @@ const jobMixRoutes = require('./jobMixRoutes');
 const operationToLocationRoutes = require('./operationToLocation');
 const phasesRoutes = require('./phasesRoutes');
 const processTimeRoutes = require('./processTimeRoutes');
+const resourceUtilizationRoutes = require('./resourceUtilizationRoutes')
 const routingRoutes = require('./routingRoutes');
+const simulationRoutes = require('./simulationRoutes');
 const siteRoutes = require('./siteRoutes');
 const taskSequenceRoutes = require('./taskSequenceRoutes');
 
 router.use('/', experimentRoutes);
+router.use('/arrival', arrivalRoutes);
 router.use('/asset', assetRoutes);
 router.use('/backlog', backlogRoutes);
 router.use('/hours-of-operation', hoursOfOperationRoutes);
@@ -22,7 +26,9 @@ router.use('/job-mix', jobMixRoutes);
 router.use('/operation-to-location', operationToLocationRoutes);
 router.use('/phases', phasesRoutes);
 router.use('/process-time', processTimeRoutes);
+router.use('/resource-util', resourceUtilizationRoutes);
 router.use('/routing', routingRoutes);
+router.use('/simulation', simulationRoutes);
 router.use('/site', siteRoutes);
 router.use('/task-sequence', taskSequenceRoutes);
 

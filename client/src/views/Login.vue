@@ -1,25 +1,30 @@
 <template>
+    <Header />
     <div class="site-container">
-        <h1>Login</h1>
-        <form id="login-form" @submit="handleLogin">
-            <div>
-                <label for="email-input">Email: </label>
-                <input type="email" id="email-input" name="email-input">
+        <div class="content">
+            <h1 id="login-header">Login</h1>
+            <div class="card">
+                <form id="login-form" @submit="handleLogin">
+                    <table class="grid-less">
+                        <tr>
+                            <th><label for="email-input">Email: </label></th>
+                            <td><input type="email" id="email-input" name="email-input"></td>
+                        </tr>
+                        <tr>
+                            <th><label for="password-input">Password: </label></th>
+                            <td><input type="password" id="password-input" name="password-input"></td>
+                        </tr>
+                    </table>
+                    <button>Login</button>
+                </form>
             </div>
-            <div>
-                <label for="password-input">Password: </label>
-                <input type="password" id="password-input" name="password-input">
-            </div>
-            <button>Login</button>
-        </form>
-        <br />
-        <router-link :to="'/signup' + this.locationSearch">Create Account</router-link>
+        </div>
     </div>
 </template>
 
 <script>
-import titleMixin from '../mixins/titleMixin';
-import auth from '../utils/auth';
+import Header from '@/components/Header.vue';
+import titleMixin from '@/mixins/titleMixin';
 import dataRequest from '@/utils/dataRequest';
 export default {
     data() {
@@ -27,6 +32,7 @@ export default {
             locationSearch: ""
         }
     },
+    components: { Header },
     mixins: [titleMixin],
     title: 'Login',
     methods: {
@@ -49,3 +55,9 @@ export default {
     }
 }
 </script>
+
+<style>
+#login-header {
+    text-align: left;
+}
+</style>

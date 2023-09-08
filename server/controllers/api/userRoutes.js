@@ -1,12 +1,12 @@
 const router = require('express').Router();
 const { Users, Sessions } = require('../../models');
-const withAuth = require('../../utils/auth');
+const { withAuth, withAdminAuth } = require('../../utils/auth');
 const dayjs = require('dayjs');
 const utc = require('dayjs/plugin/utc');
 dayjs.extend(utc);
 
 // GET /api/users
-router.get('/', withAuth, (req, res) => {
+router.get('/', withAuth, withAdminAuth, (req, res) => {
     Users.findAll({
         attributes: { exclude: ['password'] }
     })
@@ -17,11 +17,30 @@ router.get('/', withAuth, (req, res) => {
         })
 });
 
+router.get('/admin', withAuth, (req, res) => {
+    if (req.cookies["session_token"]) {
+        Sessions.findOne({
+            where: {
+                session_token: req.cookies["session_token"]
+            },
+            include: [{
+                model: Users,
+                attributes: { exclude: ['password'] }
+            }]
+        })
+            .then(dbSessionData => {
+                res.status(200).json({ admin: dbSessionData.user.role == "admin" })
+            })
+    } else {
+        res.status(401).json({ message: "User must be logged in." });
+    }
+})
+
 router.get('/:id', withAuth, (req, res) => {
     Users.findOne({
         attributes: { exclude: ['password'] },
         where: {
-            id: req.params.id
+            user_id: req.params.id
         }
     })
         .then(dbUserData => {
@@ -37,26 +56,17 @@ router.get('/:id', withAuth, (req, res) => {
         });
 });
 
-router.post('/', (req, res) => {
+router.post('/', withAuth, withAdminAuth, (req, res) => {
     Users.create({
         first_name: req.body.first_name,
         last_name: req.body.last_name,
         email: req.body.email,
-        password: req.body.password
+        password: req.body.password,
+        role: req.body.role
     })
         .then(dbUserData => {
             const { password: trash, ...user } = dbUserData.dataValues;
-
-            const now = new Date();
-            const expiresAt = new Date(now.getTime() + (1 * 60 * 60 * 1000));
-
-            Sessions.create({
-                user_id: dbUserData.user_id,
-                expires_at: expiresAt
-            }).then(dbSessionData => {
-                res.cookie("session_token", dbSessionData.session_token, { expires: expiresAt })
-                res.json({ user: user, message: 'You are now logged in!' });
-            })
+            res.json({ user: user, message: 'User created.' });
         })
         .catch(err => {
             console.log(err);
@@ -89,7 +99,7 @@ router.post('/login', (req, res) => {
             }
         }).then(dbDestroySessionData => {
             const { password: trash, ...user } = dbUserData.dataValues;
-            const expiresAt = dayjs.utc().add(1, 'hour').toDate();
+            const expiresAt = dayjs.utc().add(8, 'hour').toDate();
             console.log(expiresAt);
             Sessions.create({
                 user_id: dbUserData.user_id,
@@ -121,7 +131,7 @@ router.post('/logout', withAuth, (req, res) => {
     }
 })
 
-router.put('/:id', withAuth, (req, res) => {
+router.put('/:id', withAuth, withAdminAuth, (req, res) => {
     Users.update(req.body, {
         individualHooks: true,
         where: {
@@ -141,7 +151,7 @@ router.put('/:id', withAuth, (req, res) => {
         });
 });
 
-router.delete('/:id', withAuth, (req, res) => {
+router.delete('/:id', withAuth, withAdminAuth, (req, res) => {
     Users.destroy({
         where: {
             id: req.params.id

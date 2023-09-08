@@ -1,4 +1,4 @@
-const { Sessions } = require('../models');
+const { Sessions, Users } = require('../models');
 
 const withAuth = (req, res, next) => {
     const session_token = req.cookies["session_token"]
@@ -29,7 +29,35 @@ const withAuth = (req, res, next) => {
     }
 };
 
-module.exports = withAuth;
+const withAdminAuth = (req, res, next) => {
+    const session_token = req.cookies["session_token"]
+    if (!session_token) {
+        res.status(401).json({ message: 'No credentials identified. Try signing in.' });
+    } else {
+        Sessions.findOne({
+            where: {
+                session_token: session_token
+            },
+            include: [{
+                model: Users,
+                attributes: { exclude: ['password'] },
+            }]
+        }).then(dbSessionData => {
+            console.log(dbSessionData.users);
+            if (dbSessionData) {
+                if (dbSessionData.user.role == 'admin') {
+                    next();
+                } else {
+                    res.status(403).json({ message: 'User does not have the correct access rights.'});
+                }
+            } else {
+                res.status(401).json({ message: 'No credentials identified. Try signing in.' });
+            }
+        })
+    }
+}
+
+module.exports = { withAuth, withAdminAuth };
 
 // const jwt = require('jsonwebtoken');
 

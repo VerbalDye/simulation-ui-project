@@ -1,48 +1,36 @@
 const router = require('express').Router();
 const sequelize = require('../../../config/connection');
-const { Backlog } = require('../../../models');
+const { ResourceUtilization } = require('../../../models');
 
 router.get('/', (req, res) => {
-    Backlog.findAll()
-        .then(dbBacklogData => res.json(dbBacklogData))
+    ResourceUtilization.findAll()
+        .then(dbResourceUtilizationData => res.json(dbResourceUtilizationData))
         .catch(err => {
             console.log(err);
             res.status(400).json(err);
         });
 });
 
-router.get('/template', (req, res) => {
-    const file = `${__dirname}/../../../assets/backlog_example.csv`
-    res.download(file);
-})
-
 router.get('/:id', (req, res) => {
-    Backlog.findAll({
+    ResourceUtilization.findAll({
         where: {
             experiment_id: req.params.id
         }
     })
-        .then(dbBacklogData => res.json(dbBacklogData))
+        .then(dbResourceUtilizationData => res.json(dbResourceUtilizationData))
         .catch(err => {
             console.log(err);
             res.status(400).json(err);
         });
 });
 
-router.post('/file/:id', (req, res) => {
-    let form = new multiparty.Form();
-    form.parse
-    console.log(req.body);
-    res.status(204).end()
-});
-
 router.put('/:id', (req, res) => {
-    Backlog.update(req.body, {
+    ResourceUtilization.update(req.body, {
         where: {
-            experiment_hoo_id: req.params.id
+            experiment_phases_id: req.params.id
         }
     })
-        .then(dbBacklogData => res.json(dbBacklogData))
+        .then(dbResourceUtilizationData => res.json(dbResourceUtilizationData))
         .catch(err => {
             console.log(err);
             res.status(400).json(err);

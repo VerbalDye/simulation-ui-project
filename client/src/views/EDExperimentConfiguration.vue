@@ -36,14 +36,14 @@
                 </tr>
             </table>
             <div class="card">
-                <table v-if="this.experimentData">
+                <table v-if="this.experimentData" class="grid-less">
                     <tr>
                         <th>Experiment ID:</th>
                         <td>{{ this.experimentData.experiment_id }}</td>
                     </tr>
                     <tr>
                         <th>Experiment Name*:</th>
-                        <td><input type="text" :value="this.experimentData.experiment_name"></td>
+                        <td><input type="text" id="experiment-name-input" :value="this.experimentData.experiment_name"></td>
                     </tr>
                 </table>
             </div>
@@ -72,7 +72,7 @@ export default {
                 analysisTypes: "",
                 experimentTypes: "",
                 departments: ""
-            }
+            },
         }
     },
     mixins: [titleMixin],
@@ -136,7 +136,9 @@ export default {
                 this.$router.push("/experiments/design/scenario");
             // }
         },
-        clickNext() {
+        async clickNext() {
+            let experiment_name = document.getElementById('experiment-name-input').value;
+            await dataRequest("/api/experiment/" + this.experimentID, "PUT", JSON.stringify({ experiment_name: experiment_name }))
             this.$router.push("/experiments/design/inputs/" + this.experimentID);
         }
     },

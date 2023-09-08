@@ -23,7 +23,7 @@
             <tbody>
                 <tr v-for="(row, index) in displayData">
                     <td v-if="toggle"><input type="checkbox" :checked="toggleData[index]" :class="'smart-table-' + id + '-toggle-input'"
-                            @input="handleToggleChange(row, $event)" :name="'toggle-' + index"></td>
+                            @input="handleToggleChange(row, index, $event)" :name="'toggle-' + index"></td>
                     <td v-for="item in row">{{ item }}</td>
                 </tr>
             </tbody>
@@ -47,8 +47,8 @@ export default {
     props: ['jsonData', 'advancedSearchEnabled', 'excludedColumns', 'id', 'toggle', 'toggleData'],
     emits: ['selection-change'],
     methods: {
-        handleToggleChange(row, { target }) {
-            this.$emit('toggle-change', { checked: target.checked, data: row });
+        handleToggleChange(row, index, { target }) {
+            this.$emit('toggle-change', { checked: target.checked, data: row, index: index });
         },
         handleSearchChange() {
             let searchVal = document.getElementById("smart-table-search-" + this.id).value;

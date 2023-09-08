@@ -6,19 +6,23 @@
         <div class="content">
             <h1>5. Simulation Run</h1>
             <button @click="startSimulation">Run Simulation</button>
-            <table v-if="startTime" class="grid-less">
+            <table v-if="status" class="grid-less">
                 <tr>
-                    <th><i class="bi bi-hash"></i> Start:</th>
+                    <th><i class="bi bi-activity"></i> Simulation Status</th>
+                    <td>{{ status }}</td>
+                </tr>
+                <tr>
+                    <th><i class="bi bi-clock-fill"></i> Start:</th>
                     <td>{{ dayjs(startTime).format("YYYY-MM-DD hh:mm:ss") }}</td>
                 </tr>
                 <tr>
-                    <th><i class="bi bi-hash"></i> Running:</th>
+                    <th><i class="bi bi-stopwatch-fill"></i> Time Running:</th>
                     <td>{{ currentTime.diff(startTime, 'minute') }} minutes</td>
                 </tr>
-                <tr>
+                <!-- <tr>
                     <th><i class="bi bi-hash"></i> Iterations:</th>
                     <td>{{ currentTime.diff(startTime, 'minute') }} minutes</td>
-                </tr>
+                </tr> -->
             </table>
             <div class="flex-right"><button @click="clickBack">Back</button><button @click="clickNext">Next</button></div>
         </div>
@@ -38,7 +42,8 @@ export default {
             experimentID: null,
             startTime: null,
             currentTime: dayjs(),
-            dayjs: dayjs
+            dayjs: dayjs,
+            status: null
         }
     },
     mixins: [titleMixin],
@@ -55,8 +60,10 @@ export default {
             this.$router.push("/experiments/design/results-review/" + this.experimentID);
         },
         async startSimulation() {
-            await dataRequest("/api/experiment/simulation/start/" + this.experimentID, "POST");
+            this.status = 'Running';
             this.startTime = dayjs();
+            await dataRequest("/api/experiment/simulation/start/" + this.experimentID, "POST");
+            this.status = 'Finished';
         }
     },
     mounted() {

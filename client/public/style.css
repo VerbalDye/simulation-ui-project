@@ -109,6 +109,22 @@ menu {
     margin: 20px 20px 0 20px;
 }
 
+.link-button {
+    padding: 5px 10px;
+    font-size: 18px;
+    border-radius: 5px;
+    color: var(--white);
+    background-color: var(--secondary-blue);
+    border: none;
+    margin: 0 3px;
+    text-decoration: none;
+}
+
+.link-button:active {
+    background-color: var(--white);
+    color: var(--secondary-blue);
+}
+
 .main-content {
     display: flex;
 }
@@ -177,6 +193,10 @@ menu {
 .flex-vertical {
     display: flex;
     flex-direction: column;
+}
+
+.flex-align-start {
+    align-items: start;
 }
 
 .align-top {

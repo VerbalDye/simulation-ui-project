@@ -52,7 +52,7 @@ export default {
     },
     components: { Header, Sidebar },
     mixins: [titleMixin],
-    title: 'Sign Up',
+    title: 'Create Account',
     methods: {
         async handleCreateAccount(e) {
             e.preventDefault();

@@ -1,5 +1,5 @@
 <template>
-    <LoadingModal :display="loading"/>
+    <LoadingModal :display="loading" estimated-loading-time="12000" />
     <Header />
     <div class="site-container">
         <Sidebar />
@@ -717,26 +717,30 @@ export default {
             this.coreModelData = data;
         },
         async getData() {
+            this.loading = true
             this.getExperimentID();
-            this.getCoreModelData();
-            this.getHoursOfOperationData();
-            this.getOperationToLocationData();
-            this.getRoutingData();
-            this.getJobMixData();
-            this.getJobListData();
-            await this.getAssetData();
+            await Promise.allSettled([
+                this.getCoreModelData(),
+                this.getHoursOfOperationData(),
+                this.getOperationToLocationData(),
+                this.getRoutingData(),
+                this.getJobMixData(),
+                this.getJobListData(),
+                this.getAssetData(),
+                this.getTaskSequenceData(),
+                this.getProcessTimeData(),
+                this.getExperimentData(),
+                this.getSiteData()
+            ])
             this.excludedAssets = this.assetData.filter(e => e.asset.capacity == 0).map(e => e.asset.asset_id);
-            await this.getTaskSequenceData();
-            await this.getProcessTimeData();
             this.selectedOperationChange();
-            let experimentData = await this.getExperimentData();
-            if (experimentData.scenario.scenario_id == 8) {
+            if (this.experimentData.scenario.scenario_id == 8) {
                 this.demandSettings.backlog = true;
             }
-            await this.getSiteData();
-            this.selectedSite = experimentData.experiment_site.site_id;
-            const siteSelectionEl = document.querySelector('input[value="' + experimentData.experiment_site.site_id + '"]');
+            this.selectedSite = this.experimentData.experiment_site.site_id;
+            const siteSelectionEl = document.querySelector('input[value="' + this.experimentData.experiment_site.site_id + '"]');
             siteSelectionEl.checked = true;
+            this.loading = false;
         },
         downloadTemplate() {
             window.open('/api/experiment/backlog/template');

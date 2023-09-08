@@ -1,0 +1,83 @@
+<template>
+    <div :id="'plotly-chart-' + id">
+
+    </div>
+</template>
+
+<script>
+import Plotly from 'plotly.js-dist';
+export default {
+    data() {
+        return {
+            chartData: null,
+            chartLayout: null
+        }
+    },
+    props: ['data', 'x', 'xTitle', 'y', 'yTitle', 'group', 'hover', 'title', 'id'],
+    name: 'Header',
+    methods: {
+        formatData() {
+            // let splitData = this.data.map(e => e.)
+            let splitData = this.data.reduce((groups, item) => {
+                if (!groups[item[this.group]]) { groups[item[this.group]] = []; }
+                groups[item[this.group]].push(item);
+                return groups;
+            }, {});
+            console.log(splitData);
+            let formattedData = [];
+            for (let key in splitData) {
+                let group = splitData[key]
+                let xData = [];
+                let yData = [];
+                let hoverData = [];
+                group.forEach(entry => {
+                    xData.push(entry[this.x])
+                    yData.push(entry[this.y])
+                    let text = "";
+                    this.hover.forEach((key, index) => {
+                        text += entry[key];
+                        if (index !== this.hover.length - 1) {
+                            text += ', '
+                        }
+                    })
+                    hoverData.push(text);
+                })
+                formattedData.push({
+                    x: xData,
+                    y: yData,
+                    mode: 'markers',
+                    type: 'scatter',
+                    name: key,
+                    text: hoverData
+                })
+            }
+            this.chartLayout = {
+                title: this.title,
+                xaxis: {
+                    title: this.xTitle
+                },
+                yaxis: {
+                    title: this.yTitle
+                }
+            }
+            this.chartData = formattedData;
+            console.log(formattedData);
+        }
+    },
+    mounted() {
+        this.formatData();
+        let chart = document.getElementById('plotly-chart-' + this.id)
+        Plotly.newPlot(chart, this.chartData, this.chartLayout);
+    },
+    // watch: {
+    //     chart: function (newVal, oldVal) {
+    //         this.formatData(newVal);
+    //         Plotly.react(
+
+    //         )
+    //     }
+    // }
+}
+</script>
+
+<style></style>

@@ -25,11 +25,12 @@
 export default {
     data() {
         return {
-            showCancelButton: false
+            showCancelButton: false,
+            timeoutID: null
         }
     },
     name: 'LoadingModal',
-    props: ['display'],
+    props: ['display', 'estimatedLoadingTime'],
     methods: {
         abortLoadProtection() {
             let loadingEl = document.getElementById('loading-modal');
@@ -43,10 +44,12 @@ export default {
                 loadingEl.classList.add("display");
             } else {
                 loadingEl.classList.remove("display");
+                clearTimeout(this.timeoutID);
+                this.showCancelButton = false;
             }
-            setTimeout(() => {
+            this.timeoutID = setTimeout(() => {
                 this.showCancelButton = true;
-            }, 10000);
+            }, this.estimatedLoadingTime);
         }
     }
 }

@@ -3,6 +3,7 @@ const router = require('express').Router();
 const experimentRoutes = require('./experimentRoutes');
 const arrivalRoutes = require('./arrivalRoutes');
 const assetRoutes = require('./assetRoutes');
+const assetAvailabilityRoutes = require('./assetAvailabilityRoutes');
 const backlogRoutes = require('./backlogRoutes');
 const hoursOfOperationRoutes = require('./hoursOfOperationRoutes');
 const jobListRoutes = require('./jobListRoutes');
@@ -15,10 +16,12 @@ const routingRoutes = require('./routingRoutes');
 const simulationRoutes = require('./simulationRoutes');
 const siteRoutes = require('./siteRoutes');
 const taskSequenceRoutes = require('./taskSequenceRoutes');
+const throughputRoutes = require('./throughputRoutes');
 
 router.use('/', experimentRoutes);
 router.use('/arrival', arrivalRoutes);
 router.use('/asset', assetRoutes);
+router.use('/asset-availability', assetAvailabilityRoutes);
 router.use('/backlog', backlogRoutes);
 router.use('/hours-of-operation', hoursOfOperationRoutes);
 router.use('/job-list', jobListRoutes);
@@ -31,5 +34,6 @@ router.use('/routing', routingRoutes);
 router.use('/simulation', simulationRoutes);
 router.use('/site', siteRoutes);
 router.use('/task-sequence', taskSequenceRoutes);
+router.use('/throughput', throughputRoutes);
 
 module.exports = router;

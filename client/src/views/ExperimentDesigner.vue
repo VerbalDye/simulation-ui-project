@@ -7,7 +7,7 @@
             <p>Welcome the the Experiment Designer Tool! This tools is designed to allow you to have full control over the
                 simulation you want to run. Using industry leading web service technology you are able to configure, start,
                 view progress of, and read results of a custom simulation run directly from your browser.</p>
-            <div class="flex-right"><router-link to="/experiments/design/scenario">Next</router-link></div>
+            <div class="flex-right"><router-link to="/experiments/design/scenario" class="link-button">Next</router-link></div>
         </div>
     </div>
 </template>

@@ -1,5 +1,6 @@
 const Arrival = require('./Arrival');
 const Asset = require('./Asset');
+const AssetAvailability = require('./AssetAvailability');
 const Cell = require('./Cell');
 const Core = require('./Core');
 const CoreModel = require('./CoreModel');
@@ -32,7 +33,17 @@ const ScenarioFilter = require('./ScenarioFilter');
 const Sessions = require('./Sessions');
 const Site = require('./Site');
 const TaskSequence = require('./TaskSequence');
+const Throughput = require('./Throughput');
 const Users = require('./Users');
+
+// Asset Availability-Asset
+Asset.hasMany(AssetAvailability, {
+    foreignKey: 'asset_id'
+});
+AssetAvailability.belongsTo(Asset, {
+    foreignKey: 'asset_id',
+    onDelete: 'CASCADE'
+});
 
 // Core-Model Associations
 ModelObject.hasMany(CoreModel, {
@@ -217,6 +228,15 @@ ExperimentAsset.belongsTo(Asset, {
     foreignKey: 'asset_id'
 });
 
+// Experiment-Asset Availability Associations
+Experiment.hasMany(AssetAvailability, {
+    foreignKey: 'experiment_id'
+});
+AssetAvailability.belongsTo(Experiment, {
+    foreignKey: 'experiment_id',
+    onDelete: 'CASCADE'
+});
+
 // Experiment-CoreSoakTime
 Experiment.hasMany(ExperimentCoreSoakTime, {
     foreignKey: 'experiment_id'
@@ -380,9 +400,19 @@ ExperimentTaskSequence.belongsTo(TaskSequence, {
     foreignKey: 'task_sequence_id'
 });
 
+// Experiment-Throughput
+Experiment.hasMany(Throughput, {
+    foreignKey: 'experiment_id'
+});
+Throughput.belongsTo(Experiment, {
+    foreignKey: 'experiment_id',
+    onDelete: 'CASCADE'
+});
+
 module.exports = { 
     Arrival,
     Asset,
+    AssetAvailability,
     Cell,
     Core,
     CoreModel,
@@ -415,5 +445,6 @@ module.exports = {
     Sessions,
     Site,
     TaskSequence,
+    Throughput,
     Users
 };

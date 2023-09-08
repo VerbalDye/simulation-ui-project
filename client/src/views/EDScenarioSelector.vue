@@ -1,5 +1,5 @@
 <template>
-    <LoadingModal :display="loading" />
+    <LoadingModal :display="loading" estimated-loading-time="5000" />
     <Header />
     <div class="site-container">
         <Sidebar />

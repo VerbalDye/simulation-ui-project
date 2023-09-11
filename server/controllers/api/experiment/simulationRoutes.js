@@ -1,19 +1,47 @@
 const router = require('express').Router();
-const { ExperimentInfo } = require('../../../models');
+const { CurrentlyRunning, ExperimentInfo } = require('../../../models');
 
 router.post('/start/:id', (req, res) => {
     var child_process = require('child_process');
-    ExperimentInfo.create({
-        experiment_id: req.params.id,
-        num_replications: 3
-    })
-        .then(dbExperimentInfoData => {
-            child_process.exec('..\\simulation\\"PV_Fluid v0_28 (Asset routes determined by Routing table)2_windows.bat"', function (error, stdout, stderr) {
+    Promise.allSettled([
+        new Promise(resolve => {
+            ExperimentInfo.create({
+                experiment_id: req.params.id,
+                num_replications: 3
+            })
+                .then(dbExperimentInfoData => resolve())
+                .catch(err => {
+                    console.log(err);
+                    res.status(400).json(err);
+                });
+        }),
+        new Promise(resolve => {
+            CurrentlyRunning.create({
+                experiment_id: req.params.id
+            })
+                .then(dbCurrentlyRunningData => resolve())
+                .catch(err => {
+                    console.log(err);
+                    res.status(400).json(err);
+                });
+        })
+    ])
+        .then(dbPromiseData => {
+            child_process.exec('..\\simulation\\"PV_Fluid v0_29 (Updated with procedure get_expInfo)_windows.bat"', {maxBuffer: 1024 * 1024 * 200}, function (error, stdout, stderr) {
                 console.log(stdout);
                 console.log(error);
-                res.status(200).json({ message: stdout })
+                CurrentlyRunning.destroy({
+                    where: {
+                        experiment_id: req.params.id
+                    }
+                })
+                    .then(dbCurrentlyRunningData => res.status(200).json({ message: stdout }))
             });
         })
+        .catch(err => {
+            console.log(err);
+            res.status(400).json(err);
+        });
 })
 
 module.exports = router;

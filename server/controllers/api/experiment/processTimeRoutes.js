@@ -54,7 +54,7 @@ router.post('/bulk/:id', (req, res) => {
             .then(dbProcessTimeData => {
                 ExperimentProcessTime.create({
                     experiment_id: req.params.id,
-                    iteration_number: req.body.iteration_number,
+                    iteration_number: item.iteration_number,
                     process_time_id: dbProcessTimeData.process_time_id
                 })
                     .catch(err => {

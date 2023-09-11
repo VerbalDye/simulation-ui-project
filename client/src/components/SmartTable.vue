@@ -17,14 +17,14 @@
             <thead>
                 <tr>
                     <th v-if="toggle">{{ toggle }}</th>
-                    <th v-for="key in headerData" @click="handleHeaderClick">{{ key }}</th>
+                    <th v-for="key in headerData" @click="handleHeaderClick"><div v-if="columnHeadings">{{ columnHeadings[key] }}</div><div v-else >{{ key }}</div></th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="(row, index) in displayData">
                     <td v-if="toggle"><input type="checkbox" :checked="toggleData[index]" :class="'smart-table-' + id + '-toggle-input'"
                             @input="handleToggleChange(row, index, $event)" :name="'toggle-' + index"></td>
-                    <td v-for="item in row">{{ item }}</td>
+                    <td v-for="item in row"><router-link v-if="links" :to="links[index]" >{{ item }}</router-link><div v-else>{{ item }}</div></td>
                 </tr>
             </tbody>
         </table>
@@ -44,7 +44,7 @@ export default {
         }
     },
     name: 'SmartTable',
-    props: ['jsonData', 'advancedSearchEnabled', 'excludedColumns', 'id', 'toggle', 'toggleData'],
+    props: ['jsonData', 'advancedSearchEnabled', 'excludedColumns', 'id', 'toggle', 'toggleData', 'links', 'columnHeadings'],
     emits: ['selection-change'],
     methods: {
         handleToggleChange(row, index, { target }) {
@@ -178,6 +178,11 @@ export default {
     overflow-x: auto;
     overflow-y: auto;
     margin: 0 20px 20px 20px;
+}
+
+.table-container a {
+    color: var(--black);
+    text-decoration: none;
 }
 
 .table-controls {

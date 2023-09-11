@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const sequelize = require('../../../config/connection');
 const {
+    CurrentlyRunning,
     Experiment,
     ExperimentAsset,
     ExperimentCoreSoakTime,
@@ -36,6 +37,44 @@ router.get('/', (req, res) => {
             res.status(400).json(err);
         });
 });
+
+router.get('/user/:id', (req, res) => {
+    Experiment.findAll({
+        where: {
+            user_id: req.params.id
+        },
+        include: [{
+            model: Users,
+            attributes: ['email', 'first_name', 'last_name'],
+        }]
+    })
+        .then(dbExperimentData => {
+            res.json(dbExperimentData);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
+        });
+});
+
+router.get('/running/:id', (req, res) => {
+    CurrentlyRunning.findOne({
+        where: {
+            experiment_id: req.params.id
+        }
+    })
+        .then(dbExperimentData => {
+            if (dbExperimentData) {
+                res.json({ running: true, started: dbExperimentData.started })
+            } else {
+                res.json({ running: false })
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
+        });
+})
 
 router.get('/:id', (req, res) => {
     Experiment.findAll({
@@ -75,21 +114,6 @@ router.get('/:id', (req, res) => {
             res.status(500).json(err);
         });
 });
-
-router.get('/user/:id', (req, res) => {
-    Experiment.findAll({
-        where: {
-            user_id: req.params.id
-        }
-    })
-        .then(dbExperimentData => {
-            res.json(dbExperimentData);
-        })
-        .catch(err => {
-            console.log(err);
-            res.status(500).json(err);
-        });
-})
 
 router.post('/', (req, res) => {
     Experiment.create({

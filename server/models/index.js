@@ -5,6 +5,7 @@ const Cell = require('./Cell');
 const Core = require('./Core');
 const CoreModel = require('./CoreModel');
 const CoreSoakTime = require('./CoreSoakTime');
+const CurrentlyRunning = require('./CurrentlyRunning');
 const Experiment = require('./Experiment');
 const ExperimentAsset = require('./ExperimentAsset');
 const ExperimentCoreSoakTime = require('./ExperimentCoreSoakTime');
@@ -252,6 +253,15 @@ ExperimentCoreSoakTime.belongsTo(CoreSoakTime, {
     foreignKey: 'core_soak_time_id'
 });
 
+// Experiment Currently Running
+Experiment.hasMany(CurrentlyRunning, {
+    foreignKey: 'experiment_id'
+});
+CurrentlyRunning.belongsTo(Experiment, {
+    foreignKey: 'experiment_id',
+    onDelete: 'CASCADE'
+});
+
 // Experiment-Hours of Operation
 Experiment.hasMany(ExperimentHoo, {
     foreignKey: 'experiment_id'
@@ -417,6 +427,7 @@ module.exports = {
     Core,
     CoreModel,
     CoreSoakTime,
+    CurrentlyRunning,
     Experiment,
     ExperimentAsset,
     ExperimentCoreSoakTime,

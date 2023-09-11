@@ -707,12 +707,11 @@ export default {
         },
         async getJobListData() {
             let data = await dataRequest("/api/experiment/job-list/" + this.experimentID, "GET");
-            console.log(data)
+            // console.log(data)
             this.jobListData = data;
         },
         async getCoreModelData() {
             let data = await dataRequest("/api/core-model", "GET");
-            console.log(data);
             this.coreUsage = data.map(e => true);
             this.coreModelData = data;
         },
@@ -755,22 +754,42 @@ export default {
             ])
         },
         async saveProcessTimeChanges() {
-            if (this.processTimeData[0].iteration_number == 1) {
+            // if (this.processTimeData[0].iteration_number == 1) {
                 let postProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'POST');
-                let putProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'PUT');
-                let deleteProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'DELETE').map(e => parseInt(e.process_time_id));
+                console.log('Post Data:', postProcessTimeData);
+                let putProcessTimePostData = this.changedProcessTimeData.filter(e => e.method == 'PUT' && e.iteration_number == 0).map(({iteration_number, ...rest}) => {
+                    let object = {...rest};
+                    object.iteration_number = 1;
+                    return object;
+                });
+                console.log('Put Post Data:', putProcessTimePostData);
+                let putProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'PUT' && e.iteration_number > 0);
+                // let deleteProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'DELETE').map(e => parseInt(e.process_time_id));
+                let deleteProcessTimeIDs = this.changedProcessTimeData.filter(e => e.method == 'DELETE').map(e => parseInt(e.asset_id));
+                console.log('Delete IDs:', deleteProcessTimeIDs);
+                deleteProcessTimeIDs = deleteProcessTimeIDs.filter((e, index, array) => array.indexOf(e) == index);
+                console.log('Unique Delete IDs:', deleteProcessTimeIDs);
+                let deleteProcessTimeData = this.processTimeData.filter(e => deleteProcessTimeIDs.indexOf(e.process_time.asset_id) !== -1)
+                deleteProcessTimeData = deleteProcessTimeData.map(({process_time, ...rest}) => {
+                    let object = {...process_time}
+                    object.iteration_number = 1;
+                    return object;
+                })
+                console.log('Delete Post Data:', deleteProcessTimeData);
+                postProcessTimeData = postProcessTimeData.concat(putProcessTimePostData, deleteProcessTimeData);
+                console.log('Full Post Data:', postProcessTimeData);
                 if (postProcessTimeData.length) {
-                    await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "POST", JSON.stringify({ data: postProcessTimeData, iteration_number: 1 }))
+                    await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "POST", JSON.stringify({ data: postProcessTimeData }))
                 }
                 if (putProcessTimeData.length) {
-                    await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "PUT", JSON.stringify({ data: putProcessTimeData, iteration_number: 1 }))
+                    await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "PUT", JSON.stringify({ data: putProcessTimeData }))
                 }
-                if (deleteProcessTimeData.length) {
-                    await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "DELETE", JSON.stringify({ data: deleteProcessTimeData, iteration_number: 1 }))
-                }
-            } else {
-                await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "POST", JSON.stringify({ data: this.processTimeData.map(e => e.process_time), iteration_number: 1 }))
-            }
+                // if (deleteProcessTimeData.length) {
+                //     await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "DELETE", JSON.stringify({ data: deleteProcessTimeData }))
+                // }
+            // } else {
+            //     await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "POST", JSON.stringify({ data: this.processTimeData.map(e => e.process_time), iteration_number: 1 }))
+            // }
 
         },
         async saveAssetInclusionData() {
@@ -979,6 +998,7 @@ export default {
                         experiment_process_time_id: id,
                         asset_id: asset_id,
                         operation_id: operation_id,
+                        iteration_number: 1, 
                         method: 'POST'
                     });
                 }
@@ -996,6 +1016,7 @@ export default {
                             asset_id: data.process_time.asset_id,
                             operation_id: data.process_time.operation_id,
                             process_time_id: data.process_time_id,
+                            iteration_number: data.iteration_number,
                             method: 'DELETE'
                         });
                     } else {
@@ -1013,6 +1034,7 @@ export default {
                         operation_id: data.process_time.operation_id,
                         process_time: process_time,
                         process_time_id: data.process_time_id,
+                        iteration_number: data.iteration_number,
                         method: 'PUT'
                     });
                 } else {

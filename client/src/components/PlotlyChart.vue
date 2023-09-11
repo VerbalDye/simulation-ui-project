@@ -13,7 +13,7 @@ export default {
             chartLayout: null
         }
     },
-    props: ['data', 'x', 'xTitle', 'y', 'yTitle', 'group', 'hover', 'title', 'id'],
+    props: ['data', 'x', 'xTitle', 'y', 'yTitle', 'group', 'hover', 'hoverTitles', 'title', 'id'],
     name: 'Header',
     methods: {
         formatData() {
@@ -35,9 +35,9 @@ export default {
                     yData.push(entry[this.y])
                     let text = "";
                     this.hover.forEach((key, index) => {
-                        text += entry[key];
+                        text += this.hoverTitles[index] + ': ' + entry[key];
                         if (index !== this.hover.length - 1) {
-                            text += ', '
+                            text += '\n'
                         }
                     })
                     hoverData.push(text);

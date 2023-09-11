@@ -21,7 +21,7 @@ class AuthService {
     }
     async getProfile() {
         let sessionData = await dataRequest("/api/session", "GET");
-        console.log(sessionData.user);
+        // console.log(sessionData.user);
         return sessionData.user;
     }
     isLoggedIn() {
@@ -29,7 +29,7 @@ class AuthService {
     }
     async isAdmin() {
         let data = await dataRequest("/api/user/admin", "GET");
-        console.log(data);
+        // console.log(data);
         return data.admin;
     }
     async logout() {

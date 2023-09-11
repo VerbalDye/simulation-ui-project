@@ -5,7 +5,6 @@
         <ExperimentDesignerSidebar currentPage="4" />
         <div class="content">
             <h1>5. Simulation Run</h1>
-            <button @click="startSimulation">Run Simulation</button>
             <table v-if="status" class="grid-less">
                 <tr>
                     <th><i class="bi bi-activity"></i> Simulation Status</th>
@@ -14,6 +13,10 @@
                 <tr>
                     <th><i class="bi bi-clock-fill"></i> Start:</th>
                     <td>{{ dayjs(startTime).format("YYYY-MM-DD hh:mm:ss") }}</td>
+                </tr>
+                <tr v-if="endTime">
+                    <th><i class="bi bi-sign-stop-fill"></i> Finished:</th>
+                    <td>{{ dayjs(endTime).format("YYYY-MM-DD hh:mm:ss") }} minutes</td>
                 </tr>
                 <tr>
                     <th><i class="bi bi-stopwatch-fill"></i> Time Running:</th>
@@ -24,6 +27,9 @@
                     <td>{{ currentTime.diff(startTime, 'minute') }} minutes</td>
                 </tr> -->
             </table>
+            <div v-else>
+                <button @click="startSimulation">Run Simulation</button>
+            </div>
             <div class="flex-right"><button @click="clickBack">Back</button><button @click="clickNext">Next</button></div>
         </div>
     </div>
@@ -41,9 +47,12 @@ export default {
         return {
             experimentID: null,
             startTime: null,
+            endTime: null,
             currentTime: dayjs(),
             dayjs: dayjs,
-            status: null
+            status: null,
+            wasRunning: false,
+            interval: null
         }
     },
     mixins: [titleMixin],
@@ -52,6 +61,20 @@ export default {
     methods: {
         getExperimentID() {
             this.experimentID = window.location.href.split("/")[window.location.href.split("/").length - 1];
+        },
+        async getRunning() {
+            let data = await dataRequest("/api/experiment/running/" + this.experimentID, "GET");
+            console.log(data, this.wasRunning);
+            if (data.running && !this.wasRunning) {
+                console.log('AAAAAAAAAAAA');
+                this.startTime = data.started
+                this.status = "Running"
+                this.wasRunning = true;
+                console.log(this.startTime)
+            } else if (!data.running && this.wasRunning) {
+                this.status = "Finished";
+                clearInterval(this.interval);
+            }
         },
         clickBack() {
             this.$router.push("/experiments/design/experiment-parameters/" + this.experimentID);
@@ -64,13 +87,20 @@ export default {
             this.startTime = dayjs();
             await dataRequest("/api/experiment/simulation/start/" + this.experimentID, "POST");
             this.status = 'Finished';
+            this.endTime = dayjs();
+            clearInterval(this.interval);
         }
     },
     mounted() {
         this.getExperimentID();
-        setInterval(() => {
+        this.getRunning();
+        this.interval = setInterval(() => {
             this.currentTime = dayjs()
-        }, 1000)
+            if (this.wasRunning) {
+                this.getRunning();
+            } 
+        }, 10000)
+        console.log(this.interval);
     }
 }
 </script>

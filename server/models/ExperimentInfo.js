@@ -17,11 +17,6 @@ ExperimentInfo.init(
                 model: 'experiment',
                 key: 'experiment_id'
             }
-        },
-        num_replications: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            defaultValue: 1
         }
     },
     {

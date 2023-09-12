@@ -68,6 +68,7 @@ export default {
     align-items: center;
     z-index: 1000;
     background-color: rgba(0, 0, 0, 0.5);
+    text-align: center;
 }
 
 .abort-info {

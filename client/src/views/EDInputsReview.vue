@@ -1,4 +1,8 @@
 <template>
+    <WarningModal :display="warning" >
+        <p class="space">This experiment is current running. Input changes are not permitted. Please follow the link below to check on simulation status.</p>
+        <router-link :to="'/experiments/design/simulation-start/' + this.experimentID" class="link-button">Simulation Status</router-link>
+    </WarningModal>
     <LoadingModal :display="loading" estimated-loading-time="12000" />
     <Header />
     <div class="site-container">
@@ -586,6 +590,7 @@ import LayoutMaker from '@/components/LayoutMaker.vue';
 import SmartTable from '@/components/SmartTable.vue';
 import Collapsable from '@/components/Collapsable.vue';
 import LoadingModal from '@/components/LoadingModal.vue';
+import WarningModal from '@/components/WarningModal.vue';
 import dataRequest from '@/utils/dataRequest';
 import dayjs from 'dayjs';
 export default {
@@ -606,6 +611,7 @@ export default {
             selectedOperation: 0,
             selectedAssets: null,
             hoursOfOperationData: null,
+            warning: false,
             loading: false,
             processTimeSettings: {
                 default: true,
@@ -643,10 +649,15 @@ export default {
     },
     mixins: [titleMixin],
     title: 'Experiment Designer',
-    components: { Sidebar, Header, ExperimentDesignerSidebar, ExperimentDesignerSidebar, LayoutMaker, SmartTable, Collapsable, LoadingModal },
+    components: { Sidebar, Header, ExperimentDesignerSidebar, ExperimentDesignerSidebar, LayoutMaker, SmartTable, Collapsable, LoadingModal, WarningModal },
     methods: {
         getExperimentID() {
             this.experimentID = window.location.href.split("/")[window.location.href.split("/").length - 1];
+        },
+        async getCurrentlyRunning() {
+            let data = await dataRequest("/api/experiment/running/" + this.experimentID, "GET");
+            console.log(data);
+            this.warning = data.running;
         },
         async getExperimentData() {
             let data = await dataRequest("/api/experiment/" + this.experimentID, "GET");
@@ -729,7 +740,8 @@ export default {
                 this.getTaskSequenceData(),
                 this.getProcessTimeData(),
                 this.getExperimentData(),
-                this.getSiteData()
+                this.getSiteData(),
+                this.getCurrentlyRunning()
             ])
             this.excludedAssets = this.assetData.filter(e => e.asset.capacity == 0).map(e => e.asset.asset_id);
             this.selectedOperationChange();
@@ -746,7 +758,8 @@ export default {
         },
         async saveAllChanges() {
             this.loading = true;
-            return await Promise.all([
+            await dataRequest("/api/experiment/task-sequence/bulk/" + this.experimentID, "POST", JSON.stringify({ iteration_number: 1 }));
+            await Promise.all([
                 dataRequest("/api/experiment/site/" + this.experimentID, "PUT", JSON.stringify({ site_id: this.selectedSite })),
                 this.saveProcessTimeChanges(),
                 this.saveAssetInclusionData(),
@@ -754,36 +767,58 @@ export default {
             ])
         },
         async saveProcessTimeChanges() {
-            // if (this.processTimeData[0].iteration_number == 1) {
+            if (this.processTimeData[0].iteration_number == 1) {
                 let postProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'POST');
-                console.log('Post Data:', postProcessTimeData);
-                let putProcessTimePostData = this.changedProcessTimeData.filter(e => e.method == 'PUT' && e.iteration_number == 0).map(({iteration_number, ...rest}) => {
-                    let object = {...rest};
-                    object.iteration_number = 1;
-                    return object;
-                });
-                console.log('Put Post Data:', putProcessTimePostData);
-                let putProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'PUT' && e.iteration_number > 0);
-                // let deleteProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'DELETE').map(e => parseInt(e.process_time_id));
-                let deleteProcessTimeIDs = this.changedProcessTimeData.filter(e => e.method == 'DELETE').map(e => parseInt(e.asset_id));
-                console.log('Delete IDs:', deleteProcessTimeIDs);
-                deleteProcessTimeIDs = deleteProcessTimeIDs.filter((e, index, array) => array.indexOf(e) == index);
-                console.log('Unique Delete IDs:', deleteProcessTimeIDs);
-                let deleteProcessTimeData = this.processTimeData.filter(e => deleteProcessTimeIDs.indexOf(e.process_time.asset_id) !== -1)
-                deleteProcessTimeData = deleteProcessTimeData.map(({process_time, ...rest}) => {
-                    let object = {...process_time}
-                    object.iteration_number = 1;
-                    return object;
-                })
-                console.log('Delete Post Data:', deleteProcessTimeData);
-                postProcessTimeData = postProcessTimeData.concat(putProcessTimePostData, deleteProcessTimeData);
-                console.log('Full Post Data:', postProcessTimeData);
+                let putProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'PUT');
+                let deleteProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'DELETE').map(e => parseInt(e.process_time_id));
                 if (postProcessTimeData.length) {
                     await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "POST", JSON.stringify({ data: postProcessTimeData }))
                 }
                 if (putProcessTimeData.length) {
                     await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "PUT", JSON.stringify({ data: putProcessTimeData }))
                 }
+                if (deleteProcessTimeData.length) {
+                    await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "DELETE", JSON.stringify({ data: deleteProcessTimeData }))
+                }
+            } else {
+                let data = this.processTimeData.map(e => {
+                    let object = { ...e.process_time }
+                    object.iteration_number = 1
+                    return object
+                });
+                console.log(data)
+                await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "POST", JSON.stringify({ data: data }))
+            }
+            // if (this.processTimeData[0].iteration_number == 1) {=
+                // let postProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'POST');
+                // console.log('Post Data:', postProcessTimeData);
+                // let putProcessTimePostData = this.changedProcessTimeData.filter(e => e.method == 'PUT' && e.iteration_number == 0).map(({iteration_number, ...rest}) => {
+                //     let object = {...rest};
+                //     object.iteration_number = 1;
+                //     return object;
+                // });
+                // console.log('Put Post Data:', putProcessTimePostData);
+                // let putProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'PUT' && e.iteration_number > 0);
+                // // let deleteProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'DELETE').map(e => parseInt(e.process_time_id));
+                // let deleteProcessTimeIDs = this.changedProcessTimeData.filter(e => e.method == 'DELETE').map(e => parseInt(e.asset_id));
+                // console.log('Delete IDs:', deleteProcessTimeIDs);
+                // deleteProcessTimeIDs = deleteProcessTimeIDs.filter((e, index, array) => array.indexOf(e) == index);
+                // console.log('Unique Delete IDs:', deleteProcessTimeIDs);
+                // let deleteProcessTimeData = this.processTimeData.filter(e => deleteProcessTimeIDs.indexOf(e.process_time.asset_id) !== -1)
+                // deleteProcessTimeData = deleteProcessTimeData.map(({process_time, ...rest}) => {
+                //     let object = {...process_time}
+                //     object.iteration_number = 1;
+                //     return object;
+                // })
+                // console.log('Delete Post Data:', deleteProcessTimeData);
+                // postProcessTimeData = postProcessTimeData.concat(putProcessTimePostData, deleteProcessTimeData);
+                // console.log('Full Post Data:', postProcessTimeData);
+                // if (postProcessTimeData.length) {
+                //     await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "POST", JSON.stringify({ data: postProcessTimeData }))
+                // }
+                // if (putProcessTimeData.length) {
+                //     await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "PUT", JSON.stringify({ data: putProcessTimeData }))
+                // }
                 // if (deleteProcessTimeData.length) {
                 //     await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "DELETE", JSON.stringify({ data: deleteProcessTimeData }))
                 // }
@@ -814,7 +849,7 @@ export default {
         async generateArrivalData() {
             let arrivalData = {
                 expId: this.experimentID,
-                numReplications: 3,
+                numReplications: 5,
                 start_date: this.demandSettings.startDate,
                 min_jobs: this.demandSettings.dailyTarget.min,
                 max_jobs: this.demandSettings.dailyTarget.max,

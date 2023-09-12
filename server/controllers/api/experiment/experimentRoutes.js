@@ -403,14 +403,12 @@ router.put('/:id', (req, res) => {
 
 router.delete('/:id', (req, res) => {
     Experiment.destroy({
-
         where: {
             experiment_id: req.params.id
         }
     })
         .then(dbExperimentData => {
-            console.log("AAAAAAAAAAAAAAAAAA\n", dbExperimentData);
-            res.status(204);
+            res.status(204).end();
         })
         .catch(err => {
             console.log(err);

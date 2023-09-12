@@ -16,7 +16,7 @@
                 </tr>
                 <tr v-if="endTime">
                     <th><i class="bi bi-sign-stop-fill"></i> Finished:</th>
-                    <td>{{ dayjs(endTime).format("YYYY-MM-DD hh:mm:ss") }} minutes</td>
+                    <td>{{ dayjs(endTime).format("YYYY-MM-DD hh:mm:ss") }}</td>
                 </tr>
                 <tr>
                     <th><i class="bi bi-stopwatch-fill"></i> Time Running:</th>

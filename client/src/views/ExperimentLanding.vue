@@ -11,7 +11,7 @@
                         <router-link to="/experiments/design"><i class="bi bi-file-earmark-plus-fill"></i> New
                             Experiment...</router-link>
                         <router-link to="/experiments/search"><i class="bi bi-folder-fill"></i> Open
-                            Experiment...</router-link>
+                            Experiment Results...</router-link>
                     </div>
                     <div class="section">
                         <h2>Recent</h2>

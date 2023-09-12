@@ -1,4 +1,8 @@
 <template>
+    <WarningModal :display="warning">
+        <p class="space">This experiment is current running. Input changes are not permitted. Please follow the link below to check on simulation status.</p>
+        <router-link :to="'/experiments/design/simulation-start/' + this.experimentID" class="link-button">Simulation Status</router-link>
+    </WarningModal>
     <Header />
     <div class="site-container">
         <Sidebar />
@@ -47,22 +51,37 @@ import titleMixin from '../mixins/titleMixin';
 import Sidebar from '@/components/Sidebar.vue';
 import ExperimentDesignerSidebar from '@/components/ExperimentDesignerSidebar.vue';
 import Collapsable from '@/components/Collapsable.vue';
+import WarningModal from '@/components/WarningModal.vue';
+import dataRequest from '@/utils/dataRequest';
 export default {
     data() {
         return {
-
+            experimentID: null,
+            warning: false
         }
     },
     mixins: [titleMixin],
     title: 'Experiment Designer',
-    components: { Sidebar, Header, ExperimentDesignerSidebar, ExperimentDesignerSidebar, Collapsable },
+    components: { Sidebar, Header, ExperimentDesignerSidebar, ExperimentDesignerSidebar, Collapsable, WarningModal },
     methods: {
+        getExperimentID() {
+            this.experimentID = window.location.href.split("/")[window.location.href.split("/").length - 1];
+        },
+        async getCurrentlyRunning() {
+            let data = await dataRequest("/api/experiment/running/" + this.experimentID, "GET");
+            console.log(data);
+            this.warning = data.running;
+        },
         clickBack() {
-            this.$router.push("/experiments/design/inputs/" + window.location.href.split("/")[window.location.href.split("/").length - 1]);
+            this.$router.push("/experiments/design/inputs/" + this.experimentID);
         },
         clickNext() {
-            this.$router.push("/experiments/design/simulation-start/" + window.location.href.split("/")[window.location.href.split("/").length - 1]);
+            this.$router.push("/experiments/design/simulation-start/" + this.experimentID);
         }
+    },
+    mounted() {
+        this.getExperimentID()
+        this.getCurrentlyRunning();
     }
 }
 </script>

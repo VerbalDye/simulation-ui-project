@@ -1,4 +1,8 @@
 <template>
+    <WarningModal :display="warning">
+        <p class="space">This experiment is current running. Input changes are not permitted. Please follow the link below to check on simulation status.</p>
+        <router-link :to="'/experiments/design/simulation-start/' + this.experimentID" class="link-button">Simulation Status</router-link>
+    </WarningModal>
     <Header />
     <div class="site-container">
         <Sidebar />
@@ -45,6 +49,10 @@
                         <th>Experiment Name*:</th>
                         <td><input type="text" id="experiment-name-input" :value="this.experimentData.experiment_name"></td>
                     </tr>
+                    <tr>
+                        <th>Delete Experiment?</th>
+                        <td><button @click="deleteExperiment">Delete</button></td>
+                    </tr>
                 </table>
             </div>
             <div class="flex-right"><button @click="clickBack">Back</button><button @click="clickNext">Next</button></div>
@@ -57,6 +65,7 @@ import Header from '@/components/Header.vue';
 import titleMixin from '../mixins/titleMixin';
 import Sidebar from '@/components/Sidebar.vue';
 import ExperimentDesignerSidebar from '@/components/ExperimentDesignerSidebar.vue';
+import WarningModal from '@/components/WarningModal.vue';
 import dataRequest from '@/utils/dataRequest';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -73,19 +82,29 @@ export default {
                 experimentTypes: "",
                 departments: ""
             },
+            warning: false
         }
     },
     mixins: [titleMixin],
     title: 'Experiment Designer',
-    components: { Sidebar, Header, ExperimentDesignerSidebar, ExperimentDesignerSidebar },
+    components: { Sidebar, Header, ExperimentDesignerSidebar, ExperimentDesignerSidebar, WarningModal },
     methods: {
         getExperimentID() {
             this.experimentID = window.location.href.split("/")[window.location.href.split("/").length - 1];
         },
+        async getCurrentlyRunning() {
+            let data = await dataRequest("/api/experiment/running/" + this.experimentID, "GET");
+            console.log(data);
+            this.warning = data.running;
+        },
         async getExperimentData() {
-            let data = await dataRequest("/api/experiment/" + this.experimentID + "GET");
+            let data = await dataRequest("/api/experiment/" + this.experimentID, "GET");
             this.experimentData = data;
             this.createScenarioData();
+        },
+        async deleteExperiment() {
+            await dataRequest("/api/experiment/" + this.experimentID, "DELETE");
+            this.clickBack();
         },
         createScenarioData() {
             let analysis_types = [];
@@ -110,31 +129,7 @@ export default {
             return dayjs(date).tz(dayjs.tz.guess()).format("M-D-YYYY H:mm:s");
         },
         clickBack() {
-            // if (window.confirm("Are you sure you want to go back?\nChanges to experiment will be lost.")) {
-                // fetch("/api/experiment/" + this.experimentID, {
-                //     method: "DELETE"
-                // })
-                //     .then(response => {
-                //         if (response.status == 200) {
-                //             response.json()
-                //                 .then(data => {
-                //                     console.log(data);
-                //                     this.$router.push("/experiments/design/scenario");
-                //                 })
-                //         } else {
-
-                //             // Error Handling
-                //             let html = "It seems an unknown error has occurred. Check your connection and try agian. \n" + response.status + " " + response.responseText;
-                //             window.alert(html);
-                //         }
-                //     }).catch(function (error) {
-
-                //         // Informs user of failure
-                //         let html = "We appear to be having trouble reaching the Database. Check your connection and try agian. \n" + error;
-                //         window.alert(html);
-                //     });
-                this.$router.push("/experiments/design/scenario");
-            // }
+            this.$router.push("/experiments/design/scenario");
         },
         async clickNext() {
             let experiment_name = document.getElementById('experiment-name-input').value;
@@ -144,6 +139,7 @@ export default {
     },
     mounted() {
         this.getExperimentID();
+        this.getCurrentlyRunning();
         this.getExperimentData();
     }
 }

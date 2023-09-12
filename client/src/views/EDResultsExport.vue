@@ -1,4 +1,22 @@
 <template>
+    <WarningModal :display="warning">
+        <div v-if="running">
+            <p class="space">The experiment is currently running please reload the page to get latest status. Alternatively,
+                you can click
+                "Simulation Start" below to navigate to the "Simulation Run" page to get live experiment status. </p>
+            <router-link :to="'/experiments/design/simulation-start/' + this.experimentID" class="link-button">Simulation
+                Status</router-link>
+        </div>
+        <div v-else>
+            <p class="space">Seems like there is no output data for this experiment and it is not currently running. Click
+                one of the buttons below to either define inputs or start the simulation run.</p>
+            <router-link :to="'/experiments/design/results-review/' + this.experimentID" class="link-button">Take Me To
+                Input Definition</router-link>
+            <router-link :to="'/experiments/design/simulation-start/' + this.experimentID" class="link-button">Take Me To
+                Simulation Start</router-link>
+        </div>
+    </WarningModal>
+    <LoadingModal :display="loading" :estimatedLoadingTime="3000" />
     <Header />
     <div class="site-container">
         <Sidebar />
@@ -10,9 +28,6 @@
             </Collapsable>
             <Collapsable title="Export" name="export" back="save" :defaultOpen="true">
                 <div class="flex-vertical flex-align-start">
-                    <button class="space" @click="downloadCSVData(assetAvailabilityData, 'asset-availability')">Download
-                        Asset
-                        Availability</button>
                     <button class="space" @click="downloadCSVData(resourceUtilizationData, 'resource-util')">Download
                         Resource
                         Utilization</button>
@@ -34,27 +49,31 @@ import titleMixin from '../mixins/titleMixin';
 import Sidebar from '@/components/Sidebar.vue';
 import ExperimentDesignerSidebar from '@/components/ExperimentDesignerSidebar.vue';
 import Collapsable from '@/components/Collapsable.vue';
+import WarningModal from '@/components/WarningModal.vue';
+import LoadingModal from '@/components/LoadingModal.vue';
 import dataRequest from '@/utils/dataRequest';
 export default {
     data() {
         return {
             experimentID: null,
-            assetAvailabilityData: null,
             resourceUtilizationData: null,
-            throughputData: null
+            throughputData: null,
+            running: null,
+            loading: true,
+            warning: false
         }
     },
     mixins: [titleMixin],
     title: 'Experiment Designer',
-    components: { Sidebar, Header, ExperimentDesignerSidebar, ExperimentDesignerSidebar, Collapsable },
+    components: { Sidebar, Header, ExperimentDesignerSidebar, ExperimentDesignerSidebar, Collapsable, WarningModal, LoadingModal },
     methods: {
         getExperimentID() {
             this.experimentID = window.location.href.split("/")[window.location.href.split("/").length - 1];
         },
-        async getAssetAvailability() {
-            let data = await dataRequest("/api/experiment/asset-availability/" + this.experimentID, "GET");
+        async getCurrentlyRunning() {
+            let data = await dataRequest("/api/experiment/running/" + this.experimentID, "GET");
             console.log(data);
-            this.assetAvailabilityData = data;
+            this.running = data.running
         },
         async getResourceUtilization() {
             let data = await dataRequest("/api/experiment/resource-util/" + this.experimentID, "GET");
@@ -67,9 +86,13 @@ export default {
             this.throughputData = data;
         },
         async getData() {
-            this.getAssetAvailability();
-            this.getResourceUtilization();
-            this.getThroughput();
+            await Promise.all([
+                this.getCurrentlyRunning(),
+                this.getResourceUtilization(),
+                this.getThroughput()
+            ])
+            this.loading = false;
+            this.warning = this.throughputData[0].length == 0;
         },
         convertToCSV(objArray) {
             let array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;

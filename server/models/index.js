@@ -1,6 +1,7 @@
 const Arrival = require('./Arrival');
 const Asset = require('./Asset');
 const AssetAvailability = require('./AssetAvailability');
+const Backlog = require('./Backlog');
 const Cell = require('./Cell');
 const Core = require('./Core');
 const CoreModel = require('./CoreModel');
@@ -43,6 +44,15 @@ Asset.hasMany(AssetAvailability, {
 });
 AssetAvailability.belongsTo(Asset, {
     foreignKey: 'asset_id',
+    onDelete: 'CASCADE'
+});
+
+// Backlog- Model Association
+ModelObject.hasMany(Backlog, {
+    foreignKey: 'model_number'
+});
+Backlog.belongsTo(ModelObject, {
+    foreignKey: 'model_number',
     onDelete: 'CASCADE'
 });
 
@@ -238,6 +248,15 @@ AssetAvailability.belongsTo(Experiment, {
     onDelete: 'CASCADE'
 });
 
+// Experiment-Backlog Association
+Experiment.hasMany(Backlog, {
+    foreignKey: 'experiment_id'
+});
+Backlog.belongsTo(Experiment, {
+    foreignKey: 'experiment_id',
+    onDelete: 'CASCADE'
+});
+
 // Experiment-CoreSoakTime
 Experiment.hasMany(ExperimentCoreSoakTime, {
     foreignKey: 'experiment_id'
@@ -423,6 +442,7 @@ module.exports = {
     Arrival,
     Asset,
     AssetAvailability,
+    Backlog,
     Cell,
     Core,
     CoreModel,

@@ -10,6 +10,7 @@ const jobListRoutes = require('./jobListRoutes');
 const jobMixRoutes = require('./jobMixRoutes');
 const operationToLocationRoutes = require('./operationToLocation');
 const phasesRoutes = require('./phasesRoutes');
+const populateRoutes = require('./populateRoutes');
 const processTimeRoutes = require('./processTimeRoutes');
 const resourceUtilizationRoutes = require('./resourceUtilizationRoutes')
 const routingRoutes = require('./routingRoutes');
@@ -28,6 +29,7 @@ router.use('/job-list', jobListRoutes);
 router.use('/job-mix', jobMixRoutes);
 router.use('/operation-to-location', operationToLocationRoutes);
 router.use('/phases', phasesRoutes);
+router.use('/populate', populateRoutes);
 router.use('/process-time', processTimeRoutes);
 router.use('/resource-util', resourceUtilizationRoutes);
 router.use('/routing', routingRoutes);

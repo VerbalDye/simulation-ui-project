@@ -8,7 +8,7 @@
         <div v-else>
             <p class="space">Seems like there is no output data for this experiment and it is not currently running. Click
                 one of the buttons below to either define inputs or start the simulation run.</p>
-            <router-link :to="'/experiments/design/results-review/' + this.experimentID" class="link-button">Take Me To
+            <router-link :to="'/experiments/design/experiment-configuration/' + this.experimentID" class="link-button">Take Me To
                 Input Definition</router-link>
             <router-link :to="'/experiments/design/simulation-start/' + this.experimentID" class="link-button">Take Me To
                 Simulation Start</router-link>
@@ -30,7 +30,7 @@
                     :hoverTitles="['Iteration Number', 'Replication Number', 'Utilization']" />
                 <PlotlyChart v-if="throughputData" :data="throughputData[0]" id="3" title="Weekly Throughput"
                     group="asset_name" x="process_time" xTitle="Processing Times (Minutes)" y="weekly_throughput"
-                    yTitle="Weekly Throughput" :hover="['week']" :hoverTitles="['Week Number']" />
+                    yTitle="Weekly Throughput" :hover="['iteration_number', 'replication', 'week']" :hoverTitles="['Iteration Number', 'Replication Number', 'Week Number']" />
             </div>
             <div class="flex-right">
                 <button @click="clickBack">Back</button>
@@ -70,7 +70,6 @@ export default {
         },
         async getCurrentlyRunning() {
             let data = await dataRequest("/api/experiment/running/" + this.experimentID, "GET");
-            console.log(data);
             this.running = data.running
         },
         async getResourceUtilization() {

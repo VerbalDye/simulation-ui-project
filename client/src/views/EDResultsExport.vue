@@ -4,15 +4,15 @@
             <p class="space">The experiment is currently running please reload the page to get latest status. Alternatively,
                 you can click
                 "Simulation Start" below to navigate to the "Simulation Run" page to get live experiment status. </p>
-            <router-link :to="'/experiments/design/simulation-start/' + this.experimentID" class="link-button">Simulation
+            <router-link :to="'/experiments/design/simulation-start/' + experimentID" class="link-button">Simulation
                 Status</router-link>
         </div>
         <div v-else>
             <p class="space">Seems like there is no output data for this experiment and it is not currently running. Click
                 one of the buttons below to either define inputs or start the simulation run.</p>
-            <router-link :to="'/experiments/design/results-review/' + this.experimentID" class="link-button">Take Me To
+            <router-link :to="'/experiments/design/results-review/' + experimentID" class="link-button">Take Me To
                 Input Definition</router-link>
-            <router-link :to="'/experiments/design/simulation-start/' + this.experimentID" class="link-button">Take Me To
+            <router-link :to="'/experiments/design/simulation-start/' + experimentID" class="link-button">Take Me To
                 Simulation Start</router-link>
         </div>
     </WarningModal>
@@ -28,10 +28,10 @@
             </Collapsable>
             <Collapsable title="Export" name="export" back="save" :defaultOpen="true">
                 <div class="flex-vertical flex-align-start">
-                    <button class="space" @click="downloadCSVData(resourceUtilizationData, 'resource-util')">Download
+                    <button class="space" @click="downloadData(resourceUtilizationData[0], 'resource-util')">Download
                         Resource
                         Utilization</button>
-                    <button class="space" @click="downloadCSVData(throughputData, 'throughput')">Download
+                    <button class="space" @click="downloadData(throughputData[0], 'throughput')">Download
                         Throughput</button>
                 </div>
             </Collapsable>
@@ -52,6 +52,7 @@ import Collapsable from '@/components/Collapsable.vue';
 import WarningModal from '@/components/WarningModal.vue';
 import LoadingModal from '@/components/LoadingModal.vue';
 import dataRequest from '@/utils/dataRequest';
+import csvJson from '@/utils/csvJson';
 export default {
     data() {
         return {
@@ -72,16 +73,15 @@ export default {
         },
         async getCurrentlyRunning() {
             let data = await dataRequest("/api/experiment/running/" + this.experimentID, "GET");
-            console.log(data);
             this.running = data.running
         },
         async getResourceUtilization() {
-            let data = await dataRequest("/api/experiment/resource-util/" + this.experimentID, "GET");
+            let data = await dataRequest("/api/experiment/resource-util/processed/" + this.experimentID, "GET");
             console.log(data);
             this.resourceUtilizationData = data;
         },
         async getThroughput() {
-            let data = await dataRequest("/api/experiment/throughput/" + this.experimentID, "GET");
+            let data = await dataRequest("/api/experiment/throughput/processed/" + this.experimentID, "GET");
             console.log(data);
             this.throughputData = data;
         },
@@ -94,61 +94,8 @@ export default {
             this.loading = false;
             this.warning = this.throughputData[0].length == 0;
         },
-        convertToCSV(objArray) {
-            let array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
-            let str = '';
-
-            for (let i = 0; i < array.length; i++) {
-                let line = '';
-                for (let index in array[i]) {
-                    if (line != '') line += ','
-
-                    line += array[i][index];
-                }
-
-                str += line + '\r\n';
-            }
-
-            return str;
-        },
-        exportCSVFile(headers, items, fileTitle) {
-            if (headers) {
-                items.unshift(headers);
-            }
-
-            // Convert Object to JSON
-            let jsonObject = JSON.stringify(items);
-
-            let csv = this.convertToCSV(jsonObject);
-
-            let exportedFilename = fileTitle + '.csv' || 'export.csv';
-
-            let blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            if (navigator.msSaveBlob) { // IE 10+
-                navigator.msSaveBlob(blob, exportedFilename);
-            } else {
-                let link = document.createElement("a");
-                if (link.download !== undefined) { // feature detection
-                    // Browsers that support HTML5 download attribute
-                    let url = URL.createObjectURL(blob);
-                    link.setAttribute("href", url);
-                    link.setAttribute("download", exportedFilename);
-                    link.style.visibility = 'hidden';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                }
-            }
-        },
-        downloadCSVData(data, fileName) {
-            let keys = Object.keys(data[0])
-            let headers = {}
-            console.log(keys);
-            keys.forEach(key => {
-                headers[key] = key;
-            });
-            console.log(headers);
-            this.exportCSVFile(headers, data, fileName)
+        downloadData(data, name) {
+            csvJson.downloadJSONDataAsCSV(data, name)
         },
         clickBack() {
             this.$router.push("/experiments/design/results-review/" + this.experimentID);

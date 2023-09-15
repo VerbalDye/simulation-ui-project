@@ -64,13 +64,10 @@ export default {
         },
         async getRunning() {
             let data = await dataRequest("/api/experiment/running/" + this.experimentID, "GET");
-            console.log(data, this.wasRunning);
             if (data.running && !this.wasRunning) {
-                console.log('AAAAAAAAAAAA');
-                this.startTime = data.started
-                this.status = "Running"
+                this.startTime = data.started;
+                this.status = "Running";
                 this.wasRunning = true;
-                console.log(this.startTime)
             } else if (!data.running && this.wasRunning) {
                 this.status = "Finished";
                 clearInterval(this.interval);
@@ -85,7 +82,7 @@ export default {
         async startSimulation() {
             this.status = 'Running';
             this.startTime = dayjs();
-            await dataRequest("/api/experiment/simulation/start/" + this.experimentID, "POST");
+            await dataRequest("/api/experiment/simulation/start/" + this.experimentID, "POST", JSON.stringify({ num_replications: 5 }));
             this.status = 'Finished';
             this.endTime = dayjs();
             clearInterval(this.interval);
@@ -100,7 +97,6 @@ export default {
                 this.getRunning();
             } 
         }, 10000)
-        console.log(this.interval);
     }
 }
 </script>

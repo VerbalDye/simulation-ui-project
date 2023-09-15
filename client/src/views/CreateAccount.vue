@@ -56,8 +56,7 @@ export default {
     methods: {
         async handleCreateAccount(e) {
             e.preventDefault();
-            const body = { first_name: e.target[0].value, last_name: e.target[1].value, email: e.target[2].value, password: e.target[3].value, role: e.target[4].checked ? 'admin' : 'user' }
-            console.log(body);
+            const body = { first_name: e.target[0].value, last_name: e.target[1].value, email: e.target[2].value, password: e.target[3].value, role: e.target[4].checked ? 'admin' : 'user' };
             await dataRequest("/api/user", "POST", JSON.stringify(body));
             const urlParameters = new URLSearchParams(window.location.search);
             for (const [key, value] of urlParameters) {

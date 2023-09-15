@@ -94,7 +94,6 @@ export default {
         },
         async getCurrentlyRunning() {
             let data = await dataRequest("/api/experiment/running/" + this.experimentID, "GET");
-            console.log(data);
             this.warning = data.running;
         },
         async getExperimentData() {

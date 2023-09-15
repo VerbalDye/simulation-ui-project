@@ -25,19 +25,6 @@ router.get('/:id', (req, res) => {
         });
 });
 
-router.post('/generate', (req, res) => {
-    console.log(req.body);
-    sequelize.query('CALL populate_fromUI (:expId, :numReplications, :start_date, :min_jobs, :max_jobs, :stators, :relines, :rnd, :sun, :mon, :tues, :wed, :thur, :fri, :sat, :sun_time, :mon_time, :tues_time, :wed_time, :thur_time, :fri_time, :sat_time)',
-    {
-        replacements: req.body
-    })
-        .then(dbResponse => res.json({ message: 'Success' }))
-        .catch(err => {
-            console.log(err);
-            res.status(400).json(err);
-        });
-})
-
 router.put('/:id', (req, res) => {
     Arrival.update(req.body, {
         where: {

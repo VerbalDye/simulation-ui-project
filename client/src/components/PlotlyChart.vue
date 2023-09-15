@@ -23,7 +23,6 @@ export default {
                 groups[item[this.group]].push(item);
                 return groups;
             }, {});
-            console.log(splitData);
             let formattedData = [];
             for (let key in splitData) {
                 let group = splitData[key]
@@ -61,7 +60,6 @@ export default {
                 }
             }
             this.chartData = formattedData;
-            console.log(formattedData);
         }
     },
     mounted() {

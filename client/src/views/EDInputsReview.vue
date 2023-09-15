@@ -1,7 +1,9 @@
 <template>
-    <WarningModal :display="warning" >
-        <p class="space">This experiment is current running. Input changes are not permitted. Please follow the link below to check on simulation status.</p>
-        <router-link :to="'/experiments/design/simulation-start/' + this.experimentID" class="link-button">Simulation Status</router-link>
+    <WarningModal :display="warning">
+        <p class="space">This experiment is current running. Input changes are not permitted. Please follow the link below
+            to check on simulation status.</p>
+        <router-link :to="'/experiments/design/simulation-start/' + this.experimentID" class="link-button">Simulation
+            Status</router-link>
     </WarningModal>
     <LoadingModal :display="loading" estimated-loading-time="12000" />
     <Header />
@@ -562,13 +564,19 @@
                             </div>
                             <div v-else>
                                 <button @click="downloadTemplate">Download Template</button>
+                                <div v-if="this.backlogData">This experiment has Backlog Data. If you would like to
+                                    overwrite, upload new backlog data below and click "Upload".</div>
                                 <div>
                                     <label for="backlog-input">Upload Backlog</label>
-                                    <input type="file" name="backlog-input" id="backlog-input"
-                                        accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                                    <input type="file" name="backlog-input" id="backlog-input" class="space" accept=".csv">
                                 </div>
                                 <div class="flex-right">
                                     <button @click="uploadBacklog">Upload</button>
+                                </div>
+                                <div v-if="jobCoreLocationData">
+                                    <SmartTable :jsonData="jobCoreLocationData" :advancedSearchEnabled="false" :id="3" />
+                                        <!-- @toggle-change="assetInclusionChange" :excludedColumns="['destinations']" 
+                                        :toggle="'Include?'" :toggleData="this.selectedAssetInclusion"  -->
                                 </div>
                             </div>
                         </div>
@@ -592,12 +600,14 @@ import Collapsable from '@/components/Collapsable.vue';
 import LoadingModal from '@/components/LoadingModal.vue';
 import WarningModal from '@/components/WarningModal.vue';
 import dataRequest from '@/utils/dataRequest';
+import csvJson from '@/utils/csvJson';
 import dayjs from 'dayjs';
 export default {
     data() {
         return {
             experimentData: null,
             experimentID: null,
+            iteration: 0,
             operationToLocationData: null,
             siteData: null,
             selectedSite: null,
@@ -611,6 +621,8 @@ export default {
             selectedOperation: 0,
             selectedAssets: null,
             hoursOfOperationData: null,
+            jobCoreLocationData: null,
+            backlogData: null,
             warning: false,
             loading: false,
             processTimeSettings: {
@@ -656,7 +668,6 @@ export default {
         },
         async getCurrentlyRunning() {
             let data = await dataRequest("/api/experiment/running/" + this.experimentID, "GET");
-            console.log(data);
             this.warning = data.running;
         },
         async getExperimentData() {
@@ -670,6 +681,10 @@ export default {
             this.siteData = data;
             return data;
         },
+        async getBacklogData() {
+            let data = await dataRequest("/api/experiment/backlog/" + this.experimentID, "GET");
+            this.backlogData = data;
+        },
         async getTaskSequenceData() {
             let data = await dataRequest("/api/experiment/task-sequence/" + this.experimentID, "GET");
             this.taskSequenceData = data;
@@ -678,8 +693,15 @@ export default {
         },
         async getAssetData() {
             let data = await dataRequest("/api/experiment/asset/" + this.experimentID, "GET");
-            // console.log(data);
-            this.assetData = data;
+            let secondIterationData = data.filter(e => e.iteration_number == 1);
+            if (secondIterationData.length > 0) {
+                this.assetData = secondIterationData;
+                this.iteration = 1;
+            } else {
+                this.assetData = data;
+            }
+            console.log(data);
+            console.log(this.assetData);
         },
         async getOperationToLocationData() {
             let data = await dataRequest("/api/experiment/operation-to-location/" + this.experimentID, "GET");
@@ -691,17 +713,11 @@ export default {
         },
         async getProcessTimeData() {
             let data = await dataRequest("/api/experiment/process-time/" + this.experimentID, "GET");
-            // let iterations = []
-            // data.forEach(e => {
-            //     if (iterations.indexOf(e.iteration_number) == -1) {
-            //         iterations.push(e.iteration_number)
-            //     }
-            //     console.log(iterations);
-            // })
             let secondIterationData = data.filter(e => e.iteration_number == 1);
             if (secondIterationData.length > 0) {
                 this.backupProcessTimeData = JSON.parse(JSON.stringify(secondIterationData));
                 this.processTimeData = secondIterationData;
+                this.iteration = 1;
             } else {
                 this.backupProcessTimeData = JSON.parse(JSON.stringify(data));
                 this.processTimeData = data;
@@ -747,6 +763,7 @@ export default {
             this.selectedOperationChange();
             if (this.experimentData.scenario.scenario_id == 8) {
                 this.demandSettings.backlog = true;
+                this.getBacklogData();
             }
             this.selectedSite = this.experimentData.experiment_site.site_id;
             const siteSelectionEl = document.querySelector('input[value="' + this.experimentData.experiment_site.site_id + '"]');
@@ -757,97 +774,130 @@ export default {
             window.open('/api/experiment/backlog/template');
         },
         async saveAllChanges() {
-            this.loading = true;
-            await dataRequest("/api/experiment/task-sequence/bulk/" + this.experimentID, "POST", JSON.stringify({ iteration_number: 1 }));
-            await Promise.all([
-                dataRequest("/api/experiment/site/" + this.experimentID, "PUT", JSON.stringify({ site_id: this.selectedSite })),
-                this.saveProcessTimeChanges(),
-                this.saveAssetInclusionData(),
-                this.generateArrivalData()
-            ])
-        },
-        async saveProcessTimeChanges() {
-            if (this.processTimeData[0].iteration_number == 1) {
-                let postProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'POST');
-                let putProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'PUT');
-                let deleteProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'DELETE').map(e => parseInt(e.process_time_id));
-                if (postProcessTimeData.length) {
-                    await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "POST", JSON.stringify({ data: postProcessTimeData }))
-                }
-                if (putProcessTimeData.length) {
-                    await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "PUT", JSON.stringify({ data: putProcessTimeData }))
-                }
-                if (deleteProcessTimeData.length) {
-                    await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "DELETE", JSON.stringify({ data: deleteProcessTimeData }))
-                }
-            } else {
-                let data = this.processTimeData.map(e => {
-                    let object = { ...e.process_time }
-                    object.iteration_number = 1
-                    return object
-                });
-                console.log(data)
-                await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "POST", JSON.stringify({ data: data }))
+            let data = { 
+                asset: this.assetData.map(e => {
+                    let obj = {};
+                    obj.asset_id = e.asset.asset_id;
+                    obj.asset_name = e.asset.asset_name;
+                    obj.display_name = e.asset.display_name;
+                    obj.asset_id_PV = e.asset.asset_id_PV;
+                    obj.asset_type = e.asset.asset_type;
+                    obj.pos_x = e.asset.pos_x;
+                    obj.pos_y = e.asset.pos_y;
+                    obj.pos_z = e.asset.pos_z;
+                    obj.dim_length_feet = e.asset.dim_length_feet;
+                    obj.dim_width_feet = e.asset.dim_width_feet;
+                    obj.dim_height_feet = e.asset.dim_height_feet;
+                    if (this.excludedAssets.indexOf(e.asset.asset_id) !== -1) {
+                        obj.capacity = 0;
+                    } else {
+                        if (e.asset.capacity == 0) {
+                            obj.capacity = "RESET";
+                        } else {
+                            obj.capacity = e.asset.capacity;
+                        }
+                    }
+                    return obj;
+                }),
+                process_time: this.processTimeData.map(e => {
+                    let obj = {};
+                    obj.asset_id = e.process_time.asset_id;
+                    obj.operation_id = e.process_time.operation_id;
+                    obj.process_time = e.process_time.process_time;
+                    return obj;
+                })
             }
-            // if (this.processTimeData[0].iteration_number == 1) {=
-                // let postProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'POST');
-                // console.log('Post Data:', postProcessTimeData);
-                // let putProcessTimePostData = this.changedProcessTimeData.filter(e => e.method == 'PUT' && e.iteration_number == 0).map(({iteration_number, ...rest}) => {
-                //     let object = {...rest};
-                //     object.iteration_number = 1;
-                //     return object;
-                // });
-                // console.log('Put Post Data:', putProcessTimePostData);
-                // let putProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'PUT' && e.iteration_number > 0);
-                // // let deleteProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'DELETE').map(e => parseInt(e.process_time_id));
-                // let deleteProcessTimeIDs = this.changedProcessTimeData.filter(e => e.method == 'DELETE').map(e => parseInt(e.asset_id));
-                // console.log('Delete IDs:', deleteProcessTimeIDs);
-                // deleteProcessTimeIDs = deleteProcessTimeIDs.filter((e, index, array) => array.indexOf(e) == index);
-                // console.log('Unique Delete IDs:', deleteProcessTimeIDs);
-                // let deleteProcessTimeData = this.processTimeData.filter(e => deleteProcessTimeIDs.indexOf(e.process_time.asset_id) !== -1)
-                // deleteProcessTimeData = deleteProcessTimeData.map(({process_time, ...rest}) => {
-                //     let object = {...process_time}
-                //     object.iteration_number = 1;
-                //     return object;
-                // })
-                // console.log('Delete Post Data:', deleteProcessTimeData);
-                // postProcessTimeData = postProcessTimeData.concat(putProcessTimePostData, deleteProcessTimeData);
-                // console.log('Full Post Data:', postProcessTimeData);
-                // if (postProcessTimeData.length) {
-                //     await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "POST", JSON.stringify({ data: postProcessTimeData }))
-                // }
-                // if (putProcessTimeData.length) {
-                //     await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "PUT", JSON.stringify({ data: putProcessTimeData }))
-                // }
-                // if (deleteProcessTimeData.length) {
-                //     await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "DELETE", JSON.stringify({ data: deleteProcessTimeData }))
-                // }
+            this.loading = true;
+            await Promise.allSettled([
+                dataRequest("/api/experiment/site/" + this.experimentID, "PUT", JSON.stringify({ site_id: this.selectedSite })),
+                dataRequest("/api/experiment/inputs/" + this.experimentID, "POST", JSON.stringify({ iteration: 1, targetIteration: this.iteration, data })),
+            ])
+            await this.populateFromUI();
+            // let promises = [
+            //     dataRequest("/api/experiment/site/" + this.experimentID, "PUT", JSON.stringify({ site_id: this.selectedSite })),
+            //     this.saveProcessTimeChanges(),
+            //     this.saveAssetInclusionData(),
+            // ]
+            // if (this.experimentData.scenario.scenario_id == 8) {
+            //     if (this.backlogData.length == 0) {
+            //         alert("Please upload backlog data.");
+            //         return
+            //     } else {
+            //         promises.push(dataRequest("/api/experiment/populate/jobs", "POST", JSON.stringify({ expId: this.experimentID })))
+            //     }
             // } else {
-            //     await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "POST", JSON.stringify({ data: this.processTimeData.map(e => e.process_time), iteration_number: 1 }))
+            //     promises.push(this.populateFromUI())
             // }
-
+            // this.loading = true;
+            // await dataRequest("/api/experiment/task-sequence/bulk/" + this.experimentID, "POST", JSON.stringify({ iteration_number: 1 }));
+            // await Promise.all(promises)
         },
-        async saveAssetInclusionData() {
-            let enabledAssets = this.assetData.filter(e => e.asset.capacity == 0 && this.excludedAssets.indexOf(e.asset.asset_id) == -1).map(e => e.asset).map(({ capacity, ...rest }) => {
-                rest["capacity"] = "RESET"
-                return rest
-            });
-            let disabledAssets = this.assetData.filter(e => this.excludedAssets.indexOf(e.asset.asset_id) !== -1).map(e => e.asset).map(({ capacity, ...rest }) => {
-                rest["capacity"] = 0
-                return rest
-            });
-            let assets = enabledAssets.concat(disabledAssets);
-            await dataRequest("/api/experiment/asset/bulk/" + this.experimentID, "PUT", JSON.stringify({ data: assets }));
-        },
+        // async saveProcessTimeChanges() {
+        //     if (this.processTimeData[0].iteration_number == 1) {
+        //         let postProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'POST');
+        //         let putProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'PUT');
+        //         let deleteProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'DELETE').map(e => parseInt(e.process_time_id));
+        //         if (postProcessTimeData.length) {
+        //             await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "POST", JSON.stringify({ data: postProcessTimeData }))
+        //         }
+        //         if (putProcessTimeData.length) {
+        //             await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "PUT", JSON.stringify({ data: putProcessTimeData }))
+        //         }
+        //         if (deleteProcessTimeData.length) {
+        //             await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "DELETE", JSON.stringify({ data: deleteProcessTimeData }))
+        //         }
+        //     } else {
+        //         let data = this.processTimeData.map(e => {
+        //             let object = { ...e.process_time }
+        //             object.iteration_number = 1
+        //             return object
+        //         });
+        //         await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "POST", JSON.stringify({ data: data }))
+        //     }
+        // },
+        // async saveAssetInclusionData() {
+        //     let enabledAssets = this.assetData.filter(e => e.asset.capacity == 0 && this.excludedAssets.indexOf(e.asset.asset_id) == -1).map(e => e.asset).map(({ capacity, ...rest }) => {
+        //         rest["capacity"] = "RESET"
+        //         return rest
+        //     });
+        //     let disabledAssets = this.assetData.filter(e => this.excludedAssets.indexOf(e.asset.asset_id) !== -1).map(e => e.asset).map(({ capacity, ...rest }) => {
+        //         rest["capacity"] = 0
+        //         return rest
+        //     });
+        //     let assets = enabledAssets.concat(disabledAssets);
+        //     await dataRequest("/api/experiment/asset/bulk/" + this.experimentID, "PUT", JSON.stringify({ data: assets }));
+        // },
         async uploadBacklog() {
             let backlogInput = document.getElementById("backlog-input");
-            let formData = new FormData();
-            formData.append('file', backlogInput.files[0]);
-            await dataRequest("/api/experiment/backlog/file/" + this.experimentID, "POST", formData)
-            console.log(backlogInput.files[0]);
+            let jsonData = await csvJson.CSVtoJson(backlogInput.files[0]);
+            let backlogData = jsonData.map(e => {
+                let obj = {
+                    experiment_id: this.experimentID,
+                    job_number: parseInt(e["Job"].match(/([0-9]+)[A-Z]*/, "")[1]),
+                    serial_number: e["SerialNumber"],
+                    part_number: e["Part"],
+                    model_number: parseInt(e["Model"].match(/[A-z]+([0-9]+)[A-z0-9]*/)[1]),
+                    location: e["Location"],
+                    start_date: e["StartDate"],
+                    day_number: parseInt(e["Day"]),
+                    week_number: parseInt(e["Week"]),
+                    expedite: (e["Expedite"] == "TRUE" ? true : false),
+                    job_type: e["Group"],
+                };
+                if (e["Last Labor"]) obj.last_labor = e["Last Labor"];
+                if (e["AdhesiveDry"]) obj.adhesive_dry = e["AdhesiveDry"];
+                if (e["Scheduled"]) obj.scheduled = (e["Scheduled"] == "TRUE" ? true : false);
+                if (e["Promise"]) obj.promise_date = e["Promise"];
+                if (e["Order"]) obj.order_number = parseInt(e["Order"]);
+                if (e["Name"]) obj.customer_name = e["Name"];
+                return obj;
+            })
+            this.backlogData = await dataRequest("/api/experiment/backlog/bulk/" + this.experimentID, "POST", JSON.stringify({ data: backlogData }));
+            console.log(this.backlogData);
+            await dataRequest("/api/experiment/populate/from-backlog", "POST", JSON.stringify({ expId: this.experimentID, numReplications: 5 }));
         },
-        async generateArrivalData() {
-            let arrivalData = {
+        async populateFromUI() {
+            let populateFromUIData = {
                 expId: this.experimentID,
                 numReplications: 5,
                 start_date: this.demandSettings.startDate,
@@ -871,8 +921,7 @@ export default {
                 fri_time: this.demandSettings.deliveryDays.fri.time,
                 sat_time: this.demandSettings.deliveryDays.sat.time,
             }
-            console.log(arrivalData);
-            await dataRequest("/api/experiment/arrival/generate", "POST", JSON.stringify(arrivalData));
+            await dataRequest("/api/experiment/populate/from-ui", "POST", JSON.stringify(populateFromUIData));
         },
         formatTaskSequenceData(data) {
             const formattedData = [];
@@ -1033,7 +1082,7 @@ export default {
                         experiment_process_time_id: id,
                         asset_id: asset_id,
                         operation_id: operation_id,
-                        iteration_number: 1, 
+                        iteration_number: 1,
                         method: 'POST'
                     });
                 }

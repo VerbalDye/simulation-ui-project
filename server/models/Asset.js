@@ -21,6 +21,9 @@ Asset.init(
         asset_id_pv: {
             type: DataTypes.STRING
         },
+        asset_type: {
+            type: DataTypes.STRING
+        },
         pos_x: {
             type: DataTypes.INTEGER
         },      

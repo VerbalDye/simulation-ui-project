@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const sequelize = require('../../../config/connection');
-const { Backlog } = require('../../../models');
+const { Backlog, ModelObject } = require('../../../models');
 
 router.get('/', (req, res) => {
     Backlog.findAll()
@@ -29,11 +29,39 @@ router.get('/:id', (req, res) => {
         });
 });
 
-router.post('/file/:id', (req, res) => {
-    let form = new multiparty.Form();
-    form.parse
-    console.log(req.body);
-    res.status(204).end()
+router.post('/bulk/:id', (req, res) => {
+    let models = [];
+    Backlog.destroy({
+        where: {
+            experiment_id: req.params.id
+        }
+    })
+        .then(dbDeleteBacklogData => {
+            req.body.data.forEach(entry => {
+                models.push(
+                    new Promise(resolve => {
+                        ModelObject.findOrCreate({
+                            where: {
+                                model_number: entry.model_number
+                            },
+                            defaults: {
+                                model_number: entry.model_number
+                            }
+                        })
+                        resolve();
+                    })
+                )
+            })
+            Promise.allSettled(models)
+                .then(dbPromiseData => {
+                    Backlog.bulkCreate(req.body.data)
+                        .then(dbBacklogData => res.json(dbBacklogData))
+                        .catch(err => {
+                            console.log(err);
+                            res.status(400).json(err);
+                        });
+                })
+        })
 });
 
 router.put('/:id', (req, res) => {

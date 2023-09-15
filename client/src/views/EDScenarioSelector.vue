@@ -93,10 +93,9 @@ export default {
             if (f.analysis_type.length == 0 && f.experiment_type.length == 0 && f.department.length == 0) {
                 return true;
             }
-            filters = filters.filter(item => !f.analysis_type.length || f.analysis_type.includes(item.analysis_type.replace(" ", "_").toLowerCase()))
-            filters = filters.filter(item => !f.experiment_type.length || f.experiment_type.includes(item.experiment_type.replace(" ", "_").toLowerCase()))
-            filters = filters.filter(item => !f.department.length || f.department.includes(item.department.replace(" ", "_").toLowerCase()))
-            console.log(filters);
+            filters = filters.filter(item => !f.analysis_type.length || f.analysis_type.includes(item.analysis_type.replace(" ", "_").toLowerCase()));
+            filters = filters.filter(item => !f.experiment_type.length || f.experiment_type.includes(item.experiment_type.replace(" ", "_").toLowerCase()));
+            filters = filters.filter(item => !f.department.length || f.department.includes(item.department.replace(" ", "_").toLowerCase()));
             if (filters.length > 0) {
                 return true;
             }
@@ -144,7 +143,6 @@ export default {
                 }
             });
             scenarioEls.forEach((element, index) => {
-                console.log(scenarioEls.length, count);
                 element.classList.remove('checked');
                 element.classList.remove('filtered-in');
                 if (element.children[0].checked) {

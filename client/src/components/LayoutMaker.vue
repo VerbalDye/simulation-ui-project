@@ -278,7 +278,6 @@ export default {
                 item.is_default = false;
                 delete item['asset_id'];
             });
-            console.log(JSON.stringify(changedData));
             let newAssetData = await dataRequest("/api/asset/create-bulk", "POST", JSON.stringify(changedData))
             newAssetData.forEach(item => {
                 let assetAssociation = this.assetData.filter(original => original.asset.asset_name == item.asset_name);

@@ -15,7 +15,7 @@
                     </div>
                     <div class="section">
                         <h2>Recent</h2>
-                        <table v-if="recentExperiments">
+                        <table v-if="recentExperiments" class="full-table">
                             <thead>
                                 <tr>
                                     <th>Name</th>
@@ -26,8 +26,8 @@
                             <tbody>
                                 <tr v-for="row in this.recentExperiments">
                                     <td><router-link :to="'/experiments/design/experiment-configuration/' + row.experiment_id">{{ row.experiment_name }}</router-link></td>
-                                    <td>{{ row.username }}</td>
-                                    <td>{{ row.created }}</td>
+                                    <td>{{ row.user.first_name + " " + row.user.last_name }}</td>
+                                    <td>{{ dayjs(row.created).format("M-D-YYYY h:mm:ss") }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -45,10 +45,12 @@ import titleMixin from '../mixins/titleMixin';
 import Sidebar from '@/components/Sidebar.vue';
 import auth from '../utils/auth';
 import dataRequest from '@/utils/dataRequest';
+import dayjs from 'dayjs';
 export default {
     data() {
         return {
-            recentExperiments: null
+            recentExperiments: null,
+            dayjs: dayjs
         }
     },
     mixins: [titleMixin],

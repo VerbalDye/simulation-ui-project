@@ -3,7 +3,7 @@ const { Sessions, Users } = require('../models');
 const withAuth = (req, res, next) => {
     const session_token = req.cookies["session_token"]
     if (!session_token) {
-        res.redirect('/welcome?redirect=' + encodeURIComponent(req.originalUrl));
+        res.redirect('/login?redirect=' + encodeURIComponent(req.originalUrl));
     } else {
         Sessions.findOne({
             where: {
@@ -20,10 +20,10 @@ const withAuth = (req, res, next) => {
                             user_id: dbSessionData.user_id
                         }
                     });
-                    res.redirect('/welcome?redirect=' + encodeURIComponent(req.originalUrl));
+                    res.redirect('/login?redirect=' + encodeURIComponent(req.originalUrl));
                 }
             } else {
-                res.redirect('/welcome?redirect=' + encodeURIComponent(req.originalUrl));
+                res.redirect('/login?redirect=' + encodeURIComponent(req.originalUrl));
             }
         })
     }

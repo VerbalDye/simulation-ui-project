@@ -153,7 +153,7 @@ router.post('/inputs/:id', async (req, res) => {
         where: { travel_allowed: true },
         include: [{ model: ExperimentRouting, where: { experiment_id: id, iteration_number: b.targetIteration } }]
     });
-    let dbExperimentTaskSequenceData = await ExperimentTaskSequence.findAll({ where: { experiment_id: id, iteration_number: b.targetIteration } })
+    let dbExperimentTaskSequenceData = await ExperimentTaskSequence.findAll({ where: { experiment_id: id, iteration_number: b.targetIteration } });
     // Clear Data for Iteration
     await Promise.allSettled([
         Asset.destroy({
@@ -175,9 +175,8 @@ router.post('/inputs/:id', async (req, res) => {
             where: { is_default: false },
             include: [{ model: ExperimentRouting, where: { experiment_id: id, iteration_number: b.iteration } }]
         }),
-        TaskSequence.destroy({
-            where: { is_default: false },
-            include: [{ model: ExperimentTaskSequence, where: { experiment_id: id, iteration_number: b.iteration } }]
+        ExperimentTaskSequence.destroy({
+            where: { experiment_id: id, iteration_number: b.iteration }
         })
     ])
     // Get Asset Data 
@@ -265,8 +264,10 @@ router.post('/inputs/:id', async (req, res) => {
         obj.routing_id = e.routing_id
         return obj;
     });
-    let experimentTaskSequenceData = dbExperimentTaskSequenceData.map(({ experiment_task_sequence, iteration_number, ...rest }) => {
-        let obj = rest;
+    let experimentTaskSequenceData = dbExperimentTaskSequenceData.map(e => {
+        let obj = {};
+        obj.experiment_id = e.experiment_id;
+        obj.task_sequence_id = e.task_sequence_id;
         obj.iteration_number = b.iteration;
         return obj;
     })

@@ -564,7 +564,7 @@
                             </div>
                             <div v-else>
                                 <button @click="downloadTemplate">Download Template</button>
-                                <div v-if="this.backlogData">This experiment has Backlog Data. If you would like to
+                                <div v-if="this.backlogData" class="space">This experiment has Backlog Data. If you would like to
                                     overwrite, upload new backlog data below and click "Upload".</div>
                                 <div>
                                     <label for="backlog-input">Upload Backlog</label>
@@ -687,8 +687,8 @@ export default {
         },
         async getTaskSequenceData() {
             let data = await dataRequest("/api/experiment/task-sequence/" + this.experimentID, "GET");
-            this.taskSequenceData = data;
-            this.formattedTaskSequenceData = this.formatTaskSequenceData(data);
+            this.taskSequenceData = data.filter(e => e.iteration_number == 0);
+            this.formattedTaskSequenceData = this.formatTaskSequenceData(this.taskSequenceData);
             this.selectedOperation = 0;
         },
         async getAssetData() {
@@ -812,62 +812,9 @@ export default {
                 dataRequest("/api/experiment/site/" + this.experimentID, "PUT", JSON.stringify({ site_id: this.selectedSite })),
                 dataRequest("/api/experiment/inputs/" + this.experimentID, "POST", JSON.stringify({ iteration: 1, targetIteration: this.iteration, data })),
             ])
-            await this.populateFromUI();
-            // let promises = [
-            //     dataRequest("/api/experiment/site/" + this.experimentID, "PUT", JSON.stringify({ site_id: this.selectedSite })),
-            //     this.saveProcessTimeChanges(),
-            //     this.saveAssetInclusionData(),
-            // ]
-            // if (this.experimentData.scenario.scenario_id == 8) {
-            //     if (this.backlogData.length == 0) {
-            //         alert("Please upload backlog data.");
-            //         return
-            //     } else {
-            //         promises.push(dataRequest("/api/experiment/populate/jobs", "POST", JSON.stringify({ expId: this.experimentID })))
-            //     }
-            // } else {
-            //     promises.push(this.populateFromUI())
-            // }
-            // this.loading = true;
-            // await dataRequest("/api/experiment/task-sequence/bulk/" + this.experimentID, "POST", JSON.stringify({ iteration_number: 1 }));
-            // await Promise.all(promises)
         },
-        // async saveProcessTimeChanges() {
-        //     if (this.processTimeData[0].iteration_number == 1) {
-        //         let postProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'POST');
-        //         let putProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'PUT');
-        //         let deleteProcessTimeData = this.changedProcessTimeData.filter(e => e.method == 'DELETE').map(e => parseInt(e.process_time_id));
-        //         if (postProcessTimeData.length) {
-        //             await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "POST", JSON.stringify({ data: postProcessTimeData }))
-        //         }
-        //         if (putProcessTimeData.length) {
-        //             await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "PUT", JSON.stringify({ data: putProcessTimeData }))
-        //         }
-        //         if (deleteProcessTimeData.length) {
-        //             await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "DELETE", JSON.stringify({ data: deleteProcessTimeData }))
-        //         }
-        //     } else {
-        //         let data = this.processTimeData.map(e => {
-        //             let object = { ...e.process_time }
-        //             object.iteration_number = 1
-        //             return object
-        //         });
-        //         await dataRequest("/api/experiment/process-time/bulk/" + this.experimentID, "POST", JSON.stringify({ data: data }))
-        //     }
-        // },
-        // async saveAssetInclusionData() {
-        //     let enabledAssets = this.assetData.filter(e => e.asset.capacity == 0 && this.excludedAssets.indexOf(e.asset.asset_id) == -1).map(e => e.asset).map(({ capacity, ...rest }) => {
-        //         rest["capacity"] = "RESET"
-        //         return rest
-        //     });
-        //     let disabledAssets = this.assetData.filter(e => this.excludedAssets.indexOf(e.asset.asset_id) !== -1).map(e => e.asset).map(({ capacity, ...rest }) => {
-        //         rest["capacity"] = 0
-        //         return rest
-        //     });
-        //     let assets = enabledAssets.concat(disabledAssets);
-        //     await dataRequest("/api/experiment/asset/bulk/" + this.experimentID, "PUT", JSON.stringify({ data: assets }));
-        // },
         async uploadBacklog() {
+            this.loading = true;
             let backlogInput = document.getElementById("backlog-input");
             let jsonData = await csvJson.CSVtoJson(backlogInput.files[0]);
             let backlogData = jsonData.map(e => {
@@ -892,9 +839,20 @@ export default {
                 if (e["Name"]) obj.customer_name = e["Name"];
                 return obj;
             })
+            let uniqueIDs = [];
+            backlogData = backlogData.filter(e => {
+                if (uniqueIDs.indexOf(e.job_number) == -1) {
+                    uniqueIDs.push(e.job_number);
+                    return true
+                } else {
+                    return false
+                }
+            })
             this.backlogData = await dataRequest("/api/experiment/backlog/bulk/" + this.experimentID, "POST", JSON.stringify({ data: backlogData }));
             console.log(this.backlogData);
+            await this.saveAllChanges();
             await dataRequest("/api/experiment/populate/from-backlog", "POST", JSON.stringify({ expId: this.experimentID, numReplications: 5 }));
+            this.loading = false;
         },
         async populateFromUI() {
             let populateFromUIData = {
@@ -988,10 +946,20 @@ export default {
         },
         async clickBack() {
             await this.saveAllChanges();
+            if (this.experimentData.scenario.scenario_id == 8) {
+                await dataRequest("/api/experiment/populate/jobs/" + this.experimentID, "POST")
+            } else {
+                await this.populateFromUI();
+            }
             this.$router.push("/experiments/design/experiment-configuration/" + this.experimentID);
         },
         async clickNext() {
-            await this.saveAllChanges()
+            await this.saveAllChanges();
+            if (this.experimentData.scenario.scenario_id == 8) {
+                await dataRequest("/api/experiment/populate/jobs/" + this.experimentID, "POST")
+            } else {
+                await this.populateFromUI();
+            }
             this.$router.push("/experiments/design/experiment-parameters/" + this.experimentID);
         },
         clickNextOperation() {
@@ -1044,92 +1012,44 @@ export default {
                 })
             })
         },
-        // Later convert to beautiful function to handle any data change
         processTimeDataChange(mode, { process_time, experiment_process_time_id, operation_id, asset_id }) {
-            process_time = parseFloat(process_time);
-            operation_id = parseInt(operation_id);
-            asset_id = parseInt(asset_id);
+            let processTime = parseFloat(process_time);
+            let operationID = parseInt(operation_id);
+            let assetID = parseInt(asset_id);
+            let experimentProcessTimeID = experiment_process_time_id;
+            // let experimentProcessTimeID = parseInt(experiment_process_time_id);
             if (mode == "add" && operation_id !== undefined && asset_id !== undefined) {
-                if (!process_time) { process_time = 0 }
-                let entryIds = this.processTimeData.filter(e => e.process_time.asset_id == asset_id && e.process_time.operation_id == operation_id).map(e => e.experiment_process_time_id);
-                let backupTimes = this.backupProcessTimeData.filter(e => e.process_time.asset_id == asset_id && e.process_time.operation_id == operation_id).filter(e => entryIds.indexOf(e.experiment_process_time_id) == -1);
+                if (!process_time) { processTime = 0 }
+                let entryIds = this.processTimeData.filter(e => e.process_time.asset_id == assetID && e.process_time.operation_id == operationID).map(e => e.experiment_process_time_id);
+                let backupTimes = this.backupProcessTimeData.filter(e => e.process_time.asset_id == assetID && e.process_time.operation_id == operationID).filter(e => entryIds.indexOf(e.experiment_process_time_id) == -1);
                 if (backupTimes.length > 0) {
                     let entry = this.processTimeData[this.processTimeData.push(backupTimes[0]) - 1];
-                    let index = this.changedProcessTimeData.findIndex(e => e.experiment_process_time_id == backupTimes[0].experiment_process_time_id);
-                    if (index !== -1 && this.changedProcessTimeData[index].method == 'DELETE') {
-                        if (process_time) {
-                            entry.process_time.process_time = process_time;
-                            this.changedProcessTimeData[index].method = 'PUT';
-                            this.changedProcessTimeData[index].process_time = process_time;
-                        } else {
-                            this.changedProcessTimeData.splice(index, 1);
-                        }
-                    } else {
-                        throw new Error('Adding Entry Failed: No Delete Record Exists');
+                    if (process_time) {
+                        entry.process_time.process_time = processTime;
                     }
                 } else {
                     let id = "new-" + Math.floor(Math.random() * 1000000);
                     this.processTimeData.push({
                         experiment_process_time_id: id,
                         process_time: {
-                            process_time: process_time,
+                            process_time: processTime,
                             asset_id: asset_id,
                             operation_id: operation_id
                         }
                     })
-                    this.changedProcessTimeData.push({
-                        process_time: process_time,
-                        experiment_process_time_id: id,
-                        asset_id: asset_id,
-                        operation_id: operation_id,
-                        iteration_number: 1,
-                        method: 'POST'
-                    });
                 }
             } else if (mode == "remove" && experiment_process_time_id !== undefined) {
-                let data = this.processTimeData.find(e => e.experiment_process_time_id == experiment_process_time_id);
-                this.processTimeData.splice(this.processTimeData.findIndex(e => e.experiment_process_time_id == experiment_process_time_id), 1);
-                let index = this.changedProcessTimeData.findIndex(e => e.experiment_process_time_id == experiment_process_time_id);
-                if (experiment_process_time_id.toString().includes('new')) {
-                    this.changedProcessTimeData.splice(index, 1);
-                } else {
-                    if (index == -1) {
-                        this.changedProcessTimeData.push({
-                            process_time: 0,
-                            experiment_process_time_id: experiment_process_time_id,
-                            asset_id: data.process_time.asset_id,
-                            operation_id: data.process_time.operation_id,
-                            process_time_id: data.process_time_id,
-                            iteration_number: data.iteration_number,
-                            method: 'DELETE'
-                        });
-                    } else {
-                        this.changedProcessTimeData[index].method = 'DELETE'
-                    }
-                }
+                this.processTimeData.splice(this.processTimeData.findIndex(e => e.experiment_process_time_id == experimentProcessTimeID), 1);
             } else if (mode == "change" && process_time !== undefined && experiment_process_time_id !== undefined) {
-                let data = this.processTimeData.find(e => e.experiment_process_time_id == experiment_process_time_id);
-                data.process_time.process_time = process_time;
-                let processTimeEntry = this.changedProcessTimeData.find(e => e.experiment_process_time_id == experiment_process_time_id);
-                if (!processTimeEntry) {
-                    this.changedProcessTimeData.push({
-                        experiment_process_time_id: experiment_process_time_id,
-                        asset_id: data.process_time.asset_id,
-                        operation_id: data.process_time.operation_id,
-                        process_time: process_time,
-                        process_time_id: data.process_time_id,
-                        iteration_number: data.iteration_number,
-                        method: 'PUT'
-                    });
-                } else {
-                    processTimeEntry.process_time = process_time;
-                }
+                let data = this.processTimeData.find(e => e.experiment_process_time_id == experimentProcessTimeID);
+                console.log(data);
+                data.process_time.process_time = processTime;
             } else if (mode == "overwrite" && operation_id !== undefined && asset_id !== undefined) {
-                let template = this.processTimeData.filter(e => e.process_time.operation_id == operation_id && e.process_time.asset_id == asset_id);
-                let assetIds = this.operationToLocationData.filter(e => e.operation_to_location.operation_id == operation_id).map(e => e.operation_to_location.asset_id);
+                let template = this.processTimeData.filter(e => e.process_time.operation_id == operationID && e.process_time.asset_id == assetID);
+                let assetIds = this.operationToLocationData.filter(e => e.operation_to_location.operation_id == operationID).map(e => e.operation_to_location.asset_id);
                 assetIds.splice(assetIds.indexOf(asset_id), 1);
                 assetIds.forEach(id => {
-                    this.processTimeData.filter(e => e.process_time.operation_id == operation_id && e.process_time.asset_id == id).forEach(entry => {
+                    this.processTimeData.filter(e => e.process_time.operation_id == operationID && e.process_time.asset_id == id).forEach(entry => {
                         this.processTimeDataChange("remove", { experiment_process_time_id: entry.experiment_process_time_id });
                     })
                     template.forEach(entry => {
@@ -1169,8 +1089,9 @@ export default {
             this.processTimeElementChange();
         },
         resetProcessingTimeChanges() {
-            this.processTimeData = this.backupProcessTimeData;
-            this.changedProcessTimeData = [];
+            this.processTimeData = JSON.parse(JSON.stringify(this.backupProcessTimeData));
+            this.processTimeElementChange();
+            // this.changedProcessTimeData = [];
         },
         handleJobMixChange(id, { target }) {
             if (this.demandSettings.lastJobMixIDs.length == 0) {
@@ -1225,7 +1146,12 @@ export default {
             if (index !== -1 && e.checked) {
                 this.excludedAssets.splice(index, 1);
             } else if (!e.checked && index == -1) {
-                this.excludedAssets.push(e.data.asset_id);
+                if (this.selectedAssets.filter(f => this.excludedAssets.indexOf(f.asset_id) == -1).length > 1) {
+                    this.excludedAssets.push(e.data.asset_id);
+                } else {
+                    e.target.checked = true;
+                    window.alert("You must have at least one asset selected for each operation.");
+                }
             }
         },
         operationMapSelectionChange(e) {

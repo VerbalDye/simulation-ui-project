@@ -3,8 +3,8 @@
         <div :id="'collapsable-header-' + name" class="flex-between collapsable-header">
             <h3 v-if="heading">{{ title }}</h3>
             <h2 v-else>{{ title }}</h2>
-            <button class="collapse-button" @click="handleCollapse"><i
-                    class="bi bi-plus-circle-fill" :id="'collapsable-icon-' + name"></i></button>
+            <button class="collapse-button" @click="handleCollapse"><i class="bi bi-plus-circle-fill"
+                    :id="'collapsable-icon-' + name"></i></button>
         </div>
         <div :id="'collapsable-' + name" class="collapsable">
             <slot></slot>
@@ -24,7 +24,7 @@ export default {
         }
     },
     name: 'Collapsable',
-    props: ['title', 'name', 'back', 'next', 'defaultOpen', 'heading'],
+    props: ['title', 'name', 'back', 'next', 'defaultOpen', 'heading', 'reset'],
     emits: [],
     methods: {
         handleCollapse() {
@@ -46,17 +46,12 @@ export default {
             let openCollapsables = document.querySelectorAll(".open");
             let currentTarget = document.getElementById('collapsable-' + targetName);
             openCollapsables.forEach(collapsable => {
-                let icon = document.getElementById('collapsable-icon-' + collapsable.id.split('collapsable-')[1])
-                icon.classList.remove("bi-dash-circle-fill");
-                icon.classList.add("bi-plus-circle-fill");
-                collapsable.classList.remove("open");
+                collapsable.parentElement.parentElement.reset = 'close';
             });
             while (currentTarget) {
                 if (currentTarget.classList.contains("collapsable")) {
-                    let currentIcon = document.getElementById('collapsable-icon-' + currentTarget.id.split('collapsable-')[1])
-                    currentTarget.classList.add("open");
-                    currentIcon.classList.remove("bi-plus-circle-fill");
-                    currentIcon.classList.add("bi-dash-circle-fill");
+                    let collapsableEl = document.getElementById('collapsable-component-' + currentTarget.id.split('collapsable-')[1]).parentElement;
+                    collapsableEl.reset = 'open';
                 }
                 currentTarget = currentTarget.parentElement;
             }
@@ -67,6 +62,16 @@ export default {
     mounted() {
         this.collapsed = this.defaultOpen && true;
         this.handleCollapse();
+    },
+    watch: {
+        reset: function (newVal, oldVal) {
+            if (newVal == 'open') {
+                this.collapsed = false;
+            } else {
+                this.collapsed = true;
+            }
+            this.handleCollapse();
+        },
     }
 }
 </script>

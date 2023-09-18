@@ -23,12 +23,12 @@
             <h1>6. Results Review</h1>
             <div>
                 <!-- <PlotlyChart v-if="assetAvailabilityData" :data="assetAvailabilityData" id="1" title="Weekly Throughput" group="asset_name" x="process_time" xTitle="Processing Times (Minutes)" y="weekly_throughput" yTitle="Weekly Throughput" :hover="['week']"/> -->
-                <PlotlyChart v-if="resourceUtilizationData" :data="resourceUtilizationData[0]" id="2"
+                <PlotlyChart v-if="resourceUtilizationData" :data="resourceUtilizationData" id="2"
                     title="Asset Utilization" group="display_name" x="AVG(util.processing_time )"
-                    xTitle="Processing Times (Minutes)" y="utilization" yTitle="Utilization"
+                    xTitle="Average Processing Time (Minutes)" y="utilization" yTitle="Utilization (%)"
                     :hover="['iteration_number', 'replication', 'utilization']"
                     :hoverTitles="['Iteration Number', 'Replication Number', 'Utilization']" />
-                <PlotlyChart v-if="throughputData" :data="throughputData[0]" id="3" title="Weekly Throughput"
+                <PlotlyChart v-if="throughputData" :data="throughputData" id="3" title="Weekly Throughput"
                     group="asset_name" x="process_time" xTitle="Processing Times (Minutes)" y="weekly_throughput"
                     yTitle="Weekly Throughput" :hover="['iteration_number', 'replication', 'week']" :hoverTitles="['Iteration Number', 'Replication Number', 'Week Number']" />
             </div>
@@ -75,12 +75,17 @@ export default {
         async getResourceUtilization() {
             let data = await dataRequest("/api/experiment/resource-util/processed/" + this.experimentID, "GET");
             console.log(data);
-            this.resourceUtilizationData = data;
+            this.resourceUtilizationData = data[0].map(({ utilization, ...rest }) => {
+                let obj = rest;
+                obj.utilization = Math.round((utilization * 10000))/100;
+                return obj;
+            });
+            console.log(this.resourceUtilizationData);
         },
         async getThroughput() {
             let data = await dataRequest("/api/experiment/throughput/processed/" + this.experimentID, "GET");
             console.log(data);
-            this.throughputData = data;
+            this.throughputData = data[0];
         },
         async getData() {
             await Promise.allSettled([
@@ -89,7 +94,7 @@ export default {
                 this.getCurrentlyRunning()
             ])
             this.loading = false;
-            this.warning = this.throughputData[0].length == 0;
+            this.warning = (this.throughputData.length == 0 || this.resourceUtilizationData.length == 0);
         },
         clickBack() {
             this.$router.push("/experiments/design/simulation-start/" + this.experimentID);

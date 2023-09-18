@@ -48,7 +48,7 @@ export default {
     emits: ['selection-change'],
     methods: {
         handleToggleChange(row, index, { target }) {
-            this.$emit('toggle-change', { checked: target.checked, data: row, index: index });
+            this.$emit('toggle-change', { checked: target.checked, data: row, index: index, target: target });
         },
         handleSearchChange() {
             let searchVal = document.getElementById("smart-table-search-" + this.id).value;

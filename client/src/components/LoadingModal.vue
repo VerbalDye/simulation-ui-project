@@ -12,7 +12,7 @@
                 <div></div>
             </div>
         </div>
-        <div v-if="showCancelButton" class="abort-info">
+        <div v-if="showAbort" class="abort-info">
             <p>Hmm... Seem like this is taking a long time. If you would like to regain control of the site, click abort
                 below. Note: This can cause significant problems for the experiment you are attempting to create. It is
                 recommended to restart the experiment creation process if you are forced to abort.</p>
@@ -25,7 +25,7 @@
 export default {
     data() {
         return {
-            showCancelButton: false,
+            showAbort: false,
             timeoutID: null
         }
     },
@@ -42,14 +42,14 @@ export default {
             let loadingEl = document.getElementById('loading-modal');
             if (newVal) {
                 loadingEl.classList.add("display");
+                this.timeoutID = setTimeout(() => {
+                    this.showAbort = true;
+                }, this.estimatedLoadingTime);
             } else {
                 loadingEl.classList.remove("display");
                 clearTimeout(this.timeoutID);
-                this.showCancelButton = false;
+                this.showAbort = false;
             }
-            this.timeoutID = setTimeout(() => {
-                this.showCancelButton = true;
-            }, this.estimatedLoadingTime);
         }
     }
 }
@@ -192,5 +192,4 @@ export default {
         transform: rotate(360deg);
     }
 }
-
 </style>

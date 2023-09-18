@@ -26,7 +26,7 @@ router.post('/start/:id', (req, res) => {
         })
     ])
         .then(dbPromiseData => {
-            child_process.exec('..\\simulation\\"PV_Fluid v0_31 (Upload replications from job info)_windows.bat"', {maxBuffer: 1024 * 1024 * 200}, function (error, stdout, stderr) {
+            child_process.exec('..\\simulation\\"PV_Fluid v0_32 (Checks capacity of possible assets)_windows.bat"', {maxBuffer: 1024 * 1024 * 200}, function (error, stdout, stderr) {
                 console.log(stdout);
                 console.log(error);
                 CurrentlyRunning.destroy({

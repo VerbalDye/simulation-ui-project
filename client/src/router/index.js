@@ -11,11 +11,6 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: '/welcome',
-    name: 'welcome',
-    component: () => import('../views/LandingPage.vue')
-  },
-  {
     path: '/login',
     name: 'login',
     component: () => import('../views/Login.vue')

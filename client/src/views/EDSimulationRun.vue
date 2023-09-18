@@ -69,8 +69,8 @@ export default {
                 this.status = "Running";
                 this.wasRunning = true;
             } else if (!data.running && this.wasRunning) {
+                this.endTime = dayjs();
                 this.status = "Finished";
-                clearInterval(this.interval);
             }
         },
         clickBack() {
@@ -86,16 +86,21 @@ export default {
             this.status = 'Finished';
             this.endTime = dayjs();
             clearInterval(this.interval);
+            window.alert("Simulation Run Complete!");
         }
     },
     mounted() {
         this.getExperimentID();
         this.getRunning();
-        this.interval = setInterval(() => {
-            this.currentTime = dayjs()
+        this.interval = setInterval(async () => {
+            this.currentTime = dayjs();
             if (this.wasRunning) {
-                this.getRunning();
+                await this.getRunning();
             } 
+            if (this.status == "Finished") {
+                clearInterval(this.interval);
+                window.alert("Simulation Run Complete!");
+            }
         }, 10000)
     }
 }

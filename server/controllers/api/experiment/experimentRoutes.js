@@ -6,6 +6,7 @@ const {
     CurrentlyRunning,
     Experiment,
     ExperimentAsset,
+    ExperimentCore,
     ExperimentCoreSoakTime,
     ExperimentHoo,
     ExperimentJobMix,
@@ -357,6 +358,11 @@ router.post('/from/:id', (req, res) => {
                         "qc_pass"
                     ]
                 },
+                {
+                    model: ExperimentCore,
+                    foreignKey: { experiment_id: req.params.id },
+                    attributes: ['core_number', 'available']
+                }
             ]
         }
         let experimentData = await copyFromModel(target);

@@ -20,43 +20,48 @@
 export default {
     data() {
         return {
-            collapsed: true
+            collapsed: true,
+            firstRender: true,
         }
     },
     name: 'Collapsable',
     props: ['title', 'name', 'back', 'next', 'defaultOpen', 'heading', 'reset'],
-    emits: [],
+    emits: ['toggle-collapse'],
     methods: {
         handleCollapse() {
+            this.collapsed = !this.collapsed;
+            this.renderCollapse();
+        },
+        renderCollapse() {
             const iconEl = document.getElementById('collapsable-icon-' + this.name);
             const collapsableEl = document.getElementById('collapsable-' + this.name);
             if (this.collapsed) {
-                iconEl.classList.remove("bi-plus-circle-fill");
-                iconEl.classList.add("bi-dash-circle-fill");
-                collapsableEl.classList.add("open");
-                this.collapsed = false;
-            } else {
                 iconEl.classList.remove("bi-dash-circle-fill");
                 iconEl.classList.add("bi-plus-circle-fill");
                 collapsableEl.classList.remove("open");
-                this.collapsed = true;
+            } else {
+                iconEl.classList.remove("bi-plus-circle-fill");
+                iconEl.classList.add("bi-dash-circle-fill");
+                collapsableEl.classList.add("open");
             }
         },
         goToCollapsable(targetName) {
             let openCollapsables = document.querySelectorAll(".open");
             let currentTarget = document.getElementById('collapsable-' + targetName);
             openCollapsables.forEach(collapsable => {
-                collapsable.parentElement.parentElement.reset = 'close';
+                this.handleToggleCollapse(collapsable.id.split('collapsable-')[1], false);
             });
             while (currentTarget) {
-                if (currentTarget.classList.contains("collapsable")) {
-                    let collapsableEl = document.getElementById('collapsable-component-' + currentTarget.id.split('collapsable-')[1]).parentElement;
-                    collapsableEl.reset = 'open';
+                if (currentTarget.classList.contains("collapse-component")) {
+                    this.handleToggleCollapse(currentTarget.id.split('collapsable-component-')[1], true);
                 }
                 currentTarget = currentTarget.parentElement;
             }
             let top = document.getElementById('collapsable-component-' + targetName).offsetTop;
             window.scrollTo({ top: top, left: 0, behavior: 'smooth' });
+        },
+        handleToggleCollapse(name, open) {
+            this.$emit('toggle-collapse', { name: name, open: open });
         },
     },
     mounted() {
@@ -65,12 +70,12 @@ export default {
     },
     watch: {
         reset: function (newVal, oldVal) {
-            if (newVal == 'open') {
-                this.collapsed = false;
+            if (this.firstRender) {
+                this.firstRender = false;
             } else {
-                this.collapsed = true;
+                this.collapsed = !newVal.open;
+                this.renderCollapse();
             }
-            this.handleCollapse();
         },
     }
 }

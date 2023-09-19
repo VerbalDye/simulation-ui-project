@@ -13,7 +13,8 @@
         <div class="content">
             <h1>3. Inputs Definition & Review</h1>
             <div id="input-collapsables">
-                <Collapsable title="Site Selection" name="site" next="phases-cells-operations" :defaultOpen="true">
+                <Collapsable @toggle-collapse="collapsableToggleChange" title="Site Selection" name="site"
+                    next="phases-cells-operations" :defaultOpen="true" :reset="collapsableStatus['site']">
                     <form
                         @change="this.selectedSite = document.querySelector(`input[name='site-selection']:checked`).value">
                         <label v-for="site in siteData" :for="site.site_id" class="radio-container">
@@ -24,9 +25,11 @@
                         </label>
                     </form>
                 </Collapsable>
-                <Collapsable title="Production Process" name="production-process-settings">
-                    <Collapsable title="Phases, Cells, & Operations" name="phases-cells-operations" back="site"
-                        next="locations-processing-times" :heading="3">
+                <Collapsable @toggle-collapse="collapsableToggleChange" title="Production Process"
+                    name="production-process-settings" :reset="collapsableStatus['production-process-settings']">
+                    <Collapsable @toggle-collapse="collapsableToggleChange" title="Phases, Cells, & Operations"
+                        name="phases-cells-operations" back="site" next="locations-processing-times" :heading="3"
+                        :reset="collapsableStatus['phases-cells-operations']">
                         <div>
                             <div v-for="(task, index) in formattedTaskSequenceData" class="drop-zone"
                                 @drop="onDrop($event, index)" @dragover.prevent @dragenter.prevent>
@@ -45,8 +48,9 @@
                             </div>
                         </div>
                     </Collapsable>
-                    <Collapsable title="Locations & Processing Times" name="locations-processing-times"
-                        back="phases-cells-operations" next="buildings" :heading="3">
+                    <Collapsable @toggle-collapse="collapsableToggleChange" title="Locations & Processing Times"
+                        name="locations-processing-times" back="phases-cells-operations" next="buildings" :heading="3"
+                        :reset="collapsableStatus['locations-processing-times']">
                         <div class="flex-between align-top">
                             <div class="flex-vertical">
                                 <div class="card-with-title">
@@ -118,9 +122,11 @@
                                         </tr>
                                     </table>
                                     <p>Location(s):</p>
-                                    <SmartTable :jsonData="selectedAssets" :advancedSearchEnabled="false"
-                                        @toggle-change="assetInclusionChange" :excludedColumns="['destinations']" :id="1"
-                                        :toggle="'Include?'" :toggleData="this.selectedAssetInclusion" />
+                                    <div v-if="selectedAssets" class="limit-width">
+                                        <SmartTable :jsonData="selectedAssets" :advancedSearchEnabled="false"
+                                            @toggle-change="assetInclusionChange" :excludedColumns="['destinations']"
+                                            :id="1" :toggle="'Include?'" :toggleData="this.selectedAssetInclusion" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -241,9 +247,11 @@
                         </div>
                     </Collapsable>
                 </Collapsable>
-                <Collapsable title="Resources" name="resources">
-                    <Collapsable title="Buildings" name="buildings" next="equipment-machines"
-                        back="locations-processing-times" :heading="3">
+                <Collapsable @toggle-collapse="collapsableToggleChange" title="Resources" name="resources"
+                    :reset="collapsableStatus['resources']">
+                    <Collapsable @toggle-collapse="collapsableToggleChange" title="Buildings" name="buildings"
+                        next="equipment-machines" back="locations-processing-times" :heading="3"
+                        :reset="collapsableStatus['buildings']">
                         <div class="flex-between">
                             <div class="flex-between">
                                 <i class="bi bi-building-fill-gear large-icon"></i>
@@ -296,24 +304,29 @@
                             </div>
                         </div>
                     </Collapsable>
-                    <Collapsable title="Equipment/Machines" name="equipment-machines" next="cores-tools" back="buildings"
-                        :heading="3">TBD</Collapsable>
-                    <Collapsable title="Cores & Tools" name="cores-tools" next="materials" back="equipment-machines"
-                        :heading="3">
+                    <Collapsable @toggle-collapse="collapsableToggleChange" title="Equipment/Machines"
+                        name="equipment-machines" next="cores-tools" back="buildings" :heading="3"
+                        :reset="collapsableStatus['equipment-machines']">TBD</Collapsable>
+                    <Collapsable @toggle-collapse="collapsableToggleChange" title="Cores & Tools" name="cores-tools"
+                        next="materials" back="equipment-machines" :heading="3" :reset="collapsableStatus['cores-tools']">
                         <div>
                             <button disabled>Upload Core List</button>
-                            <div v-if="coreModelData">
+                            <div v-if="coreModelData" class="limit-width">
                                 <SmartTable :jsonData="coreModelData" :advancedSearchEnabled="false" :id="3"
-                                    @toggle-change="e => e.checked ? coreUsage[e.index] = true : coreUsage[e.index] = false"
-                                    toggle="Use?" :toggleData="this.coreUsage" />
+                                    :excludedColumns="['experiment_core_id', 'available']"
+                                    @toggle-change="coreAvailabilityChange"
+                                    toggle="Available?" :toggleData="this.coreUsage" />
                             </div>
                         </div>
                     </Collapsable>
-                    <Collapsable title="Materials" name="materials" next="labor" back="cores-tools" :heading="3">TBD
+                    <Collapsable @toggle-collapse="collapsableToggleChange" title="Materials" name="materials" next="labor"
+                        back="cores-tools" :heading="3" :reset="collapsableStatus['materials']">TBD
                     </Collapsable>
-                    <Collapsable title="Labor" name="labor" next="routing" back="materials" :heading="3">TBD</Collapsable>
+                    <Collapsable @toggle-collapse="collapsableToggleChange" title="Labor" name="labor" next="routing"
+                        back="materials" :heading="3" :reset="collapsableStatus['labor']">TBD</Collapsable>
                 </Collapsable>
-                <Collapsable title="Routing, Queuing, and Prioritization" name="routing-queuing-prioritization">
+                <Collapsable @toggle-collapse="collapsableToggleChange" title="Routing, Queuing, and Prioritization"
+                    name="routing-queuing-prioritization" :reset="collapsableStatus['routing-queuing-prioritization']">
                     <div class="flex-between">
                         <div class="card-with-title">
                             <h4 class="card-title">Phases, Cells, & Operations</h4>
@@ -386,18 +399,23 @@
                         </div>
                     </div>
                     <div>
-                        <Collapsable title="Routing" name="routing" back="labor" next="queuing">
-                            <div v-if="routingData">
+                        <Collapsable @toggle-collapse="collapsableToggleChange" title="Routing" name="routing" back="labor"
+                            next="queuing" :reset="collapsableStatus['routing']">
+                            <div v-if="routingData" class="limit-width">
                                 <SmartTable :jsonData="routingData.map(item => item.routing)" :advancedSearchEnabled="false"
                                     :excludedColumns="['destinations']" :id="2" />
                             </div>
                         </Collapsable>
-                        <Collapsable title="Queuing" name="queuing" back="routing" next="priority">TBD</Collapsable>
-                        <Collapsable title="Priority" name="priority" back="queuing" next="transportation">TBD</Collapsable>
+                        <Collapsable @toggle-collapse="collapsableToggleChange" title="Queuing" name="queuing"
+                            back="routing" next="priority" :reset="collapsableStatus['queuing']">TBD</Collapsable>
+                        <Collapsable @toggle-collapse="collapsableToggleChange" title="Priority" name="priority"
+                            back="queuing" next="transportation" :reset="collapsableStatus['priority']">TBD</Collapsable>
                     </div>
                 </Collapsable>
-                <Collapsable title="Transportation" name="transportation" back="priority" next="demand">TBD</Collapsable>
-                <Collapsable title="Demand" name="demand" back="transportation" next="review">
+                <Collapsable @toggle-collapse="collapsableToggleChange" title="Transportation" name="transportation"
+                    back="priority" next="demand" :reset="collapsableStatus['transportation']">TBD</Collapsable>
+                <Collapsable @toggle-collapse="collapsableToggleChange" title="Demand" name="demand" back="transportation"
+                    next="review" :reset="collapsableStatus['demand']">
                     <div class="card-with-title">
                         <h4 class="card-title">Demand Input</h4>
                         <table class="grid-less">
@@ -564,7 +582,8 @@
                             </div>
                             <div v-else>
                                 <button @click="downloadTemplate">Download Template</button>
-                                <div v-if="this.backlogData" class="space">This experiment has Backlog Data. If you would like to
+                                <div v-if="this.backlogData" class="space">This experiment has Backlog Data. If you would
+                                    like to
                                     overwrite, upload new backlog data below and click "Upload".</div>
                                 <div>
                                     <label for="backlog-input">Upload Backlog</label>
@@ -573,16 +592,17 @@
                                 <div class="flex-right">
                                     <button @click="uploadBacklog">Upload</button>
                                 </div>
-                                <div v-if="jobCoreLocationData">
+                                <div v-if="jobCoreLocationData" class="limit-width">
                                     <SmartTable :jsonData="jobCoreLocationData" :advancedSearchEnabled="false" :id="3" />
-                                        <!-- @toggle-change="assetInclusionChange" :excludedColumns="['destinations']" 
+                                    <!-- @toggle-change="assetInclusionChange" :excludedColumns="['destinations']" 
                                         :toggle="'Include?'" :toggleData="this.selectedAssetInclusion"  -->
                                 </div>
                             </div>
                         </div>
                     </div>
                 </Collapsable>
-                <Collapsable title="Review" name="review" back="demand">TBD</Collapsable>
+                <Collapsable @toggle-collapse="collapsableToggleChange" title="Review" name="review" back="demand"
+                    :reset="collapsableStatus['review']">TBD</Collapsable>
             </div>
             <div class="flex-right"><button @click="clickBack">Back</button><button @click="clickNext">Next</button></div>
         </div>
@@ -591,7 +611,7 @@
 
 <script>
 import Header from '@/components/Header.vue';
-import titleMixin from '../mixins/titleMixin';
+import titleMixin from '@/mixins/titleMixin';
 import Sidebar from '@/components/Sidebar.vue';
 import ExperimentDesignerSidebar from '@/components/ExperimentDesignerSidebar.vue';
 import LayoutMaker from '@/components/LayoutMaker.vue';
@@ -656,7 +676,8 @@ export default {
             changedProcessTimeData: [],
             excludedAssets: [],
             selectedAssetInclusion: null,
-            coreUsage: []
+            coreUsage: [],
+            collapsableStatus: {}
         }
     },
     mixins: [titleMixin],
@@ -700,8 +721,8 @@ export default {
             } else {
                 this.assetData = data;
             }
-            console.log(data);
-            console.log(this.assetData);
+            // console.log(data);
+            // console.log(this.assetData);
         },
         async getOperationToLocationData() {
             let data = await dataRequest("/api/experiment/operation-to-location/" + this.experimentID, "GET");
@@ -738,9 +759,24 @@ export default {
             this.jobListData = data;
         },
         async getCoreModelData() {
-            let data = await dataRequest("/api/core-model", "GET");
-            this.coreUsage = data.map(e => true);
-            this.coreModelData = data;
+            let data = await dataRequest("/api/experiment/core/" + this.experimentID, "GET");
+            console.log(data);
+            this.coreUsage = data.map(e => e.available);
+            console.log(this.coreUsage);
+            let coreModelData = data.map(({ experiment_core_id, available, core, ...rest }) => {
+                return {
+                    experiment_core_id: experiment_core_id,
+                    available: available,
+                    core_model_id: core.core_model.core_model_id,
+                    core_number: core.core_model.core_number,
+                    model_number: core.core_model.model_number,
+                    status: core.core_model.status,
+                    created: core.core_model.created,
+                    last_modified: core.core_model.last_modified
+                }
+            });
+            console.log(coreModelData);
+            this.coreModelData = coreModelData;
         },
         async getData() {
             this.loading = true
@@ -774,7 +810,7 @@ export default {
             window.open('/api/experiment/backlog/template');
         },
         async saveAllChanges() {
-            let data = { 
+            let data = {
                 asset: this.assetData.map(e => {
                     let obj = {};
                     obj.asset_id = e.asset.asset_id;
@@ -808,8 +844,11 @@ export default {
                 })
             }
             this.loading = true;
+            let coreData = this.coreModelData.map(({ experiment_core_id, available, ...rest }) => { return { experiment_core_id, available } })
+            console.log(coreData);
             await Promise.allSettled([
                 dataRequest("/api/experiment/site/" + this.experimentID, "PUT", JSON.stringify({ site_id: this.selectedSite })),
+                dataRequest("/api/experiment/core/bulk/" + this.experimentID, "PUT", JSON.stringify({ data: coreData })),
                 dataRequest("/api/experiment/inputs/" + this.experimentID, "POST", JSON.stringify({ iteration: 1, targetIteration: this.iteration, data })),
             ])
         },
@@ -849,7 +888,7 @@ export default {
                 }
             })
             this.backlogData = await dataRequest("/api/experiment/backlog/bulk/" + this.experimentID, "POST", JSON.stringify({ data: backlogData }));
-            console.log(this.backlogData);
+            // console.log(this.backlogData);
             await this.saveAllChanges();
             await dataRequest("/api/experiment/populate/from-backlog", "POST", JSON.stringify({ expId: this.experimentID, numReplications: 5 }));
             this.loading = false;
@@ -1042,7 +1081,7 @@ export default {
                 this.processTimeData.splice(this.processTimeData.findIndex(e => e.experiment_process_time_id == experimentProcessTimeID), 1);
             } else if (mode == "change" && process_time !== undefined && experiment_process_time_id !== undefined) {
                 let data = this.processTimeData.find(e => e.experiment_process_time_id == experimentProcessTimeID);
-                console.log(data);
+                // console.log(data);
                 data.process_time.process_time = processTime;
             } else if (mode == "overwrite" && operation_id !== undefined && asset_id !== undefined) {
                 let template = this.processTimeData.filter(e => e.process_time.operation_id == operationID && e.process_time.asset_id == assetID);
@@ -1154,11 +1193,26 @@ export default {
                 }
             }
         },
+        coreAvailabilityChange(e) {
+            this.coreUsage[e.index] = e.checked;
+            this.coreModelData[e.index].available = e.checked;
+        },
         operationMapSelectionChange(e) {
             console.log(e);
+        },
+        createCollapsableObject() {
+            const collapsableEls = document.querySelectorAll(".collapse-component");
+            collapsableEls.forEach(element => {
+                let name = element.id.split('collapsable-component-')[1]
+                this.collapsableStatus[name] = { open: false, toggle: true }
+            })
+        },
+        collapsableToggleChange({ name, open }) {
+            this.collapsableStatus[name] = { open: open, toggle: !this.collapsableStatus[name].toggle };
         }
     },
     mounted() {
+        this.createCollapsableObject();
         this.getData();
     }
 }
@@ -1167,6 +1221,10 @@ export default {
 <style>
 .content h1 {
     text-align: left;
+}
+
+.limit-width {
+    width: 60vw;
 }
 
 #input-collapsables .collapse-button {
@@ -1296,5 +1354,4 @@ export default {
     border: none;
     margin: 4px;
     width: 50px;
-}
-</style>
+}</style>

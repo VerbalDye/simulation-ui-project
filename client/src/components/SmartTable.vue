@@ -45,7 +45,7 @@ export default {
     },
     name: 'SmartTable',
     props: ['jsonData', 'advancedSearchEnabled', 'excludedColumns', 'id', 'toggle', 'toggleData', 'links', 'columnHeadings'],
-    emits: ['selection-change'],
+    emits: ['toggle-change'],
     methods: {
         handleToggleChange(row, index, { target }) {
             this.$emit('toggle-change', { checked: target.checked, data: row, index: index, target: target });
@@ -112,7 +112,7 @@ export default {
         dataSetup() {
             if (this.jsonData && this.jsonData.length > 0 && this.jsonData[0] !== undefined) {
                 this.headerData = Object.keys(this.jsonData[0]);
-                this.displayData = [...this.jsonData]
+                this.displayData = JSON.parse(JSON.stringify(this.jsonData));
                 this.excluded.forEach(column => {
                     let index = this.headerData.indexOf(column);
                     if (index !== -1) {
@@ -173,7 +173,6 @@ export default {
 }
 
 .table-container {
-    max-width: 40vw;
     max-height: 70vh;
     overflow-x: auto;
     overflow-y: auto;

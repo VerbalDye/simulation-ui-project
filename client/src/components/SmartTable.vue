@@ -1,3 +1,4 @@
+<!-- // Need to deal with ID propagation -->
 <template>
     <div v-if="this.advancedSearchSelected">
         <div v-for="key in headerData" class="advanced-search-containers">
@@ -17,14 +18,30 @@
             <thead>
                 <tr>
                     <th v-if="toggle">{{ toggle }}</th>
-                    <th v-for="key in headerData" @click="handleHeaderClick"><div v-if="columnHeadings">{{ columnHeadings[key] }}</div><div v-else >{{ key }}</div></th>
+                    <th v-for="key in headerData" @click="handleHeaderClick">
+                        <div v-if="columnHeadings">{{ columnHeadings[key] }}</div>
+                        <div v-else>{{ key }}</div>
+                    </th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="(row, index) in displayData">
-                    <td v-if="toggle"><input type="checkbox" :checked="toggleData[index]" :class="'smart-table-' + id + '-toggle-input'"
-                            @input="handleToggleChange(row, index, $event)" :name="'toggle-' + index"></td>
-                    <td v-for="item in row"><router-link v-if="links" :to="links[index]" >{{ item }}</router-link><div v-else>{{ item }}</div></td>
+                    <td v-if="toggle"><input type="checkbox" :checked="toggleData[index]"
+                            :class="'smart-table-' + id + '-toggle-input'" @input="handleToggleChange(row, index, $event)"
+                            :name="'toggle-' + index"></td>
+                    <td v-for="(item, key) in row">
+                        <select v-if="dropdownData && dropdownData[key]" @change="handleDropdownChange(row, key, $event)" :name="key+'-'+index">
+                            <option
+                                v-if="dropdownData[key].allowNull || !dropdownData[key].values[index].find(e => e.selected == true)"
+                                :disabled="!dropdownData[key].allowNull"
+                                :selected="!dropdownData[key].values[index].find(e => e.selected == true)" value="null">
+                            </option>
+                            <option v-for="option in dropdownData[key].values[index]" :value="option.id"
+                                :selected="option.selected">{{ option.name }}</option>
+                        </select>
+                        <router-link v-else-if="links" :to="links[index]">{{ item }}</router-link>
+                        <div v-else>{{ item }}</div>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -44,11 +61,15 @@ export default {
         }
     },
     name: 'SmartTable',
-    props: ['jsonData', 'advancedSearchEnabled', 'excludedColumns', 'id', 'toggle', 'toggleData', 'links', 'columnHeadings'],
-    emits: ['toggle-change'],
+    props: ['jsonData', 'advancedSearchEnabled', 'excludedColumns', 'id', 'toggle', 'toggleData', 'links', 'columnHeadings', 'dropdownData'],
+    emits: ['toggle-change', 'selection-change'],
     methods: {
         handleToggleChange(row, index, { target }) {
             this.$emit('toggle-change', { checked: target.checked, data: row, index: index, target: target });
+        },
+        handleDropdownChange(row, column, event) {
+            // console.log(event.target.value);
+            this.$emit('selection-change', { data: row, column: column, value: event.target.value });
         },
         handleSearchChange() {
             let searchVal = document.getElementById("smart-table-search-" + this.id).value;
@@ -128,7 +149,7 @@ export default {
         }
     },
     mounted() {
-        if(this.excludedColumns) {
+        if (this.excludedColumns) {
             this.excluded = this.excluded.concat(this.excludedColumns);
         }
         this.dataSetup();
@@ -195,5 +216,4 @@ export default {
 .advanced-search-containers input {
     display: inline;
     margin: 3px 5px 3px 0;
-}
-</style>
+}</style>

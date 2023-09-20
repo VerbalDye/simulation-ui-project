@@ -10,6 +10,14 @@ JobCore.init(
             primaryKey: true,
             autoIncrement: true
         },
+        experiment_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'experiment',
+                key: 'experiment_id'
+            }
+        },
         job_number: {
             type: DataTypes.INTEGER,
             allowNull: false,

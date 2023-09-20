@@ -13,7 +13,7 @@ export default {
             chartLayout: null
         }
     },
-    props: ['data', 'x', 'xTitle', 'y', 'yTitle', 'group', 'hover', 'hoverTitles', 'title', 'id'],
+    props: ['data', 'x', 'xTitle', 'y', 'yTitle', 'group', 'hover', 'hoverTitles', 'title', 'id', 'type'],
     name: 'Header',
     methods: {
         formatData() {
@@ -34,9 +34,9 @@ export default {
                     yData.push(entry[this.y])
                     let text = "";
                     this.hover.forEach((key, index) => {
-                        text += this.hoverTitles[index] + ': ' + entry[key];
+                        text += this.hoverTitles[index] + entry[key];
                         if (index !== this.hover.length - 1) {
-                            text += '\n'
+                            text += ',\n'
                         }
                     })
                     hoverData.push(text);
@@ -45,7 +45,7 @@ export default {
                     x: xData,
                     y: yData,
                     mode: 'markers',
-                    type: 'scatter',
+                    type: this.type,
                     name: key,
                     text: hoverData
                 })
@@ -60,6 +60,7 @@ export default {
                 }
             }
             this.chartData = formattedData;
+            console.log(this.chartData);
         }
     },
     mounted() {

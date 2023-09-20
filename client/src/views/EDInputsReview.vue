@@ -312,10 +312,10 @@
                         <div>
                             <button disabled>Upload Core List</button>
                             <div v-if="coreModelData" class="limit-width">
-                                <SmartTable :jsonData="coreModelData" :advancedSearchEnabled="false" :id="3"
+                                <SmartTable :jsonData="coreModelData" :advancedSearchEnabled="false" :id="2"
                                     :excludedColumns="['experiment_core_id', 'available']"
-                                    @toggle-change="coreAvailabilityChange"
-                                    toggle="Available?" :toggleData="this.coreUsage" />
+                                    @toggle-change="coreAvailabilityChange" toggle="Available?"
+                                    :toggleData="this.coreUsage" />
                             </div>
                         </div>
                     </Collapsable>
@@ -403,7 +403,7 @@
                             next="queuing" :reset="collapsableStatus['routing']">
                             <div v-if="routingData" class="limit-width">
                                 <SmartTable :jsonData="routingData.map(item => item.routing)" :advancedSearchEnabled="false"
-                                    :excludedColumns="['destinations']" :id="2" />
+                                    :excludedColumns="['destinations']" :id="3" />
                             </div>
                         </Collapsable>
                         <Collapsable @toggle-collapse="collapsableToggleChange" title="Queuing" name="queuing"
@@ -442,7 +442,7 @@
                                         <td>
                                             <input type="number" class="small-number-input" step="1"
                                                 name="demand-target-min-input" :value="demandSettings.dailyTarget.min"
-                                                @input="e => demandSettings.dailyTarget.max = e.target.value">
+                                                @input="e => demandSettings.dailyTarget.min = e.target.value">
                                         </td>
                                     </tr>
                                     <tr>
@@ -592,10 +592,10 @@
                                 <div class="flex-right">
                                     <button @click="uploadBacklog">Upload</button>
                                 </div>
-                                <div v-if="jobCoreLocationData" class="limit-width">
-                                    <SmartTable :jsonData="jobCoreLocationData" :advancedSearchEnabled="false" :id="3" />
-                                    <!-- @toggle-change="assetInclusionChange" :excludedColumns="['destinations']" 
-                                        :toggle="'Include?'" :toggleData="this.selectedAssetInclusion"  -->
+                                <div v-if="jobData && jobDropdownData" class="limit-width">
+                                    <SmartTable :jsonData="jobData" :advancedSearchEnabled="false" :id="4"
+                                        :excludedColumns="['job_location_id', 'job_core_id']"
+                                        :dropdownData="jobDropdownData" @selection-change="handleJobSelectionChange"/>
                                 </div>
                             </div>
                         </div>
@@ -636,15 +636,18 @@ export default {
             assetData: null,
             routingData: null,
             jobMixData: null,
+            jobData: null,
             coreModelData: null,
             jobListData: null,
             selectedOperation: 0,
             selectedAssets: null,
+            jobDropdownData: null,
             hoursOfOperationData: null,
-            jobCoreLocationData: null,
             backlogData: null,
             warning: false,
             loading: false,
+            jobLocationChanges: {},
+            jobCoreChanges: {},
             processTimeSettings: {
                 default: true,
                 applyToAll: true,
@@ -760,9 +763,7 @@ export default {
         },
         async getCoreModelData() {
             let data = await dataRequest("/api/experiment/core/" + this.experimentID, "GET");
-            console.log(data);
             this.coreUsage = data.map(e => e.available);
-            console.log(this.coreUsage);
             let coreModelData = data.map(({ experiment_core_id, available, core, ...rest }) => {
                 return {
                     experiment_core_id: experiment_core_id,
@@ -775,8 +776,68 @@ export default {
                     last_modified: core.core_model.last_modified
                 }
             });
-            console.log(coreModelData);
             this.coreModelData = coreModelData;
+        },
+        async getJobData() {
+            let results = await Promise.allSettled([
+                dataRequest("/api/experiment/job-core/" + this.experimentID, "GET"),
+                dataRequest("/api/experiment/job-location/" + this.experimentID, "GET"),
+                dataRequest("/api/experiment/arrival/distinct/" + this.experimentID, "GET"),
+            ])
+            console.log(results);
+            this.jobData = results[0].value.map(e => {
+                let jobLocationData = results[1].value.find(f => f.job_number == e.job_number);
+                let arrivalData = results[2].value.find(f => f.job_number == e.job_number);
+                let obj = { ...e };
+                obj.model_number = arrivalData.model_number;
+                obj.job_location_id = jobLocationData.job_location_id;
+                obj.asset_id = jobLocationData.asset_id;
+                obj.operation_name = jobLocationData.operation.display_name;
+                return obj;
+            })
+            let assetOptions = this.assetData.map(e => {
+                let obj = {
+                    name: e.asset.display_name,
+                    id: e.asset_id,
+                    selected: false
+                }
+                return obj
+            })
+            let assetRows = this.jobData.map(e => {
+                let assets = JSON.parse(JSON.stringify(assetOptions));
+                let selectedAsset = assets.find(f => f.id == e.asset_id)
+                if (selectedAsset) {
+                    selectedAsset.selected = true;
+                }
+                return assets;
+            })
+            let coreRows = this.jobData.map(e => {
+                let cores = this.coreModelData.filter(f => f.model_number == e.model_number);
+                let coreSelection = []
+                cores.forEach(core => {
+                    let selection = {
+                        name: core.core_number,
+                        id: core.core_number,
+                        selected: false
+                    }
+                    if (e.core_number == core.core_number) {
+                        selection.selected = true;
+                    }
+                    coreSelection.push(selection);
+                })
+                return coreSelection;
+            })
+            this.jobDropdownData = {
+                asset_id: {
+                    allowNull: false,
+                    values: assetRows
+                },
+                core_number: {
+                    allowNull: true,
+                    values: coreRows
+                }
+            }
+            console.log(this.jobData);
         },
         async getData() {
             this.loading = true
@@ -804,6 +865,7 @@ export default {
             this.selectedSite = this.experimentData.experiment_site.site_id;
             const siteSelectionEl = document.querySelector('input[value="' + this.experimentData.experiment_site.site_id + '"]');
             siteSelectionEl.checked = true;
+            await this.getJobData();
             this.loading = false;
         },
         downloadTemplate() {
@@ -845,7 +907,6 @@ export default {
             }
             this.loading = true;
             let coreData = this.coreModelData.map(({ experiment_core_id, available, ...rest }) => { return { experiment_core_id, available } })
-            console.log(coreData);
             await Promise.allSettled([
                 dataRequest("/api/experiment/site/" + this.experimentID, "PUT", JSON.stringify({ site_id: this.selectedSite })),
                 dataRequest("/api/experiment/core/bulk/" + this.experimentID, "PUT", JSON.stringify({ data: coreData })),
@@ -890,13 +951,14 @@ export default {
             this.backlogData = await dataRequest("/api/experiment/backlog/bulk/" + this.experimentID, "POST", JSON.stringify({ data: backlogData }));
             // console.log(this.backlogData);
             await this.saveAllChanges();
-            await dataRequest("/api/experiment/populate/from-backlog", "POST", JSON.stringify({ expId: this.experimentID, numReplications: 5 }));
+            await dataRequest("/api/experiment/populate/from-backlog", "POST", JSON.stringify({ expId: this.experimentID, numReplications: 3 }));
+            await this.getJobData();
             this.loading = false;
         },
         async populateFromUI() {
             let populateFromUIData = {
                 expId: this.experimentID,
-                numReplications: 5,
+                numReplications: 3,
                 start_date: this.demandSettings.startDate,
                 min_jobs: this.demandSettings.dailyTarget.min,
                 max_jobs: this.demandSettings.dailyTarget.max,
@@ -1209,6 +1271,19 @@ export default {
         },
         collapsableToggleChange({ name, open }) {
             this.collapsableStatus[name] = { open: open, toggle: !this.collapsableStatus[name].toggle };
+        },
+        handleJobSelectionChange({ data, column, value }) {
+            console.log(data, column, value);
+            if (value == "null") { value = null };
+            if (column == "asset_id") {
+                let jobLocationID = this.jobData.find(e => e.job_number == data.job_number).job_location_id;
+                this.jobLocationChanges[jobLocationID] = value;
+                console.log(this.jobCoreChanges);
+            } else if (column == "core_number") {
+                let jobCoreID = this.jobData.find(e => e.job_number == data.job_number).job_core_id;
+                this.jobCoreChanges[jobCoreID] = value;
+                console.log(this.jobCoreChanges);
+            }
         }
     },
     mounted() {
@@ -1354,4 +1429,5 @@ export default {
     border: none;
     margin: 4px;
     width: 50px;
-}</style>
+}
+</style>

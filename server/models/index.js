@@ -117,6 +117,18 @@ JobMix.hasMany(JobList, {
 JobList.belongsTo(JobMix, {
     foreignKey: 'job_mix_id'
 });
+JobLocation.belongsTo(Operation, {
+    foreignKey: 'operation_id'
+});
+Operation.hasMany(JobLocation, {
+    foreignKey: 'operation_id'
+});
+JobLocation.belongsTo(Asset, {
+    foreignKey: 'asset_id'
+});
+Asset.hasMany(JobLocation, {
+    foreignKey: 'asset_id'
+});
 
 // Operation-Asset
 Operation.hasMany(OperationToLocation, {
@@ -311,6 +323,15 @@ Experiment.hasMany(ExperimentInfo, {
     foreignKey: 'experiment_id'
 });
 ExperimentInfo.belongsTo(Experiment, {
+    foreignKey: 'experiment_id',
+    onDelete: 'CASCADE'
+});
+
+// Experiment-JobCore
+Experiment.hasMany(JobCore, {
+    foreignKey: 'experiment_id'
+});
+JobCore.belongsTo(Experiment, {
     foreignKey: 'experiment_id',
     onDelete: 'CASCADE'
 });

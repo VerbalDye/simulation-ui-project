@@ -27,10 +27,10 @@
                     title="Asset Utilization" group="display_name" x="AVG(util.processing_time )"
                     xTitle="Average Processing Time (Minutes)" y="utilization" yTitle="Utilization (%)"
                     :hover="['iteration_number', 'replication', 'utilization']"
-                    :hoverTitles="['Iteration Number', 'Replication Number', 'Utilization']" />
+                    :hoverTitles="['Iteration Number ', 'Replication Number ', 'Utilization ']" type="scatter" />
                 <PlotlyChart v-if="throughputData" :data="throughputData" id="3" title="Weekly Throughput"
-                    group="asset_name" x="process_time" xTitle="Processing Times (Minutes)" y="weekly_throughput"
-                    yTitle="Weekly Throughput" :hover="['iteration_number', 'replication', 'week']" :hoverTitles="['Iteration Number', 'Replication Number', 'Week Number']" />
+                    group="replication" x="iteration_number" xTitle="Iteration" y="weekly_throughput"
+                    yTitle="Weekly Throughput" :hover="['replication']" :hoverTitles="['']" type="bar"/>
             </div>
             <div class="flex-right">
                 <button @click="clickBack">Back</button>
@@ -50,6 +50,7 @@ import PlotlyChart from '@/components/PlotlyChart.vue';
 import LoadingModal from '@/components/LoadingModal.vue';
 import WarningModal from '@/components/WarningModal.vue';
 import dataRequest from '@/utils/dataRequest';
+import dayjs from 'dayjs';
 export default {
     data() {
         return {
@@ -74,18 +75,36 @@ export default {
         },
         async getResourceUtilization() {
             let data = await dataRequest("/api/experiment/resource-util/processed/" + this.experimentID, "GET");
-            console.log(data);
-            this.resourceUtilizationData = data[0].map(({ utilization, ...rest }) => {
+            // console.log(data);
+            this.resourceUtilizationData = data.map(({ utilization, ...rest }) => {
                 let obj = rest;
                 obj.utilization = Math.round((utilization * 10000))/100;
                 return obj;
             });
-            console.log(this.resourceUtilizationData);
         },
         async getThroughput() {
             let data = await dataRequest("/api/experiment/throughput/processed/" + this.experimentID, "GET");
+            let weeks = [];
+            let week;
+            data.forEach(entry => {
+                if (weeks.indexOf(entry.week) == -1) {
+                    weeks.push(entry.week);
+                }
+            })
+            if (dayjs(weeks[0]).isBefore(dayjs(weeks[1]))) {
+                week = weeks[0];
+            } else {
+                week = weeks[1];
+            }
             console.log(data);
-            this.throughputData = data[0];
+            console.log(data.filter(e => e.week == week));
+            this.throughputData = data.filter(e => e.week == week).map(({ iteration_number, replication, ...rest }) => {
+                let obj = rest;
+                obj.iteration_number = "Iteration " + iteration_number;
+                obj.replication = "Replication " + replication;
+                return obj;
+            })
+            console.log(this.throughputData);
         },
         async getData() {
             await Promise.allSettled([

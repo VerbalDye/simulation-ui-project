@@ -16,7 +16,7 @@ router.get('/processed/:id', (req, res) => {
     {
         replacements: { expId: parseInt(req.params.id)}
     })
-        .then(dbResourceUtilizationData => res.json(dbResourceUtilizationData))
+        .then(dbResourceUtilizationData => res.json(dbResourceUtilizationData[0]))
         .catch(err => {
             console.log(err);
             res.status(400).json(err);

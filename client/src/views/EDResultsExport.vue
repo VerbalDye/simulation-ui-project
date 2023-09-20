@@ -28,10 +28,10 @@
             </Collapsable>
             <Collapsable title="Export" name="export" back="save" :defaultOpen="true">
                 <div class="flex-vertical flex-align-start">
-                    <button class="space" @click="downloadData(resourceUtilizationData[0], 'resource-util')">Download
+                    <button class="space" @click="downloadData(resourceUtilizationData, 'resource-util')">Download
                         Resource
                         Utilization</button>
-                    <button class="space" @click="downloadData(throughputData[0], 'throughput')">Download
+                    <button class="space" @click="downloadData(throughputData, 'throughput')">Download
                         Throughput</button>
                 </div>
             </Collapsable>

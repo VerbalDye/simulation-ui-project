@@ -135,7 +135,7 @@ router.put('/:id', withAuth, withAdminAuth, (req, res) => {
     Users.update(req.body, {
         individualHooks: true,
         where: {
-            id: req.params.id
+            user_id: req.params.id
         }
     })
         .then(dbUserData => {
@@ -154,7 +154,7 @@ router.put('/:id', withAuth, withAdminAuth, (req, res) => {
 router.delete('/:id', withAuth, withAdminAuth, (req, res) => {
     Users.destroy({
         where: {
-            id: req.params.id
+            user_id: req.params.id
         }
     })
         .then(dbUserData => {

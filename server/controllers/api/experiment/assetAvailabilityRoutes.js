@@ -24,17 +24,17 @@ router.get('/:id', (req, res) => {
         });
 });
 
-router.put('/:id', (req, res) => {
-    AssetAvailability.update(req.body, {
-        where: {
-            experiment_phases_id: req.params.id
-        }
-    })
-        .then(dbAssetAvailabilityData => res.json(dbAssetAvailabilityData))
-        .catch(err => {
-            console.log(err);
-            res.status(400).json(err);
-        });
-});
+// router.put('/:id', (req, res) => {
+//     AssetAvailability.update(req.body, {
+//         where: {
+//             experiment_phases_id: req.params.id
+//         }
+//     })
+//         .then(dbAssetAvailabilityData => res.json(dbAssetAvailabilityData))
+//         .catch(err => {
+//             console.log(err);
+//             res.status(400).json(err);
+//         });
+// });
 
 module.exports = router;

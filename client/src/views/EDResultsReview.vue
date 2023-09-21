@@ -58,7 +58,7 @@ export default {
             resourceUtilizationData: null,
             throughputData: null,
             running: null,
-            loading: true,
+            loading: false,
             warning: false
         }
     },
@@ -107,6 +107,7 @@ export default {
             console.log(this.throughputData);
         },
         async getData() {
+            this.loading = true;
             await Promise.allSettled([
                 this.getResourceUtilization(),
                 this.getThroughput(),

@@ -39,15 +39,19 @@ export default {
         async handleLogin(e) {
             e.preventDefault();
             const body = { email: e.target[0].value, password: e.target[1].value }
-            await dataRequest("/api/user/login", "POST", JSON.stringify(body))
-            const urlParameters = new URLSearchParams(window.location.search);
-            for (const [key, value] of urlParameters) {
-                if (key == 'redirect') {
-                    this.$router.push(decodeURIComponent(value.toString()));
-                    return
+            let data = await dataRequest("/api/user/login", "POST", JSON.stringify(body), { statusOnly: true });
+            if (data.status == 200) {
+                const urlParameters = new URLSearchParams(window.location.search);
+                for (const [key, value] of urlParameters) {
+                    if (key == 'redirect') {
+                        this.$router.push(decodeURIComponent(value.toString()));
+                        return
+                    }
                 }
+                this.$router.push('/');
+            } else {
+                window.alert("Incorrect Credentials");
             }
-            this.$router.push('/');
         }
     },
     mounted() {

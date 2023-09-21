@@ -4,8 +4,8 @@
         <Sidebar />
         <div class="content">
             <h1>AnyLogic Simulation UI Project</h1>
-            <router-link to="/account">Account Information</router-link><br/>
-            <router-link to="/create-account" v-if="admin">Create Account</router-link>
+            <router-link to="/account" class="link-button space">Account Information</router-link><br/>
+            <router-link to="/admin/account-management" v-if="admin" class="link-button space">Admin Account Management</router-link>
         </div>
     </div>
 </template>
@@ -18,11 +18,14 @@ import auth from '@/utils/auth';
 export default {
     data() {
         return {
-            admin: auth.isAdmin()
+            admin: false
         }
     },
     mixins: [titleMixin],
     title: 'Dashboards',
-    components: { Sidebar, Header }
+    components: { Sidebar, Header },
+    async mounted() {
+        this.admin = await auth.isAdmin();
+    }
 }
 </script>

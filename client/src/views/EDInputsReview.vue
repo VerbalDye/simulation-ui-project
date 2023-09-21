@@ -362,10 +362,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="flex-right">
-                            <button @click="clickPreviousOperation"><i class="bi bi-arrow-left"></i></button>
-                            <button @click="clickNextOperation"><i class="bi bi-arrow-right"></i></button>
-                        </div>
                         <div v-if="assetData && taskSequenceData" class="card-with-title">
                             <div class="card-title">Plant Layout</div>
                             <LayoutMaker mode="routing-map" :assetData="assetData"
@@ -373,6 +369,10 @@
                                 @selection-change="operationMapSelectionChange" id="2" />
                         </div>
                         <div v-if="taskSequenceData" class="card">
+                            <div>
+                                <button @click="clickPreviousOperation"><i class="bi bi-arrow-left"></i></button>
+                                <button @click="clickNextOperation"><i class="bi bi-arrow-right"></i></button>
+                            </div>
                             <h4>Current</h4>
                             <p>{{ this.taskSequenceData[this.selectedOperation].task_sequence.phase.display_name }} | {{
                                 this.taskSequenceData[this.selectedOperation].task_sequence.cell.display_name }} | {{
@@ -595,7 +595,7 @@
                                 <div v-if="jobData && jobDropdownData" class="limit-width">
                                     <SmartTable :jsonData="jobData" :advancedSearchEnabled="false" :id="4"
                                         :excludedColumns="['job_location_id', 'job_core_id']"
-                                        :dropdownData="jobDropdownData" @selection-change="handleJobSelectionChange"/>
+                                        :dropdownData="jobDropdownData" @selection-change="handleJobSelectionChange" />
                                 </div>
                             </div>
                         </div>
@@ -911,6 +911,7 @@ export default {
                 dataRequest("/api/experiment/site/" + this.experimentID, "PUT", JSON.stringify({ site_id: this.selectedSite })),
                 dataRequest("/api/experiment/core/bulk/" + this.experimentID, "PUT", JSON.stringify({ data: coreData })),
                 dataRequest("/api/experiment/inputs/" + this.experimentID, "POST", JSON.stringify({ iteration: 1, targetIteration: this.iteration, data })),
+                this.saveJobChanges()
             ])
         },
         async uploadBacklog() {
@@ -981,6 +982,28 @@ export default {
                 sat_time: this.demandSettings.deliveryDays.sat.time,
             }
             await dataRequest("/api/experiment/populate/from-ui", "POST", JSON.stringify(populateFromUIData));
+        },
+        async saveJobChanges() {
+            let promises = []
+            if (Object.keys(this.jobCoreChanges).length > 0) {
+                let jobCoreList = [];
+                let keys = Object.keys(this.jobCoreChanges);
+                keys.forEach(key => {
+                    jobCoreList.push({ job_core_id: key, core_number: this.jobCoreChanges[key] })
+                });
+                console.log(jobCoreList);
+                promises.push(dataRequest("/api/experiment/job-core/bulk/" + this.experimentID, "PUT", JSON.stringify({ data: jobCoreList })));
+            }
+            if (Object.keys(this.jobLocationChanges).length > 0) {
+                let jobLocationList = [];
+                let keys = Object.keys(this.jobLocationChanges);
+                keys.forEach(key => {
+                    jobLocationList.push({ job_location_id: key, asset_id: this.jobLocationChanges[key] })
+                });
+                console.log(jobLocationList);
+                promises.push(dataRequest("/api/experiment/job-location/bulk/" + this.experimentID, "PUT", JSON.stringify({ data: jobLocationList })));
+            }
+            await Promise.allSettled(promises);
         },
         formatTaskSequenceData(data) {
             const formattedData = [];

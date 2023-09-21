@@ -16,9 +16,9 @@ const routes = [
     component: () => import('../views/Login.vue')
   },
   {
-    path: '/create-account',
-    name: 'create-account',
-    component: () => import('../views/CreateAccount.vue'),
+    path: '/admin/account-management',
+    name: 'admin-account-management',
+    component: () => import('../views/AdminAccountManagement.vue'),
     meta: { requiresAdmin: true }
   },
   {
@@ -26,6 +26,12 @@ const routes = [
     name: 'account',
     component: () => import('../views/Account.vue'),
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/admin/account-edit/:id',
+    name: 'admin-account-edit',
+    component: () => import('../views/EditAccount.vue'),
+    meta: { requiresAdmin: true }
   },
   {
     path: '/equipment',

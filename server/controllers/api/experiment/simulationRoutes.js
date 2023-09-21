@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { CurrentlyRunning, ExperimentInfo } = require('../../../models');
+const fs = require('fs');
 
 router.post('/start/:id', (req, res) => {
     var child_process = require('child_process');
@@ -29,6 +30,11 @@ router.post('/start/:id', (req, res) => {
             child_process.exec('..\\simulation\\"PV_Fluid v0_34 (Chooses random available oven)_windows.bat"', {maxBuffer: 1024 * 1024 * 200}, function (error, stdout, stderr) {
                 console.log(stdout);
                 console.log(error);
+                fs.writeFile('..\\sim_results.txt', stdout, err => {
+                    if (err) {
+                        console.log(err);
+                    }
+                })
                 CurrentlyRunning.destroy({
                     where: {
                         experiment_id: req.params.id

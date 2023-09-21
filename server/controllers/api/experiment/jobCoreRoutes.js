@@ -24,6 +24,25 @@ router.get('/:id', (req, res) => {
         });
 });
 
+router.put('/bulk/:id', (req, res) => {
+    let promises = []
+    req.body.data.forEach(entry => {
+        promises.push(
+            JobCore.update({ core_number: entry.core_number }, {
+                where: {
+                    job_core_id: entry.job_core_id
+                }
+            })
+        )
+    })
+    Promise.allSettled(promises)
+        .then(dbPromiseData => res.json({ message: "Success" }))
+        .catch(err => {
+            console.log(err);
+            res.status(400).json(err);
+        });
+});
+
 router.put('/:id', (req, res) => {
     JobCore.update(req.body, {
         where: {
@@ -36,18 +55,5 @@ router.put('/:id', (req, res) => {
             res.status(400).json(err);
         });
 });
-
-// router.put('/bulk/:id', (req, res) => {
-//     JobCore.update(req.body, {
-//         where: {
-//             experiment_id: req.params.id
-//         }
-//     })
-//         .then(dbJobCoreData => res.json(dbJobCoreData))
-//         .catch(err => {
-//             console.log(err);
-//             res.status(400).json(err);
-//         });
-// });
 
 module.exports = router;

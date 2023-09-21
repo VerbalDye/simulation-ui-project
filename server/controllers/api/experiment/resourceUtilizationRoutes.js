@@ -36,17 +36,17 @@ router.get('/:id', (req, res) => {
         });
 });
 
-router.put('/:id', (req, res) => {
-    ResourceUtilization.update(req.body, {
-        where: {
-            experiment_phases_id: req.params.id
-        }
-    })
-        .then(dbResourceUtilizationData => res.json(dbResourceUtilizationData))
-        .catch(err => {
-            console.log(err);
-            res.status(400).json(err);
-        });
-});
+// router.put('/:id', (req, res) => {
+//     ResourceUtilization.update(req.body, {
+//         where: {
+//             experiment_phases_id: req.params.id
+//         }
+//     })
+//         .then(dbResourceUtilizationData => res.json(dbResourceUtilizationData))
+//         .catch(err => {
+//             console.log(err);
+//             res.status(400).json(err);
+//         });
+// });
 
 module.exports = router;

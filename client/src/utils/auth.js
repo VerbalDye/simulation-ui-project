@@ -29,7 +29,7 @@ class AuthService {
     }
     async isAdmin() {
         let data = await dataRequest("/api/user/admin", "GET");
-        // console.log(data);
+        // console.log(data.admin);
         return data.admin;
     }
     async logout() {

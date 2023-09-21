@@ -60,7 +60,7 @@ export default {
             resourceUtilizationData: null,
             throughputData: null,
             running: null,
-            loading: true,
+            loading: false,
             warning: false
         }
     },
@@ -86,13 +86,14 @@ export default {
             this.throughputData = data;
         },
         async getData() {
+            this.loading = true;
             await Promise.all([
                 this.getCurrentlyRunning(),
                 this.getResourceUtilization(),
                 this.getThroughput()
             ])
             this.loading = false;
-            this.warning = this.throughputData[0].length == 0;
+            this.warning = (this.throughputData.length == 0 || this.resourceUtilizationData.length == 0);
         },
         downloadData(data, name) {
             csvJson.downloadJSONDataAsCSV(data, name)

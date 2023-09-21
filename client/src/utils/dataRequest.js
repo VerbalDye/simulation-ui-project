@@ -1,4 +1,4 @@
-let isJSON = function(text) {
+let isJSON = function (text) {
     if (typeof text !== "string") {
         return false;
     }
@@ -10,35 +10,41 @@ let isJSON = function(text) {
     }
 }
 
-let dataRequest = async function (url, method, body) {
-    let options = { method: method };
+let dataRequest = async function (url, method, body, options) {
+    let fetchOptions = { method: method };
     if (body) {
         if (isJSON(body)) {
-            options.body = body;
-            options.headers = { "Content-Type": "application/json" }
+            fetchOptions.body = body;
+            fetchOptions.headers = { "Content-Type": "application/json" }
         } else {
-            options.body = body;
-            options.headers = { "Content-Type": "multipart/form-data" }
+            fetchOptions.body = body;
+            fetchOptions.headers = { "Content-Type": "multipart/form-data" }
         }
-    } 
-    return fetch(url, options)
+    }
+    return fetch(url, fetchOptions)
         .then(response => {
             if (response.redirected) {
                 window.location.assign(response.url);
-            } else if (response.ok) {
-                if (response.status == 200) {
-                return response.json()
-                    .then(data => {
-                        return data;
-                    })
-                } else {
-                    return response;
-                }
+                return
+            }
+            if (options && options.statusOnly) {
+                return { status: response.status };
             } else {
-                // Error Handling
-                let html = "Error Code: " + response.status + "\n" + response.responseText;
-                window.alert(html);
-                return;
+                if (response.ok) {
+                    if (response.status == 200) {
+                        return response.json()
+                            .then(data => {
+                                return data;
+                            })
+                    } else {
+                        return response;
+                    }
+                } else {
+                    // Error Handling
+                    let html = "Error Code: " + response.status + "\n" + response.responseText;
+                    window.alert(html);
+                    return;
+                }
             }
         }).catch(function (error) {
             // Informs user of failure

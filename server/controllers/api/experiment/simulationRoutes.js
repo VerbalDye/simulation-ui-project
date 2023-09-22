@@ -27,7 +27,7 @@ router.post('/start/:id', (req, res) => {
         })
     ])
         .then(dbPromiseData => {
-            child_process.exec('..\\simulation\\"PV_Fluid v0_34 (Chooses random available oven)_windows.bat"', {maxBuffer: 1024 * 1024 * 200}, function (error, stdout, stderr) {
+            child_process.exec('..\\simulation\\"PV_Fluid v0_35 (Random seed depending on replication)_windows.bat"', {maxBuffer: 1024 * 1024 * 200}, function (error, stdout, stderr) {
                 console.log(stdout);
                 console.log(error);
                 fs.writeFile('..\\sim_results.txt', stdout, err => {

@@ -418,20 +418,20 @@
                     next="review" :reset="collapsableStatus['demand']">
                     <div class="card-with-title">
                         <h4 class="card-title">Demand Input</h4>
-                        <table class="grid-less">
-                            <tr>
-                                <th>Use Default?*</th>
-                                <td>
-                                    <label class="switch">
-                                        <input type="checkbox" name="demand-default-input" checked
-                                            @input="e => this.demandSettings.default = e.target.checked">
-                                        <span class="slider round"></span>
-                                    </label>
-                                </td>
-                            </tr>
-                        </table>
-                        <div v-if="!demandSettings.default">
-                            <div v-if="!demandSettings.backlog">
+                        <div v-if="!demandSettings.backlog">
+                            <table class="grid-less">
+                                <tr>
+                                    <th>Use Default?*</th>
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox" name="demand-default-input" checked
+                                                @input="e => this.demandSettings.default = e.target.checked">
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div v-if="!demandSettings.default">
                                 <h4>Start Date</h4>
                                 <input type="date" :value="demandSettings.startDate" name="demand-start-date-input"
                                     class="space" @input="e => demandSettings.startDate = e.target.value">
@@ -580,23 +580,23 @@
                                     </tr>
                                 </table>
                             </div>
-                            <div v-else>
-                                <button @click="downloadTemplate">Download Template</button>
-                                <div v-if="this.backlogData" class="space">This experiment has Backlog Data. If you would
-                                    like to
-                                    overwrite, upload new backlog data below and click "Upload".</div>
-                                <div>
-                                    <label for="backlog-input">Upload Backlog</label>
-                                    <input type="file" name="backlog-input" id="backlog-input" class="space" accept=".csv">
-                                </div>
-                                <div class="flex-right">
-                                    <button @click="uploadBacklog">Upload</button>
-                                </div>
-                                <div v-if="jobData && jobDropdownData" class="limit-width">
-                                    <SmartTable :jsonData="jobData" :advancedSearchEnabled="false" :id="4"
-                                        :excludedColumns="['job_location_id', 'job_core_id']"
-                                        :dropdownData="jobDropdownData" @selection-change="handleJobSelectionChange" />
-                                </div>
+                        </div>
+                        <div v-else>
+                            <button @click="downloadTemplate">Download Template</button>
+                            <div v-if="this.backlogData" class="space">This experiment has Backlog Data. If you would
+                                like to
+                                overwrite, upload new backlog data below and click "Upload".</div>
+                            <div>
+                                <label for="backlog-input">Upload Backlog</label>
+                                <input type="file" name="backlog-input" id="backlog-input" class="space" accept=".csv">
+                            </div>
+                            <div class="flex-right">
+                                <button @click="uploadBacklog">Upload</button>
+                            </div>
+                            <div v-if="jobData && jobDropdownData" class="limit-width">
+                                <SmartTable :jsonData="jobData" :advancedSearchEnabled="false" :id="4"
+                                    :excludedColumns="['job_location_id', 'job_core_id']" :dropdownData="jobDropdownData"
+                                    @selection-change="handleJobSelectionChange" />
                             </div>
                         </div>
                     </div>
@@ -784,7 +784,6 @@ export default {
                 dataRequest("/api/experiment/job-location/" + this.experimentID, "GET"),
                 dataRequest("/api/experiment/arrival/distinct/" + this.experimentID, "GET"),
             ])
-            console.log(results);
             this.jobData = results[0].value.map(e => {
                 let jobLocationData = results[1].value.find(f => f.job_number == e.job_number);
                 let arrivalData = results[2].value.find(f => f.job_number == e.job_number);
@@ -837,7 +836,6 @@ export default {
                     values: coreRows
                 }
             }
-            console.log(this.jobData);
         },
         async getData() {
             this.loading = true
@@ -924,7 +922,7 @@ export default {
                     job_number: parseInt(e["Job"].match(/([0-9]+)[A-Z]*/, "")[1]),
                     serial_number: e["SerialNumber"],
                     part_number: e["Part"],
-                    model_number: parseInt(e["Model"].match(/[A-z]+([0-9]+)[A-z0-9]*/)[1]),
+                    model_number: parseInt(e["Model"].match(/[A-z]*([0-9]+)[A-z0-9]*/)[1]),
                     location: e["Location"],
                     start_date: e["StartDate"],
                     day_number: parseInt(e["Day"]),
@@ -991,7 +989,6 @@ export default {
                 keys.forEach(key => {
                     jobCoreList.push({ job_core_id: key, core_number: this.jobCoreChanges[key] })
                 });
-                console.log(jobCoreList);
                 promises.push(dataRequest("/api/experiment/job-core/bulk/" + this.experimentID, "PUT", JSON.stringify({ data: jobCoreList })));
             }
             if (Object.keys(this.jobLocationChanges).length > 0) {
@@ -1000,7 +997,6 @@ export default {
                 keys.forEach(key => {
                     jobLocationList.push({ job_location_id: key, asset_id: this.jobLocationChanges[key] })
                 });
-                console.log(jobLocationList);
                 promises.push(dataRequest("/api/experiment/job-location/bulk/" + this.experimentID, "PUT", JSON.stringify({ data: jobLocationList })));
             }
             await Promise.allSettled(promises);
@@ -1296,16 +1292,13 @@ export default {
             this.collapsableStatus[name] = { open: open, toggle: !this.collapsableStatus[name].toggle };
         },
         handleJobSelectionChange({ data, column, value }) {
-            console.log(data, column, value);
             if (value == "null") { value = null };
             if (column == "asset_id") {
                 let jobLocationID = this.jobData.find(e => e.job_number == data.job_number).job_location_id;
                 this.jobLocationChanges[jobLocationID] = value;
-                console.log(this.jobCoreChanges);
             } else if (column == "core_number") {
                 let jobCoreID = this.jobData.find(e => e.job_number == data.job_number).job_core_id;
                 this.jobCoreChanges[jobCoreID] = value;
-                console.log(this.jobCoreChanges);
             }
         }
     },

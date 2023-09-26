@@ -199,7 +199,7 @@
                                                                         v-for="(value, key) in this.processTimeSettings.elements[selectedAssets[0].asset_id].values"
                                                                         class="small-number-input" type="number" step="0.01"
                                                                         :value="value" :name="'times-' + key"
-                                                                        @input="handleProcessTimeDataChange(key, $event)">
+                                                                        @input.prevent="handleProcessTimeDataChange(key, $event)">
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -227,7 +227,7 @@
                                                                     <input v-for="(value, key) in element.values"
                                                                         class="small-number-input" type="number" step="0.01"
                                                                         :value="value" :name="'times-' + key"
-                                                                        @input="handleProcessTimeDataChange(key, $event)">
+                                                                        @input.prevent="handleProcessTimeDataChange(key, $event)">
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -440,7 +440,7 @@
                                     <tr>
                                         <th>Min</th>
                                         <td>
-                                            <input type="number" class="small-number-input" step="1"
+                                            <input type="number" class="small-number-input" step="1" min="0"
                                                 name="demand-target-min-input" :value="demandSettings.dailyTarget.min"
                                                 @input="e => demandSettings.dailyTarget.min = e.target.value">
                                         </td>
@@ -448,7 +448,7 @@
                                     <tr>
                                         <th>Max</th>
                                         <td>
-                                            <input type="number" class="small-number-input" step="1"
+                                            <input type="number" class="small-number-input" step="1" min="0"
                                                 name="demand-target-max-input" :value="demandSettings.dailyTarget.max"
                                                 @input="e => demandSettings.dailyTarget.max = e.target.value">
                                         </td>

@@ -1,7 +1,9 @@
 <template>
     <WarningModal :display="warning">
-        <p class="space">This experiment is current running. Input changes are not permitted. Please follow the link below to check on simulation status.</p>
-        <router-link :to="'/experiments/design/simulation-start/' + this.experimentID" class="link-button">Simulation Status</router-link>
+        <p class="space">This experiment is current running. Input changes are not permitted. Please follow the link below
+            to check on simulation status.</p>
+        <router-link :to="'/experiments/design/simulation-start/' + this.experimentID" class="link-button">Simulation
+            Status</router-link>
     </WarningModal>
     <Header />
     <div class="site-container">
@@ -31,11 +33,40 @@
                 </table>
             </div>
             <h2><i class="bi bi-bullseye"></i> Target(s)</h2>
-            <Collapsable title="Throughput" name="throughput" next="utilization" :defaultOpen="true" :heading="3">
+            <Collapsable title="Throughput" name="throughput" next="utilization" :heading="3">
                 TBD
             </Collapsable>
-            <Collapsable title="Equipment Utilization" name="utilization" next="turn-times" back="throughput" :heading="3">
-                TBD
+            <Collapsable title="Equipment Utilization" name="utilization" next="turn-times" back="throughput" :defaultOpen="true" :heading="3">
+                <div v-if="assetData">
+                    <div class="space flex-left align-center">
+                        <button @click="addUtilizationTarget"><i class="bi bi-plus"></i></button>
+                        <h3 class="space">Add New Utilization Target</h3>
+                        <p class="space">Min: 0 Max: 99.999</p>
+                    </div>
+                    <div>
+                        <div v-for="(target, index) in utilizationTargets">
+                            <button @click="utilizationTargets.splice(index, 1)"><i class="bi bi-dash"></i></button>
+                            Use Simulation Data Where
+                            <select @change="e => utilizationTargets[index].asset_id = parseInt(e.target.value)"
+                                :name="'utilization-asset-select-' + index">
+                                <option v-for="asset in assetData" :name="asset.asset_id + '-' + index"
+                                    :selected="target.asset_id == asset.asset_id" :value="asset.asset_id">{{
+                                        asset.display_name }}</option>
+                            </select>
+                            Utilization
+                            <select @change="e => utilizationTargets[index].greater_than = (/true/).test(e.target.value)"
+                                :name="'utilization-gt-select-' + index">
+                                <option :name="'utilization-gt-' + index" :selected="target.greater_than" :value="true">&gt
+                                    (Greater Than)</option>
+                                <option :name="'utilization-lt-' + index" :selected="!target.greater_than" :value="false">
+                                    &lt (Less Than)</option>
+                            </select>
+                            <input type="number" :name="'utilization-percent-' + index" :value="target.utilization * 100" min="0" max="99.999"
+                                @input.prevent="e => utilizationTargets[index].utilization = parseFloat(e.target.value) / 100" />
+                            <label :for="'utilization-percent-' + index">% (Percent)</label>
+                        </div>
+                    </div>
+                </div>
             </Collapsable>
             <Collapsable title="Job Turn Times" name="turn-times" back="utilization" :heading="3">
                 TBD
@@ -57,7 +88,10 @@ export default {
     data() {
         return {
             experimentID: null,
-            warning: false
+            assetData: null,
+            goalData: null,
+            warning: false,
+            utilizationTargets: []
         }
     },
     mixins: [titleMixin],
@@ -65,28 +99,55 @@ export default {
     components: { Sidebar, Header, ExperimentDesignerSidebar, ExperimentDesignerSidebar, Collapsable, WarningModal },
     methods: {
         getExperimentID() {
-            this.experimentID = window.location.href.split("/")[window.location.href.split("/").length - 1];
+            this.experimentID = parseInt(window.location.href.split("/")[window.location.href.split("/").length - 1]);
         },
         async getCurrentlyRunning() {
             let data = await dataRequest("/api/experiment/running/" + this.experimentID, "GET");
             this.warning = data.running;
         },
+        async getAssetData() {
+            let data = await dataRequest("/api/experiment/asset/" + this.experimentID, "GET");
+            console.log(data);
+            this.assetData = data.map(e => e.asset);
+        },
+        async getGoalData() {
+            let data = await dataRequest("/api/experiment/goal/" + this.experimentID, "GET");
+            console.log(data);
+            this.goalData = data;
+            if (data) {
+                this.utilizationTargets = data.map(({ created, ...rest }) => rest);
+            }
+        },
+        addUtilizationTarget() {
+            this.utilizationTargets.push({ experiment_goal_id: 'new-' + Math.floor(Math.random() * 1000000), utilization: 0, greater_than: true, asset_id: this.assetData[0].asset_id, experiment_id: this.experimentID })
+            console.log(this.utilizationTargets);
+        },
+        async saveGoalData() {
+            console.log(this.utilizationTargets);
+            let postTargets = this.utilizationTargets.filter(e => e.experiment_goal_id.toString().includes("new-")).map(({ experiment_goal_id, ...rest}) => rest);
+            let putTargets = this.utilizationTargets.filter(e => !e.experiment_goal_id.toString().includes("new-"));
+            let deleteTargets = this.goalData.filter(e => this.utilizationTargets.findIndex(f => f.experiment_goal_id == e.experiment_goal_id) == -1).map(e => e.experiment_goal_id);
+            await dataRequest("/api/experiment/goal/bulk", "POST", JSON.stringify({ data: postTargets }));
+            await dataRequest("/api/experiment/goal/bulk", "PUT", JSON.stringify({ data: putTargets }));
+            await dataRequest("/api/experiment/goal/bulk", "DELETE", JSON.stringify({ data: deleteTargets }));
+        },
         clickBack() {
             this.$router.push("/experiments/design/inputs/" + this.experimentID);
         },
-        clickNext() {
+        async clickNext() {
+            await this.saveGoalData();
             this.$router.push("/experiments/design/simulation-start/" + this.experimentID);
         }
     },
     mounted() {
         this.getExperimentID()
         this.getCurrentlyRunning();
+        this.getAssetData();
+        this.getGoalData();
     }
 }
 </script>
 
-<style>
-.content h1 {
+<style>.content h1 {
     text-align: left;
-}
-</style>
+}</style>

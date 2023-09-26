@@ -11,6 +11,7 @@ const Experiment = require('./Experiment');
 const ExperimentAsset = require('./ExperimentAsset');
 const ExperimentCore = require('./ExperimentCore');
 const ExperimentCoreSoakTime = require('./ExperimentCoreSoakTime');
+const ExperimentGoal = require('./ExperimentGoal');
 const ExperimentHoo = require('./ExperimentHoo');
 const ExperimentInfo = require('./ExperimentInfo');
 const ExperimentJobMix = require('./ExperimentJobMix');
@@ -24,6 +25,7 @@ const JobCore = require('./JobCore');
 const JobList = require('./JobList');
 const JobLocation = require('./JobLocation');
 const JobMix = require('./JobMix');
+const Log = require('./Log');
 const ModelObject = require('./Model');
 const Operation = require('./Operation');
 const OperationToLocation = require('./OperationToLocation');
@@ -44,6 +46,15 @@ Asset.hasMany(AssetAvailability, {
     foreignKey: 'asset_id'
 });
 AssetAvailability.belongsTo(Asset, {
+    foreignKey: 'asset_id',
+    onDelete: 'CASCADE'
+});
+
+// Asset-Goal
+Asset.hasMany(ExperimentGoal, {
+    foreignKey: 'asset_id'
+});
+ExperimentGoal.belongsTo(Asset, {
     foreignKey: 'asset_id',
     onDelete: 'CASCADE'
 });
@@ -303,6 +314,15 @@ CurrentlyRunning.belongsTo(Experiment, {
     onDelete: 'CASCADE'
 });
 
+// Experiment-Goal
+Experiment.hasMany(ExperimentGoal, {
+    foreignKey: 'experiment_id'
+});
+ExperimentGoal.belongsTo(Experiment, {
+    foreignKey: 'experiment_id',
+    onDelete: 'CASCADE'
+});
+
 // Experiment-Hours of Operation
 Experiment.hasMany(ExperimentHoo, {
     foreignKey: 'experiment_id'
@@ -358,6 +378,15 @@ JobMix.hasMany(ExperimentJobMix, {
 });
 ExperimentJobMix.belongsTo(JobMix, {
     foreignKey: 'job_mix_id'
+});
+
+// Experiment-Log
+Experiment.hasMany(Log, {
+    foreignKey: 'experiment_id'
+});
+Log.belongsTo(Experiment, {
+    foreignKey: 'experiment_id',
+    onDelete: 'CASCADE'
 });
 
 // Experiment-OperationToLocation
@@ -483,6 +512,7 @@ module.exports = {
     ExperimentAsset,
     ExperimentCore,
     ExperimentCoreSoakTime,
+    ExperimentGoal,
     ExperimentHoo,
     ExperimentInfo,
     ExperimentJobMix,
@@ -496,6 +526,7 @@ module.exports = {
     JobList,
     JobLocation,
     JobMix,
+    Log,
     ModelObject,
     Operation,
     OperationToLocation,

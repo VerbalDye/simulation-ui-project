@@ -204,6 +204,10 @@ menu {
     align-items: start;
 }
 
+.align-center {
+    align-items: center;
+}
+
 .grow-item {
     flex-grow: 10;
 }

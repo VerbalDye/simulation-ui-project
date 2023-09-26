@@ -16,6 +16,7 @@ const {
     ExperimentSite,
     ExperimentTaskSequence,
     JobList,
+    Log,
     OperationToLocation,
     ProcessTime,
     Routing,
@@ -81,6 +82,19 @@ router.get('/running/:id', (req, res) => {
             console.log(err);
             res.status(500).json(err);
         });
+})
+
+router.get('/log/:id', (req, res) => {
+    Log.findOne({
+        where: {
+            experiment_id: req.params.id
+        }
+    })
+    .then(dbLogData => res.json(dbLogData))
+    .catch(err => {
+        console.log(err);
+        res.status(500).json(err);
+    });
 })
 
 router.get('/:id', (req, res) => {

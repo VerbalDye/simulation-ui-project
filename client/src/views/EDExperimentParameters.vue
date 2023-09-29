@@ -33,10 +33,13 @@
                 </table>
             </div>
             <h2><i class="bi bi-bullseye"></i> Target(s)</h2>
-            <Collapsable title="Throughput" name="throughput" next="utilization" :heading="3">
+            <Collapsable title="Throughput" name="throughput" next="utilization" :heading="3" tbd="true"
+                :reset="collapsableStatus['throughput']" @toggle-collapse="collapsableToggleChange">
                 TBD
             </Collapsable>
-            <Collapsable title="Equipment Utilization" name="utilization" next="turn-times" back="throughput" :defaultOpen="true" :heading="3">
+            <Collapsable title="Equipment Utilization" name="utilization" next="turn-times" back="throughput"
+                :defaultOpen="true" :heading="3" :reset="collapsableStatus['utilization']"
+                @toggle-collapse="collapsableToggleChange">
                 <div v-if="assetData">
                     <div class="space flex-left align-center">
                         <button @click="addUtilizationTarget"><i class="bi bi-plus"></i></button>
@@ -61,17 +64,20 @@
                                 <option :name="'utilization-lt-' + index" :selected="!target.greater_than" :value="false">
                                     &lt (Less Than)</option>
                             </select>
-                            <input type="number" :name="'utilization-percent-' + index" :value="target.utilization * 100" min="0" max="99.999"
-                                @input.prevent="e => utilizationTargets[index].utilization = parseFloat(e.target.value) / 100" />
+                            <input type="number" :name="'utilization-percent-' + index" :value="target.utilization * 100"
+                                min="0" max="99.999"
+                                @input="e => utilizationTargets[index].utilization = parseFloat(e.target.value) / 100" />
                             <label :for="'utilization-percent-' + index">% (Percent)</label>
                         </div>
                     </div>
                 </div>
             </Collapsable>
-            <Collapsable title="Job Turn Times" name="turn-times" back="utilization" :heading="3">
+            <Collapsable title="Job Turn Times" name="turn-times" back="utilization" :heading="3" tbd="true"
+                :reset="collapsableStatus['turn-times']" @toggle-collapse="collapsableToggleChange">
                 TBD
             </Collapsable>
-            <div class="flex-right"><button @click="clickBack">Back</button><button @click="clickNext">Next</button></div>
+            <div class="flex-right space"><button @click="clickBack">Back</button><button @click="clickNext">Next</button>
+            </div>
         </div>
     </div>
 </template>
@@ -91,7 +97,8 @@ export default {
             assetData: null,
             goalData: null,
             warning: false,
-            utilizationTargets: []
+            utilizationTargets: [],
+            collapsableStatus: {}
         }
     },
     mixins: [titleMixin],
@@ -124,12 +131,22 @@ export default {
         },
         async saveGoalData() {
             console.log(this.utilizationTargets);
-            let postTargets = this.utilizationTargets.filter(e => e.experiment_goal_id.toString().includes("new-")).map(({ experiment_goal_id, ...rest}) => rest);
+            let postTargets = this.utilizationTargets.filter(e => e.experiment_goal_id.toString().includes("new-")).map(({ experiment_goal_id, ...rest }) => rest);
             let putTargets = this.utilizationTargets.filter(e => !e.experiment_goal_id.toString().includes("new-"));
             let deleteTargets = this.goalData.filter(e => this.utilizationTargets.findIndex(f => f.experiment_goal_id == e.experiment_goal_id) == -1).map(e => e.experiment_goal_id);
             await dataRequest("/api/experiment/goal/bulk", "POST", JSON.stringify({ data: postTargets }));
             await dataRequest("/api/experiment/goal/bulk", "PUT", JSON.stringify({ data: putTargets }));
             await dataRequest("/api/experiment/goal/bulk", "DELETE", JSON.stringify({ data: deleteTargets }));
+        },
+        createCollapsableObject() {
+            const collapsableEls = document.querySelectorAll(".collapse-component");
+            collapsableEls.forEach(element => {
+                let name = element.id.split('collapsable-component-')[1]
+                this.collapsableStatus[name] = { open: false, toggle: true }
+            })
+        },
+        collapsableToggleChange({ name, open }) {
+            this.collapsableStatus[name] = { open: open, toggle: !this.collapsableStatus[name].toggle };
         },
         clickBack() {
             this.$router.push("/experiments/design/inputs/" + this.experimentID);
@@ -140,6 +157,7 @@ export default {
         }
     },
     mounted() {
+        this.createCollapsableObject();
         this.getExperimentID()
         this.getCurrentlyRunning();
         this.getAssetData();

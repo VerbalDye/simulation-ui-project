@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const sequelize = require('../../../config/connection');
-const { ExperimentRouting, Routing } = require('../../../models');
+const { ExperimentRouting, Routing, Asset } = require('../../../models');
 
 router.get('/', (req, res) => {
     ExperimentRouting.findAll()
@@ -20,7 +20,20 @@ router.get('/:id', (req, res) => {
             model: Routing,
             where: {
                 travel_allowed: true
-            }
+            },
+            required: true,
+            include: [
+                {
+                    model: Asset,
+                    as: 'origin_asset',
+                    required: true
+                },
+                {
+                    model: Asset,
+                    as: 'destination_asset',
+                    required: true
+                }
+            ]
         }]
     })
         .then(dbExperimentRoutingData => res.json(dbExperimentRoutingData))

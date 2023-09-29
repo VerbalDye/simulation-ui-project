@@ -55,7 +55,7 @@
                     </div>
                 </div>
             </div>
-            <div class="flex-right"><button @click="clickNext">Next</button></div>
+            <div class="flex-right space"><button @click="clickNext">Next</button></div>
         </div>
     </div>
 </template>

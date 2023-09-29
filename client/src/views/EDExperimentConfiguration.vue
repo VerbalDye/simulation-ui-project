@@ -55,7 +55,7 @@
                     </tr>
                 </table>
             </div>
-            <div class="flex-right"><button @click="clickBack">Back</button><button @click="clickNext">Next</button></div>
+            <div class="flex-right space"><button @click="clickBack">Back</button><button @click="clickNext">Next</button></div>
         </div>
     </div>
 </template>

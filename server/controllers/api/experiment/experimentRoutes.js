@@ -164,24 +164,25 @@ router.post('/inputs/:id', async (req, res) => {
     let dbOperationToLocationData = await OperationToLocation.findAll({
         include: [{ model: ExperimentOpToLoc, where: { experiment_id: id, iteration_number: b.targetIteration } }]
     });
+    console.log(id, b.targetIteration);
     let dbRoutingData = await Routing.findAll({
         where: { travel_allowed: true },
         include: [{ model: ExperimentRouting, where: { experiment_id: id, iteration_number: b.targetIteration } }]
     });
     let dbExperimentTaskSequenceData = await ExperimentTaskSequence.findAll({ where: { experiment_id: id, iteration_number: b.targetIteration } });
     // Clear Data for Iteration
-
+    
     await Promise.allSettled([
-        sequelize.query("DELETE * FROM asset INNER JOIN experiment_asset ON asset.asset_id = experiment_asset.asset_id WHERE experiment_asset.experiment_id = :expId AND experiment_asset.iteration_number = :iteration", 
+        sequelize.query("DELETE asset FROM asset INNER JOIN experiment_asset ON asset.asset_id = experiment_asset.asset_id WHERE experiment_asset.experiment_id = :expId AND experiment_asset.iteration_number = :iteration", 
         { replacements: { expId: id, iteration: b.iteration } }),
         ExperimentAsset.destroy({
             where: { experiment_id: id, iteration_number: b.iteration }
         }),
-        sequelize.query("DELETE * FROM process_time INNER JOIN experiment_process_time ON process_time.process_time_id = experiment_process_time.process_time_id WHERE experiment_process_time.experiment_id = :expId AND experiment_process_time.iteration_number = :iteration", 
+        sequelize.query("DELETE process_time FROM process_time INNER JOIN experiment_process_time ON process_time.process_time_id = experiment_process_time.process_time_id WHERE experiment_process_time.experiment_id = :expId AND experiment_process_time.iteration_number = :iteration", 
         { replacements: { expId: id, iteration: b.iteration } }),
-        sequelize.query("DELETE * FROM operation_to_location INNER JOIN experiment_op_to_loc ON operation_to_location.operation_to_location_id = experiment_op_to_loc.operation_to_location_id WHERE experiment_op_to_loc.experiment_id = :expId AND experiment_op_to_loc.iteration_number = :iteration", 
+        sequelize.query("DELETE operation_to_location FROM operation_to_location INNER JOIN experiment_op_to_loc ON operation_to_location.operation_to_location_id = experiment_op_to_loc.operation_to_location_id WHERE experiment_op_to_loc.experiment_id = :expId AND experiment_op_to_loc.iteration_number = :iteration", 
         { replacements: { expId: id, iteration: b.iteration } }),
-        sequelize.query("DELETE * FROM routing INNER JOIN experiment_routing ON routing.routing_id = experiment_routing.routing_id WHERE experiment_routing.experiment_id = :expId AND experiment_routing.iteration_number = :iteration", 
+        sequelize.query("DELETE routing FROM routing INNER JOIN experiment_routing ON routing.routing_id = experiment_routing.routing_id WHERE experiment_routing.experiment_id = :expId AND experiment_routing.iteration_number = :iteration", 
         { replacements: { expId: id, iteration: b.iteration } }),
         ExperimentTaskSequence.destroy({
             where: { experiment_id: id, iteration_number: b.iteration }
@@ -235,7 +236,6 @@ router.post('/inputs/:id', async (req, res) => {
         obj.transportation_class = obj.transportation_class;
         return obj;
     });
-
     let dbProcessTimeData = await ProcessTime.bulkCreate(processTimeData);
     let dbNewOperationToLocationData = await OperationToLocation.bulkCreate(opToLocData);
     let dbNewRoutingData = await Routing.bulkCreate(routingData);

@@ -174,11 +174,29 @@ ProcessTime.belongsTo(Asset, {
 });
 
 // Asset-Routing
-Asset.belongsToMany(Asset, {
-    through: Routing,
+// Asset.belongsToMany(Asset, {
+//     through: Routing,
+//     foreignKey: 'origin',
+//     otherKey: 'destination',
+//     as: 'destinations'
+// });
+// Asset.hasMany(Routing, {
+//     foreignKey: 'asset_id',
+//     as: 'origin',
+// });
+// Asset.hasMany(Routing, {
+//     foreignKey: 'asset_id',
+//     as: 'destination'
+// });
+Routing.belongsTo(Asset, {
     foreignKey: 'origin',
-    otherKey: 'destination',
-    as: 'destinations'
+    as: 'origin_asset',
+    onDelete: 'CASCADE'
+});
+Routing.belongsTo(Asset, {
+    foreignKey: 'destination',
+    as: 'destination_asset',
+    onDelete: 'CASCADE'
 });
 
 // Resource Utilization-Asset

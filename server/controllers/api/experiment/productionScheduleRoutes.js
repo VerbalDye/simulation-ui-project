@@ -11,10 +11,10 @@ const sequelize = require('../../../config/connection');
 //         });
 // });
 
-router.get('/processed/:id', (req, res) => {
-    sequelize.query('SELECT * FROM production_schedule WHERE experiment_id = :expId', 
+router.get('/processed/:id-:iteration-:replication', (req, res) => {
+    sequelize.query('SELECT * FROM production_schedule WHERE experiment_id = :expId AND iteration_number = :iteration AND replication = :replication', 
     {
-        replacements: { expId: parseInt(req.params.id)}
+        replacements: { expId: parseInt(req.params.id), iteration: req.params.iteration, replication: req.params.replication }
     })
         .then(dbProductionScheduleData => res.json(dbProductionScheduleData[0]))
         .catch(err => {

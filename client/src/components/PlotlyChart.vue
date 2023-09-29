@@ -14,7 +14,7 @@ export default {
         }
     },
     props: ['data', 'x', 'xTitle', 'y', 'yTitle', 'group', 'hover', 'hoverTitles', 'title', 'id', 'type'],
-    name: 'Header',
+    name: 'PlotlyChart',
     methods: {
         formatData() {
             // let splitData = this.data.map(e => e.)

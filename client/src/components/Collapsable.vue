@@ -1,8 +1,11 @@
 <template>
     <div :id="'collapsable-component-' + name" class="collapse-component">
         <div :id="'collapsable-header-' + name" class="flex-between collapsable-header">
-            <h3 v-if="heading">{{ title }}</h3>
-            <h2 v-else>{{ title }}</h2>
+            <div class="flex-left align-center">
+            <h3 v-if="heading" class="space">{{ title }}</h3>
+            <h2 v-else class="space">{{ title }}</h2>
+            <div v-if="tbd" class="tbd">TBD</div>
+            </div>
             <button class="collapse-button" @click="handleCollapse"><i class="bi bi-plus-circle-fill"
                     :id="'collapsable-icon-' + name"></i></button>
         </div>
@@ -25,7 +28,7 @@ export default {
         }
     },
     name: 'Collapsable',
-    props: ['title', 'name', 'back', 'next', 'defaultOpen', 'heading', 'reset'],
+    props: ['title', 'name', 'back', 'next', 'defaultOpen', 'heading', 'reset', 'tbd'],
     emits: ['toggle-collapse'],
     methods: {
         handleCollapse() {
@@ -116,5 +119,13 @@ export default {
 .collapse-component .open {
     height: auto;
     padding: 20px;
+}
+
+.tbd {
+    border: solid 1px var(--black);
+    background-color: var(--secondary-blue);
+    color: var(--white);
+    padding: 8px;
+    border-radius: 10px;
 }
 </style>

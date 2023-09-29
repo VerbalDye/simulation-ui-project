@@ -14,7 +14,7 @@
             <h1>3. Inputs Definition & Review</h1>
             <div id="input-collapsables">
                 <Collapsable @toggle-collapse="collapsableToggleChange" title="Site Selection" name="site"
-                    next="phases-cells-operations" :defaultOpen="true" :reset="collapsableStatus['site']">
+                    next="phases-cells-operations" :reset="collapsableStatus['site']" tbd="true">
                     <form
                         @change="this.selectedSite = document.querySelector(`input[name='site-selection']:checked`).value">
                         <label v-for="site in siteData" :for="site.site_id" class="radio-container">
@@ -25,11 +25,11 @@
                         </label>
                     </form>
                 </Collapsable>
-                <Collapsable @toggle-collapse="collapsableToggleChange" title="Production Process"
+                <Collapsable @toggle-collapse="collapsableToggleChange" title="Production Process" :defaultOpen="true"
                     name="production-process-settings" :reset="collapsableStatus['production-process-settings']">
                     <Collapsable @toggle-collapse="collapsableToggleChange" title="Phases, Cells, & Operations"
                         name="phases-cells-operations" back="site" next="locations-processing-times" :heading="3"
-                        :reset="collapsableStatus['phases-cells-operations']">
+                        :reset="collapsableStatus['phases-cells-operations']" tbd="true">
                         <div>
                             <div v-for="(task, index) in formattedTaskSequenceData" class="drop-zone"
                                 @drop="onDrop($event, index)" @dragover.prevent @dragenter.prevent>
@@ -50,7 +50,7 @@
                     </Collapsable>
                     <Collapsable @toggle-collapse="collapsableToggleChange" title="Locations & Processing Times"
                         name="locations-processing-times" back="phases-cells-operations" next="buildings" :heading="3"
-                        :reset="collapsableStatus['locations-processing-times']">
+                        :reset="collapsableStatus['locations-processing-times']" :defaultOpen="true">
                         <div class="flex-between align-top">
                             <div class="flex-vertical">
                                 <div class="card-with-title">
@@ -197,9 +197,9 @@
                                                                 <div class="flex-left">
                                                                     <input
                                                                         v-for="(value, key) in this.processTimeSettings.elements[selectedAssets[0].asset_id].values"
-                                                                        class="small-number-input" type="number" step="0.01"
+                                                                        class="small-number-input" type="number"
                                                                         :value="value" :name="'times-' + key"
-                                                                        @input.prevent="handleProcessTimeDataChange(key, $event)">
+                                                                        @input="handleProcessTimeDataChange(key, $event)">
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -225,9 +225,9 @@
                                                             <td>
                                                                 <div class="flex-left">
                                                                     <input v-for="(value, key) in element.values"
-                                                                        class="small-number-input" type="number" step="0.01"
+                                                                        class="small-number-input" type="number"
                                                                         :value="value" :name="'times-' + key"
-                                                                        @input.prevent="handleProcessTimeDataChange(key, $event)">
+                                                                        @input="handleProcessTimeDataChange(key, $event)">
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -251,7 +251,7 @@
                     :reset="collapsableStatus['resources']">
                     <Collapsable @toggle-collapse="collapsableToggleChange" title="Buildings" name="buildings"
                         next="equipment-machines" back="locations-processing-times" :heading="3"
-                        :reset="collapsableStatus['buildings']">
+                        :reset="collapsableStatus['buildings']" tbd="true">
                         <div class="flex-between">
                             <div class="flex-between">
                                 <i class="bi bi-building-fill-gear large-icon"></i>
@@ -306,7 +306,7 @@
                     </Collapsable>
                     <Collapsable @toggle-collapse="collapsableToggleChange" title="Equipment/Machines"
                         name="equipment-machines" next="cores-tools" back="buildings" :heading="3"
-                        :reset="collapsableStatus['equipment-machines']">TBD</Collapsable>
+                        :reset="collapsableStatus['equipment-machines']" tbd="true">TBD</Collapsable>
                     <Collapsable @toggle-collapse="collapsableToggleChange" title="Cores & Tools" name="cores-tools"
                         next="materials" back="equipment-machines" :heading="3" :reset="collapsableStatus['cores-tools']">
                         <div>
@@ -320,13 +320,14 @@
                         </div>
                     </Collapsable>
                     <Collapsable @toggle-collapse="collapsableToggleChange" title="Materials" name="materials" next="labor"
-                        back="cores-tools" :heading="3" :reset="collapsableStatus['materials']">TBD
+                        back="cores-tools" :heading="3" :reset="collapsableStatus['materials']" tbd="true">TBD
                     </Collapsable>
                     <Collapsable @toggle-collapse="collapsableToggleChange" title="Labor" name="labor" next="routing"
-                        back="materials" :heading="3" :reset="collapsableStatus['labor']">TBD</Collapsable>
+                        back="materials" :heading="3" :reset="collapsableStatus['labor']" tbd="true">TBD</Collapsable>
                 </Collapsable>
                 <Collapsable @toggle-collapse="collapsableToggleChange" title="Routing, Queuing, and Prioritization"
-                    name="routing-queuing-prioritization" :reset="collapsableStatus['routing-queuing-prioritization']">
+                    name="routing-queuing-prioritization" :reset="collapsableStatus['routing-queuing-prioritization']"
+                    tbd="true">
                     <div class="flex-between">
                         <div class="card-with-title">
                             <h4 class="card-title">Phases, Cells, & Operations</h4>
@@ -364,7 +365,7 @@
                         </div>
                         <div v-if="assetData && taskSequenceData" class="card-with-title">
                             <div class="card-title">Plant Layout</div>
-                            <LayoutMaker mode="routing-map" :assetData="assetData"
+                            <LayoutMaker mode="routing-map" :assetData="assetData" :routingData="routingData"
                                 :selectedOperation="taskSequenceData[selectedOperation]"
                                 @selection-change="operationMapSelectionChange" id="2" />
                         </div>
@@ -400,20 +401,22 @@
                     </div>
                     <div>
                         <Collapsable @toggle-collapse="collapsableToggleChange" title="Routing" name="routing" back="labor"
-                            next="queuing" :reset="collapsableStatus['routing']">
+                            next="queuing" :reset="collapsableStatus['routing']" tbd="true">
                             <div v-if="routingData" class="limit-width">
                                 <SmartTable :jsonData="routingData.map(item => item.routing)" :advancedSearchEnabled="false"
                                     :excludedColumns="['destinations']" :id="3" />
                             </div>
                         </Collapsable>
                         <Collapsable @toggle-collapse="collapsableToggleChange" title="Queuing" name="queuing"
-                            back="routing" next="priority" :reset="collapsableStatus['queuing']">TBD</Collapsable>
+                            back="routing" next="priority" :reset="collapsableStatus['queuing']" tbd="true">TBD
+                        </Collapsable>
                         <Collapsable @toggle-collapse="collapsableToggleChange" title="Priority" name="priority"
-                            back="queuing" next="transportation" :reset="collapsableStatus['priority']">TBD</Collapsable>
+                            back="queuing" next="transportation" :reset="collapsableStatus['priority']" tbd="true">TBD
+                        </Collapsable>
                     </div>
                 </Collapsable>
                 <Collapsable @toggle-collapse="collapsableToggleChange" title="Transportation" name="transportation"
-                    back="priority" next="demand" :reset="collapsableStatus['transportation']">TBD</Collapsable>
+                    back="priority" next="demand" :reset="collapsableStatus['transportation']" tbd="true">TBD</Collapsable>
                 <Collapsable @toggle-collapse="collapsableToggleChange" title="Demand" name="demand" back="transportation"
                     next="review" :reset="collapsableStatus['demand']">
                     <div class="card-with-title">
@@ -442,7 +445,7 @@
                                         <td>
                                             <input type="number" class="small-number-input" step="1" min="0"
                                                 name="demand-target-min-input" :value="demandSettings.dailyTarget.min"
-                                                @input="e => demandSettings.dailyTarget.min = e.target.value">
+                                                @input="handleDailyTargetMinChange">
                                         </td>
                                     </tr>
                                     <tr>
@@ -450,7 +453,7 @@
                                         <td>
                                             <input type="number" class="small-number-input" step="1" min="0"
                                                 name="demand-target-max-input" :value="demandSettings.dailyTarget.max"
-                                                @input="e => demandSettings.dailyTarget.max = e.target.value">
+                                                @input="handleDailyTargetMaxChange">
                                         </td>
                                     </tr>
                                 </table>
@@ -583,9 +586,13 @@
                         </div>
                         <div v-else>
                             <button @click="downloadTemplate">Download Template</button>
-                            <div v-if="this.backlogData" class="space">This experiment has Backlog Data. If you would
-                                like to
-                                overwrite, upload new backlog data below and click "Upload".</div>
+                            <div v-if="this.backlogData" class="space">
+                                This experiment has Backlog Data. If you would like to overwrite, upload new backlog data
+                                below and click "Upload".
+                            </div>
+                            <h4>Start Date</h4>
+                            <input type="date" :value="demandSettings.startDate" name="backlog-start-date-input"
+                                class="space" @input="e => demandSettings.startDate = e.target.value">
                             <div>
                                 <label for="backlog-input">Upload Backlog</label>
                                 <input type="file" name="backlog-input" id="backlog-input" class="space" accept=".csv">
@@ -602,9 +609,10 @@
                     </div>
                 </Collapsable>
                 <Collapsable @toggle-collapse="collapsableToggleChange" title="Review" name="review" back="demand"
-                    :reset="collapsableStatus['review']">TBD</Collapsable>
+                    :reset="collapsableStatus['review']" tbd="true">TBD</Collapsable>
             </div>
-            <div class="flex-right"><button @click="clickBack">Back</button><button @click="clickNext">Next</button></div>
+            <div class="flex-right space"><button @click="clickBack">Back</button><button @click="clickNext">Next</button>
+            </div>
         </div>
     </div>
 </template>
@@ -716,7 +724,7 @@ export default {
             this.selectedOperation = 0;
         },
         async getAssetData() {
-            let data = await dataRequest("/api/experiment/asset/" + this.experimentID, "GET");
+            let data = await dataRequest("/api/experiment/asset/with-op-to-loc/" + this.experimentID, "GET");
             let secondIterationData = data.filter(e => e.iteration_number == 1);
             if (secondIterationData.length > 0) {
                 this.assetData = secondIterationData;
@@ -749,6 +757,7 @@ export default {
         },
         async getRoutingData() {
             let data = await dataRequest("/api/experiment/routing/" + this.experimentID, "GET");
+            console.log(data);
             this.routingData = data;
         },
         async getJobMixData() {
@@ -924,7 +933,7 @@ export default {
                     part_number: e["Part"],
                     model_number: parseInt(e["Model"].match(/[A-z]*([0-9]+)[A-z0-9]*/)[1]),
                     location: e["Location"],
-                    start_date: e["StartDate"],
+                    start_date: this.demandSettings.startDate,
                     day_number: parseInt(e["Day"]),
                     week_number: parseInt(e["Week"]),
                     expedite: (e["Expedite"] == "TRUE" ? true : false),
@@ -1200,13 +1209,23 @@ export default {
             this.processTimeElementChange();
         },
         handleProcessTimeDataChange(id, e) {
-            let selectedOperation = this.taskSequenceData[this.selectedOperation];
-            let data = this.processTimeData.find(e => e.experiment_process_time_id == id);
-            this.processTimeDataChange("change", { experiment_process_time_id: id, process_time: e.target.value });
-            if (this.processTimeSettings.applyToAll) {
-                this.processTimeDataChange("overwrite", { operation_id: selectedOperation.task_sequence.operation_id, asset_id: data.process_time.asset_id })
+        //     e.preventDefault();
+        //     console.log(e);
+        //     console.log(e.target.value);
+        //     console.log(e.target._value);
+        //     console.log([...e.target.value.matchAll(/[^0-9.]/g)])
+        //     e.target.value = e.target.value.replace(/[^0-9.]/g, '');
+        //     console.log(e.target.value);
+        //     console.log(e.target._value);
+            if (e.data !== '.') {
+                let selectedOperation = this.taskSequenceData[this.selectedOperation];
+                let data = this.processTimeData.find(f => f.experiment_process_time_id == id);
+                this.processTimeDataChange("change", { experiment_process_time_id: id, process_time: e.target.value });
+                if (this.processTimeSettings.applyToAll) {
+                    this.processTimeDataChange("overwrite", { operation_id: selectedOperation.task_sequence.operation_id, asset_id: data.process_time.asset_id })
+                }
+                this.processTimeElementChange();
             }
-            this.processTimeElementChange();
         },
         resetProcessingTimeChanges() {
             this.processTimeData = JSON.parse(JSON.stringify(this.backupProcessTimeData));
@@ -1280,6 +1299,18 @@ export default {
         },
         operationMapSelectionChange(e) {
             console.log(e);
+        },
+        handleDailyTargetMinChange({ target }) {
+            if (target.value > this.demandSettings.dailyTarget.max) {
+                this.demandSettings.dailyTarget.max = target.value;
+            }
+            this.demandSettings.dailyTarget.min = target.value;
+        },
+        handleDailyTargetMaxChange({ target }) {
+            if (target.value < this.demandSettings.dailyTarget.min) {
+                this.demandSettings.dailyTarget.min = target.value;
+            }
+            this.demandSettings.dailyTarget.max = target.value;
         },
         createCollapsableObject() {
             const collapsableEls = document.querySelectorAll(".collapse-component");
@@ -1445,5 +1476,4 @@ export default {
     border: none;
     margin: 4px;
     width: 50px;
-}
-</style>
+}</style>

@@ -27,13 +27,18 @@ router.post('/start/:id', (req, res) => {
         })
     ])
         .then(dbPromiseData => {
-            child_process.exec('..\\simulation\\"PV_Fluid v0_35 (Random seed depending on replication)_windows.bat"', {maxBuffer: 1024 * 1024 * 200}, async function (error, stdout, stderr) {
-                console.log(stdout);
-                console.log(error);
-                let info = stdout;
-                if (!info) { info = error }
-                if (!info) { info = stderr }
-                let body = { experiment_id: req.params.id, info: info }
+            const simulationProcess = child_process.exec('..\\simulation\\"PV_Fluid v0_36 (Choose oven according to routing)_windows.bat"', {maxBuffer: 1024 * 1024 * 200})
+            let simProcessOut;
+            simulationProcess.stdout.on('data', (data) => {
+                console.log(data);
+                simProcessOut += "\n" + data;
+                if (data.includes("Press any key to continue")) {
+                    simulationProcess.stdin.write("A");
+                }
+            });
+            simulationProcess.on('close', async (code) => {
+                console.log(code);
+                let body = { experiment_id: req.params.id, info: simProcessOut }
                 let logData = await Log.findOne({ where: { experiment_id: req.params.id }})
                 if (logData) {
                     Log.update(body, { where: { log_id: logData.log_id }});
@@ -41,8 +46,8 @@ router.post('/start/:id', (req, res) => {
                     Log.create(body);
                 }
                 await CurrentlyRunning.destroy({ where: { experiment_id: req.params.id }})
-                res.status(200).json({ message: stdout })
-            });
+                res.status(200).json({ message: code })
+            })
         })
         .catch(err => {
             console.log(err);

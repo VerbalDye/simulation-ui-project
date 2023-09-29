@@ -50,11 +50,13 @@ export default {
                 building: null,
                 floor: 1
             },
-            selectedObjectIndex: null
+            selectedObjectIndex: null,
+            destinationIDs: {},
+            secondaryDestinationIDs: {}
         }
     },
     name: 'LayoutMaker',
-    props: ['mode', 'assetData', 'selectedOperation', 'id'],
+    props: ['mode', 'assetData', 'routingData', 'selectedOperation', 'id'],
     emits: ['selection-change'],
     methods: {
         drawLayout() {
@@ -111,15 +113,6 @@ export default {
                 this.vueCanvas.stroke();
                 this.vueCanvas.fillText("(" + this.canvasProperties.viewX + "," + this.canvasProperties.viewY + ")", 0, this.canvasProperties.height - 4);
             } else if (this.mode == 'routing-map') {
-                let sources = this.assetData.filter(item => item.asset.operation_to_locations[0].operation_id == this.selectedOperation.task_sequence.operation_id);
-                let destinationIDs = [];
-                let secondaryDestinationIDs = [];
-                sources.forEach(item => {
-                    item.asset.destinations.forEach(destination => {
-                        destinationIDs.push(destination.asset_id);
-                        secondaryDestinationIDs = secondaryDestinationIDs.concat(destination.destinations.map(asset => asset.asset_id));
-                    })
-                });
                 this.assetData.forEach((item) => {
                     let resizedItem = this.translateAssetDimensions(item.asset);
                     let asset_id = item.asset.asset_id
@@ -127,9 +120,9 @@ export default {
                     this.vueCanvas.strokeStyle = '#000000';
                     if (item.asset.operation_to_locations[0].operation_id == this.selectedOperation.task_sequence.operation_id) {
                         this.vueCanvas.fillStyle = "rgb(34, 42, 53)";
-                    } else if (destinationIDs.includes(asset_id)) {
+                    } else if (this.destinationIDs[asset_id]) {
                         this.vueCanvas.fillStyle = "rgb(68, 84, 106)";
-                    } else if (secondaryDestinationIDs.includes(asset_id)) {
+                    } else if (this.secondaryDestinationIDs[asset_id]) {
                         this.vueCanvas.fillStyle = "rgb(132,151,176)";
                     } else {
                         this.vueCanvas.fillStyle = "rgb(127, 127, 127)";
@@ -138,7 +131,8 @@ export default {
                     this.vueCanvas.strokeRect(resizedItem.x, resizedItem.y, resizedItem.width, resizedItem.height);
                     this.vueCanvas.restore()
                 });
-                this.drawRoutingArrows(sources);
+                this.drawRoutingArrows(this.destinationIDs, "rgb(34, 42, 53)");
+                this.drawRoutingArrows(this.secondaryDestinationIDs, "rgb(68, 84, 106)");
                 this.vueCanvas.fillText("(" + this.canvasProperties.viewX + "," + this.canvasProperties.viewY + ")", 0, this.canvasProperties.height - 4);
             }
         },
@@ -163,22 +157,43 @@ export default {
             vueCanvas.fill();
             vueCanvas.restore();
         },
-        drawRoutingArrows(sources) {
-            sources.forEach(source => {
-                let resizedItem = this.translateAssetDimensions(source.asset);
-                source.asset.destinations.forEach(destination => {
-                    let resizedDestination = this.translateAssetDimensions(destination);
-                    if (resizedItem.x !== resizedDestination.x && resizedItem.y !== resizedDestination.y) {
-                        this.drawArrow(this.vueCanvas, resizedItem.x + resizedItem.width, resizedItem.y + resizedItem.height / 2, resizedDestination.x, resizedDestination.y + resizedDestination.height / 2, "rgb(34, 42, 53)");
-                        destination.destinations.forEach(secondaryDestination => {
-                            let resizedSecondaryDestination = this.translateAssetDimensions(secondaryDestination);
-                            if (resizedDestination.x !== resizedSecondaryDestination.x && resizedDestination.y !== resizedSecondaryDestination.y) {
-                                this.drawArrow(this.vueCanvas, resizedDestination.x + resizedDestination.width, resizedDestination.y + resizedDestination.height / 2, resizedSecondaryDestination.x, resizedSecondaryDestination.y + resizedSecondaryDestination.height / 2, "rgb(68, 84, 106)");
-                            }
-                        })
-                    }
-                })
+        drawRoutingArrows(ids, color) {
+            let destinations = Object.keys(ids);
+            destinations.forEach(destination => {
+                let source = ids[destination];
+                let resizedSource = this.translateAssetDimensions(this.assetData.find(e => e.asset_id == source).asset);
+                let resizedDestination = this.translateAssetDimensions(this.assetData.find(e => e.asset_id == destination).asset);
+                if (resizedSource.x !== resizedDestination.x && resizedSource.y !== resizedDestination.y) {
+                    this.drawArrow(this.vueCanvas, resizedSource.x + resizedSource.width, resizedSource.y + resizedSource.height / 2, resizedDestination.x, resizedDestination.y + resizedDestination.height / 2, color);
+                }
             })
+        },
+        getRoutingInfo() {
+            this.destinationIDs = {};
+            this.secondaryDestinationIDs = {};
+            let sources = this.assetData.filter(item => item.asset.operation_to_locations[0].operation_id == this.selectedOperation.task_sequence.operation_id);
+            sources.forEach(source => {
+                let destinations = this.routingData.filter(e => e.routing.origin == source.asset_id);
+                console.log(destinations.map(e => {
+                    let obj = {};
+                    obj.experiment_id = e.experiment_id;
+                    obj.iteration_number = e.iteration_number;
+                    obj.travel_allowed = e.routing.travel_allowed;
+                    obj.origin = e.routing.origin;
+                    obj.destination = e.routing.destination;
+                    obj.experiment_routing_id = e.experiment_routing_id;
+                    return obj;
+                }));
+                destinations.forEach(destination => {
+                    this.destinationIDs[destination.routing.destination] = source.asset_id;
+                    let secondaryDestinations = this.routingData.filter(e => e.routing.origin == destination.routing.destination);
+                    secondaryDestinations.forEach(secDestination => {
+                        this.secondaryDestinationIDs[secDestination.routing.destination] = destination.routing.destination;
+                    })
+                })
+            });
+            console.log("Destination IDs", this.destinationIDs);
+            console.log("Secondary Destination IDs", this.secondaryDestinationIDs);
         },
         translateAssetDimensions(asset) {
             let resizedItem = {};
@@ -295,6 +310,9 @@ export default {
     },
     watch: {
         selectedOperation: function (newVal, oldVal) {
+            if (this.mode == "routing-map") {
+                this.getRoutingInfo();
+            }
             this.drawLayout();
         }
     }

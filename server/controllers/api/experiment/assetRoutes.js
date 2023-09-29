@@ -19,7 +19,7 @@ router.get('/', (req, res) => {
         });
 });
 
-router.get('/:id', (req, res) => {
+router.get('/with-op-to-loc/:id', (req, res) => {
     ExperimentAsset.findAll({
         where: {
             experiment_id: req.params.id
@@ -40,41 +40,44 @@ router.get('/:id', (req, res) => {
                         }
                     ]
                 },
-                {
-                    model: Asset,
-                    through: {
-                        where: {
-                            travel_allowed: true
-                        }
-                    },
-                    as: 'destinations',
-                    include: [{
-                        model: Asset,
-                        through: {
-                            where: {
-                                travel_allowed: true
-                            }
-                        },
-                        as: 'destinations'
-                    }]
-                }
                 // {
-                //     model: Routing,
-                //     as: 'origin',
-                //     attributes: ['routing_id', 'origin', 'destination', 'travel_allowed'],
-                //     where: {
-                //         travel_allowed: true
+                //     model: Asset,
+                //     through: {
+                //         where: {
+                //             travel_allowed: true
+                //         }
                 //     },
+                //     as: 'destinations',
                 //     include: [{
                 //         model: Asset,
-                //         where: {
-                //             destination: 'asset_id'
-                //         }
-                //         // as: 'origin'
+                //         through: {
+                //             where: {
+                //                 travel_allowed: true
+                //             }
+                //         },
+                //         as: 'destinations'
                 //     }]
                 // }
             ]
         }]
+    })
+        .then(dbExperimentAssetData => res.json(dbExperimentAssetData))
+        .catch(err => {
+            console.log(err);
+            res.status(400).json(err);
+        });
+});
+
+router.get('/:id', (req, res) => {
+    ExperimentAsset.findAll({
+        where: {
+            experiment_id: req.params.id
+        },
+        include: [
+            {
+                model: Asset
+            }
+        ]
     })
         .then(dbExperimentAssetData => res.json(dbExperimentAssetData))
         .catch(err => {

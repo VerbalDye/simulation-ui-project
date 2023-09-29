@@ -28,7 +28,7 @@
             </Collapsable>
             <Collapsable title="Export" name="export" back="save" :defaultOpen="true">
                 <div class="flex-vertical flex-align-start extra-height">
-                    <div v-if="cellOptions" class="card-with-title">
+                    <div v-if="cellOptions.length" class="card-with-title">
                         <div class="card-title">Cell Production Schedule</div>
                         <p>Select Cells to Export into Excel Schedules.</p>
                         <VueMultiselect v-model="selectedCells" :options="cellOptions" :multiple="true"
@@ -43,11 +43,11 @@
                             Selected Cell Job Data</button>
                     </div>
                     <button class="space"
-                        @click="downloadData(resourceUtilizationData, experimentData.experiment_name + 'resource-util')">Download
+                        @click="downloadData(resourceUtilizationData, experimentData.experiment_name + '-resource-util')">Download
                         Resource
                         Utilization</button>
                     <button class="space"
-                        @click="downloadData(throughputData, experimentData.experiment_name + 'throughput')">Download
+                        @click="downloadData(throughputData, experimentData.experiment_name + '-throughput')">Download
                         Throughput</button>
                 </div>
             </Collapsable>

@@ -35,7 +35,11 @@
             <h2><i class="bi bi-bullseye"></i> Target(s)</h2>
             <Collapsable title="Throughput" name="throughput" next="utilization" :heading="3" tbd="true"
                 :reset="collapsableStatus['throughput']" @toggle-collapse="collapsableToggleChange">
-                TBD
+                <h3>Get Experiment With Highest Throughput?</h3>
+                <label class="switch">
+                    <input type="checkbox" checked name="stop-target-input" @input="">
+                    <span class="slider round"></span>
+                </label>
             </Collapsable>
             <Collapsable title="Equipment Utilization" name="utilization" next="turn-times" back="throughput"
                 :defaultOpen="true" :heading="3" :reset="collapsableStatus['utilization']"
@@ -98,7 +102,8 @@ export default {
             goalData: null,
             warning: false,
             utilizationTargets: [],
-            collapsableStatus: {}
+            collapsableStatus: {},
+
         }
     },
     mixins: [titleMixin],
@@ -166,6 +171,8 @@ export default {
 }
 </script>
 
-<style>.content h1 {
+<style>
+.content h1 {
     text-align: left;
-}</style>
+}
+</style>

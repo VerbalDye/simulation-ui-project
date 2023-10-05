@@ -19,15 +19,19 @@
                             <thead>
                                 <tr>
                                     <th>Name</th>
+                                    <th>Scenario</th>
                                     <th>Created By</th>
                                     <th>Date Created</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="row in this.recentExperiments">
-                                    <td><router-link :to="'/experiments/design/experiment-configuration/' + row.experiment_id">{{ row.experiment_name }}</router-link></td>
-                                    <td>{{ row.user.first_name + " " + row.user.last_name }}</td>
-                                    <td>{{ dayjs(row.created).format("M-D-YYYY h:mm:ss") }}</td>
+                                    <router-link :to="'/experiments/design/experiment-configuration/' + row.experiment_id">
+                                        <td>{{ row.experiment_name }}</td>
+                                        <td>{{ row.scenario.scenario_name }}</td>
+                                        <td>{{ row.user.first_name + " " + row.user.last_name }}</td>
+                                        <td>{{ dayjs(row.created).format("M-D-YYYY h:mm:ss") }}</td>
+                                    </router-link>
                                 </tr>
                             </tbody>
                         </table>

@@ -31,7 +31,8 @@ export default {
                 created: 'Created At',
                 last_modified: 'Last Modified',
                 full_name: 'Full Name',
-                user_email: 'User Email'
+                user_email: 'User Email',
+                scenario_name: 'Scenario'
             }
         }
     },
@@ -43,11 +44,12 @@ export default {
             let userData = await auth.getProfile();
             let data = await dataRequest("/api/experiment/user/" + userData.user_id, "GET");
             this.links = data.map(e => '/experiments/design/results-review/' + e.experiment_id)
-            this.experimentData = data.map(({ user, ...rest}) => {
-                let object = {...rest};
-                object.user_email = user.email;
-                object.full_name = user.first_name + ' ' + user.last_name;
-                return object
+            this.experimentData = data.map(({ user, scenario, ...rest}) => {
+                let obj = {...rest};
+                obj.user_email = user.email;
+                obj.full_name = user.first_name + ' ' + user.last_name;
+                obj.scenario_name = scenario.scenario_name;
+                return obj;
             });
             console.log(this.experimentData);
         }

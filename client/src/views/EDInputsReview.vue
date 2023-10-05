@@ -445,15 +445,15 @@
                                         <td>
                                             <input type="number" class="small-number-input" step="1" min="0"
                                                 name="demand-target-min-input" :value="demandSettings.dailyTarget.min"
-                                                @input="handleDailyTargetMinChange">
+                                                @input="e => this.demandSettings.dailyTarget.min = parseInt(e.target.value)" @blur="handleDailyTargetMinBlur">
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>Max</th>
                                         <td>
-                                            <input type="number" class="small-number-input" step="1" min="0"
+                                            <input type="number" class="small-number-input" step="1" min="1"
                                                 name="demand-target-max-input" :value="demandSettings.dailyTarget.max"
-                                                @input="handleDailyTargetMaxChange">
+                                                @input="e => this.demandSettings.dailyTarget.max = parseInt(e.target.value)" @blur="handleDailyTargetMaxBlur">
                                         </td>
                                     </tr>
                                 </table>
@@ -812,7 +812,7 @@ export default {
                 return obj
             })
             let assetRows = this.jobData.map(e => {
-                let assets = JSON.parse(JSON.stringify(assetOptions));
+                let assets = JSON.parse(JSON.stringify(assetOptions)).filter(e => e.name !== "With Customer");
                 let selectedAsset = assets.find(f => f.id == e.asset_id)
                 if (selectedAsset) {
                     selectedAsset.selected = true;
@@ -931,7 +931,7 @@ export default {
                     job_number: parseInt(e["Job"].match(/([0-9]+)[A-Z]*/, "")[1]),
                     serial_number: e["SerialNumber"],
                     part_number: e["Part"],
-                    model_number: parseInt(e["Model"].match(/[A-z]*([0-9]+)[A-z0-9]*/)[1]),
+                    model_number: parseInt(e["Model"].replace("T", "7")),
                     location: e["Location"],
                     start_date: this.demandSettings.startDate,
                     day_number: parseInt(e["Day"]),
@@ -948,16 +948,17 @@ export default {
                 return obj;
             })
             let uniqueIDs = [];
+            let duplicateIDs = [];
             backlogData = backlogData.filter(e => {
                 if (uniqueIDs.indexOf(e.job_number) == -1) {
                     uniqueIDs.push(e.job_number);
                     return true
                 } else {
+                    duplicateIDs.push(e.job_number);
                     return false
                 }
             })
             this.backlogData = await dataRequest("/api/experiment/backlog/bulk/" + this.experimentID, "POST", JSON.stringify({ data: backlogData }));
-            // console.log(this.backlogData);
             await this.saveAllChanges();
             await dataRequest("/api/experiment/populate/from-backlog", "POST", JSON.stringify({ expId: this.experimentID, numReplications: 3 }));
             await this.getJobData();
@@ -1209,14 +1210,14 @@ export default {
             this.processTimeElementChange();
         },
         handleProcessTimeDataChange(id, e) {
-        //     e.preventDefault();
-        //     console.log(e);
-        //     console.log(e.target.value);
-        //     console.log(e.target._value);
-        //     console.log([...e.target.value.matchAll(/[^0-9.]/g)])
-        //     e.target.value = e.target.value.replace(/[^0-9.]/g, '');
-        //     console.log(e.target.value);
-        //     console.log(e.target._value);
+            //     e.preventDefault();
+            //     console.log(e);
+            //     console.log(e.target.value);
+            //     console.log(e.target._value);
+            //     console.log([...e.target.value.matchAll(/[^0-9.]/g)])
+            //     e.target.value = e.target.value.replace(/[^0-9.]/g, '');
+            //     console.log(e.target.value);
+            //     console.log(e.target._value);
             if (e.data !== '.') {
                 let selectedOperation = this.taskSequenceData[this.selectedOperation];
                 let data = this.processTimeData.find(f => f.experiment_process_time_id == id);
@@ -1300,17 +1301,15 @@ export default {
         operationMapSelectionChange(e) {
             console.log(e);
         },
-        handleDailyTargetMinChange({ target }) {
-            if (target.value > this.demandSettings.dailyTarget.max) {
-                this.demandSettings.dailyTarget.max = target.value;
+        handleDailyTargetMinBlur() {
+            if (this.demandSettings.dailyTarget.min > this.demandSettings.dailyTarget.max) {
+                this.demandSettings.dailyTarget.max = this.demandSettings.dailyTarget.min;
             }
-            this.demandSettings.dailyTarget.min = target.value;
         },
-        handleDailyTargetMaxChange({ target }) {
-            if (target.value < this.demandSettings.dailyTarget.min) {
-                this.demandSettings.dailyTarget.min = target.value;
+        handleDailyTargetMaxBlur() {
+            if (this.demandSettings.dailyTarget.max < this.demandSettings.dailyTarget.min) {
+                this.demandSettings.dailyTarget.min = this.demandSettings.dailyTarget.max;
             }
-            this.demandSettings.dailyTarget.max = target.value;
         },
         createCollapsableObject() {
             const collapsableEls = document.querySelectorAll(".collapse-component");
@@ -1476,4 +1475,5 @@ export default {
     border: none;
     margin: 4px;
     width: 50px;
-}</style>
+}
+</style>

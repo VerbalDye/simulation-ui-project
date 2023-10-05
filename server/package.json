@@ -4,8 +4,8 @@
     "description": "",
     "main": "server.js",
     "scripts": {
-        "start": "node server.js",
-        "build": "cd ../client && npm run build && cd ../server && node server.js",
+        "start": "node --max_old_space_size=4096 server.js",
+        "build": "cd ../client && npm run build && cd ../server && node --max_old_space_size=4096 server.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "",

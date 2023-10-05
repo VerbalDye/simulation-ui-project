@@ -42,6 +42,9 @@
                             @click="downloadCellScheduleData">Download
                             Selected Cell Job Data</button>
                     </div>
+                    <button class="space" v-if="cellOptions.length"
+                            @click="downloadData(productionScheduleData, experimentData.experiment_name + '-production-schedule-all')">Download
+                            All Cell Job Data</button>
                     <button class="space"
                         @click="downloadData(resourceUtilizationData, experimentData.experiment_name + '-resource-util')">Download
                         Resource

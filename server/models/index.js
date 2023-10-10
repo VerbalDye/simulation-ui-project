@@ -50,15 +50,6 @@ AssetAvailability.belongsTo(Asset, {
     onDelete: 'CASCADE'
 });
 
-// Asset-Goal
-Asset.hasMany(ExperimentGoal, {
-    foreignKey: 'asset_id'
-});
-ExperimentGoal.belongsTo(Asset, {
-    foreignKey: 'asset_id',
-    onDelete: 'CASCADE'
-});
-
 // Backlog- Model Association
 ModelObject.hasMany(Backlog, {
     foreignKey: 'model_number'

@@ -28,8 +28,11 @@
             <div>
                 <div v-if="displayTimelineData" class="card-with-title">
                     <div class="card-title">Job Timeline</div>
-                    <VueMultiselect v-model="this.selectedJobs" :options="this.jobOptions" :multiple="true" :close-on-select="false" placeholder="Select at least one job" @update:model-value="handleJobSelectChange" :preselect-first="true">
-                        <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length" v-show="!isOpen">{{ values.length }} options selected</span></template>
+                    <VueMultiselect v-model="this.selectedJobs" :options="this.jobOptions" :multiple="true"
+                        :close-on-select="false" placeholder="Select at least one job"
+                        @update:model-value="handleJobSelectChange" :preselect-first="true">
+                        <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single"
+                                v-if="values.length" v-show="!isOpen">{{ values.length }} options selected</span></template>
                     </VueMultiselect>
                     <TimelineChart :data="displayTimelineData" />
                     <p>Best Match for Target(s) Iteration: {{ replicationSelection.iteration_number }} Replication: {{
@@ -74,6 +77,7 @@ export default {
             experimentData: null,
             goalData: null,
             displayTimelineData: null,
+            taskSequenceData: null,
             selectedJobs: [],
             jobOptions: [],
             running: null,
@@ -123,10 +127,29 @@ export default {
                 return obj;
             })
         },
+        async getTaskSequenceData() {
+            let data = await dataRequest("/api/experiment/task-sequence/" + this.experimentID, "GET");
+            console.log(data);
+            let currentEntry = data.find(e => e.task_sequence.start);
+            let cellSequence = [];
+            while(currentEntry) {
+                if (cellSequence.indexOf(currentEntry.task_sequence.cell.display_name) == -1) {
+                    cellSequence.push(currentEntry.task_sequence.cell.display_name);
+                }
+                currentEntry = data.find(e => e.task_sequence.task_sequence_id == currentEntry.task_sequence.next_operation);
+            }
+            this.taskSequenceData = cellSequence;
+            console.log(this.taskSequenceData);
+        },
         async getExperimentData() {
             let data = await dataRequest("/api/experiment/" + this.experimentID, "GET");
             // console.log(data);
             this.experimentData = data;
+        },
+        async getAssetData() {
+            let data = await dataRequest("/api/experiment/asset/" + this.experimentID, "GET");
+            // console.log(data);
+            this.assetData = data.map(e => e.asset);
         },
         async getGoalData() {
             let data = await dataRequest("/api/experiment/goal/" + this.experimentID, "GET");
@@ -134,29 +157,87 @@ export default {
             this.goalData = data;
         },
         async getJobTimelineData(iteration_number, replication) {
-            let data = await dataRequest("/api/experiment/job-timeline/processed/" + this.experimentID + "-" + iteration_number + "-" + replication, "GET");
-            this.jobTimelineData = data.map(e => {
+            let data = await dataRequest("/api/experiment/production-schedule/processed/" + this.experimentID + "-" + iteration_number + "-" + replication, "GET");
+            let timelineData = data.map(e => {
                 let arr = [
                     e.asset_name,
                     e.job_number.toString(),
                     dayjs(e.task_start).toDate(),
-                    dayjs(e.task_end).toDate()
+                    dayjs(e.task_end).toDate(),
+                    e.cell_name
                 ];
                 return arr;
             });
+            timelineData.sort((a, b) => this.taskSequenceData.indexOf(a[4]) - this.taskSequenceData.indexOf(b[4]));
+            timelineData.map(e => e.splice(4, 1));
+            this.jobTimelineData = timelineData;
+            console.log(timelineData);
+            console.log(this.jobTimelineData);
             data.forEach(entry => {
                 if (this.jobOptions.indexOf(entry.job_number) == -1) {
-                    // this.selectedJobs.push(entry.job_number);
                     this.jobOptions.push(entry.job_number);
                 }
             })
-            // data.forEach(entry => {
-            //     if (uniqueJobNumbers.indexOf(entry.job_number) == -1) {
-            //         uniqueJobNumbers.push(entry.job_number);
-            //         this.selectedJobs[entry.job_number] = true;
-            //     }
-            // })
             this.displayTimelineData = this.jobTimelineData.filter(e => this.selectedJobs.indexOf(e.job_number) !== -1);
+        },
+        testReplication(data, test) {
+            let method = test.method;
+            switch (method) {
+                case 'highest':
+                    return data.reduce((acc, value) => value > acc ? value : acc);
+                case 'lowest':
+                    return data.reduce((acc, value) => value < acc ? value : acc);
+                case 'median':
+                    return data[Math.floor(data.sort((a, b) => a.priority - b.priority).length / 2)];
+                case 'greater_than':
+                    return data.filter(e => e > test.value);
+                case 'less_than':
+                    return data.filter(e => e > test.value);
+            }
+        },
+        getReplicationsForPriority(replications, lastPriority) {
+            let successes = []
+            this.goalData.sort((a, b) => a.priority - b.priority);
+            let goals = this.goalData.filter(e => e.priority > lastPriority).filter((e, index, arr) => e.priority == arr[0].priority);
+            goals.forEach(goal => {
+                replications.forEach(replication => {
+                    if ((goal.type == "throughput" && this.testReplication(replication.throughputData.map(e => e.throughput), goal)) || (goal.type == "utilization" && this.testReplication(replication.utilizationData.map(e => e.utilization), goal))) {
+                        let entry = successes.find(e => e.iteration_number == replication.iteration_number && e.replication == replication.replication);
+                        if (entry) {
+                            entry.count = entry.count + 1;
+                        } else {
+                            successes.push({
+                                iteration_number: replication.iteration_number,
+                                replication: replication.replication,
+                                count: 1
+                            })
+                        }
+                    }
+                })
+            })
+            let newReplications;
+            if (successes.length) {
+                let maxCount = successes.reduce((acc, value) => value < acc ? value : acc).count;
+                newReplications = replications.filter((e, index) => successes.find(f => f.iteration_number == e.iteration_number && f.replication == e.replication).count == maxCount);
+            } else {
+                newReplications = [replications[0]];
+            }
+            if (this.goalData.find(e => e.priority > goals[0].priority)) {
+                return this.getReplicationsForPriority(newReplications, goals[0].priority)
+            } else {
+                return  newReplications.map(({ utilizationData, throughputData, ...rest }) => rest);
+            }
+        },
+        async getCanonReplication() {
+            let replications = this.throughputData.filter(e => e.iteration_number !== 'Iteration 0').map(({ iteration_number, replication, ...rest }) => {
+                return { iteration_number: parseInt(iteration_number.replace('Iteration ', '')), replication: parseInt(replication.replace('Replication ', '')) }
+            });
+            replications.forEach(replication => {
+                replication.utilizationData = this.resourceUtilizationData.filter(e => e.iteration_number == replication.iteration_number && e.replication == replication.replication);
+                replication.throughputData = this.throughputData.filter(e => e.iteration_number == 'Iteration ' + replication.iteration_number && e.replication == 'Replication ' + replication.replication);
+            })
+            this.replicationSelection = this.getReplicationsForPriority(replications, 0)[0];
+            await this.getJobTimelineData(this.replicationSelection.iteration_number, this.replicationSelection.replication);
         },
         async getData() {
             this.loading = true;
@@ -165,53 +246,12 @@ export default {
                 this.getThroughput(),
                 this.getCurrentlyRunning(),
                 this.getExperimentData(),
+                this.getTaskSequenceData(),
+                this.getAssetData(),
                 this.getGoalData()
             ])
             if (this.experimentData.scenario.scenario_id == 8) {
-                let compatibleRuns = [{ iteration_number: 1, replication: 0, count: 0}]
-                this.goalData.forEach(goal => {
-                    let replications = this.resourceUtilizationData.filter(e => e.display_name == goal.asset.display_name && e.iteration_number !== 0);
-                    replications.forEach(replication => {
-                        if (goal.greater_than) {
-                            if (replication.utilization > goal.utilization * 100) {
-                                let entry = compatibleRuns.find(e => e.iteration_number == replication.iteration_number && e.replication == replication.replication);
-                                if (entry) {
-                                    entry.count = entry.count + 1;
-                                } else {
-                                    compatibleRuns.push({
-                                        iteration_number: replication.iteration_number,
-                                        replication: replication.replication,
-                                        count: 1
-                                    })
-                                }
-                            }
-                        } else {
-                            if (replication.utilization < goal.utilization * 100) {
-                                let entry = compatibleRuns.find(e => e.iteration_number == replication.iteration_number && e.replication == replication.replication);
-                                if (entry) {
-                                    entry.count = entry.count + 1;
-                                } else {
-                                    compatibleRuns.push({
-                                        iteration_number: replication.iteration_number,
-                                        replication: replication.replication,
-                                        count: 1
-                                    })
-                                }
-                            }
-                        }
-                    })
-                })
-                console.log(compatibleRuns);
-                let bestRun = compatibleRuns.reduce((acc, value) => {
-                    if (value.count > acc.count) {
-                        return value;
-                    } else {
-                        return acc;
-                    }
-                });
-                this.replicationSelection = bestRun;
-                console.log(bestRun);
-                await this.getJobTimelineData(bestRun.iteration_number, bestRun.replication);
+                await this.getCanonReplication();
             }
             this.loading = false;
             this.warning = (this.throughputData.length == 0 || this.resourceUtilizationData.length == 0);
@@ -237,10 +277,10 @@ export default {
             //         this.selectedJobs[key] = false;
             //     }
             // })
-            console.log(this.selectedJobs);
-            console.log(this.jobTimelineData);
+            // console.log(this.selectedJobs);
+            // console.log(this.jobTimelineData);
             this.displayTimelineData = this.jobTimelineData.filter(e => this.selectedJobs.indexOf(parseInt(e[1])) !== -1);
-            console.log(this.displayTimelineData);
+            // console.log(this.displayTimelineData);
         },
         clickBack() {
             this.$router.push("/experiments/design/simulation-start/" + this.experimentID);

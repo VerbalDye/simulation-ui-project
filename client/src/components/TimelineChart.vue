@@ -15,19 +15,26 @@ export default {
     name: 'TimelineChart',
     methods: {
         drawChart() {
-            var container = document.getElementById('timeline');
-            var chart = new google.visualization.Timeline(container);
-            var dataTable = new google.visualization.DataTable();
-            dataTable.addColumn({ type: 'string', id: 'Asset' });
-            dataTable.addColumn({ type: 'string', id: 'Name' });
-            dataTable.addColumn({ type: 'date', id: 'Start' });
-            dataTable.addColumn({ type: 'date', id: 'End' });
-            dataTable.addRows(this.data);
-            var options = {
-                timeline: { groupByRowLabel: true },
-                backgroundColor: '#d5e4ed'
-            };
-            chart.draw(dataTable, options);
+            try {
+                var container = document.getElementById('timeline');
+                var chart = new google.visualization.Timeline(container);
+                var dataTable = new google.visualization.DataTable();
+                dataTable.addColumn({ type: 'string', id: 'Asset' });
+                dataTable.addColumn({ type: 'string', id: 'Name' });
+                dataTable.addColumn({ type: 'date', id: 'Start' });
+                dataTable.addColumn({ type: 'date', id: 'End' });
+                dataTable.addRows(this.data);
+                var options = {
+                    timeline: { groupByRowLabel: true },
+                    backgroundColor: '#d5e4ed',
+                    hAxis: {
+                        format: 'M/d haa'
+                    }
+                };
+                chart.draw(dataTable, options);
+            } catch (err) {
+                console.log(err);
+            }
         }
     },
     mounted() {

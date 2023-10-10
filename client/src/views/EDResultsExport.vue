@@ -82,6 +82,7 @@ export default {
             productionScheduleData: null,
             experimentData: null,
             goalData: null,
+            assetData: null,
             selectedCells: [],
             cellOptions: [],
             running: null,
@@ -115,6 +116,11 @@ export default {
             // console.log(data);
             this.experimentData = data;
         },
+        async getAssetData() {
+            let data = await dataRequest("/api/experiment/asset/" + this.experimentID, "GET");
+            // console.log(data);
+            this.assetData = data;
+        },
         async getGoalData() {
             let data = await dataRequest("/api/experiment/goal/" + this.experimentID, "GET");
             // console.log(data);
@@ -139,6 +145,64 @@ export default {
             // })
             // this.displayTimelineData = this.jobTimelineData.filter(e => this.selectedCells.indexOf(e.job_number) !== -1);
         },
+        testReplication(data, test) {
+            let method = test.method;
+            switch (method) {
+                case 'highest':
+                    return data.reduce((acc, value) => value > acc ? value : acc);
+                case 'lowest':
+                    return data.reduce((acc, value) => value < acc ? value : acc);
+                case 'median':
+                    return data[Math.floor(data.sort((a, b) => a.priority - b.priority).length / 2)];
+                case 'greater_than':
+                    return data.filter(e => e > test.value);
+                case 'less_than':
+                    return data.filter(e => e > test.value);
+            }
+        },
+        getReplicationsForPriority(replications, lastPriority) {
+            let successes = []
+            this.goalData.sort((a, b) => a.priority - b.priority);
+            let goals = this.goalData.filter(e => e.priority > lastPriority).filter((e, index, arr) => e.priority == arr[0].priority);
+            goals.forEach(goal => {
+                replications.forEach(replication => {
+                    if ((goal.type == "throughput" && this.testReplication(replication.throughputData.map(e => e.throughput), goal)) || (goal.type == "utilization" && this.testReplication(replication.utilizationData.map(e => e.utilization), goal))) {
+                        let entry = successes.find(e => e.iteration_number == replication.iteration_number && e.replication == replication.replication);
+                        if (entry) {
+                            entry.count = entry.count + 1;
+                        } else {
+                            successes.push({
+                                iteration_number: replication.iteration_number,
+                                replication: replication.replication,
+                                count: 1
+                            })
+                        }
+                    }
+                })
+            })
+            let newReplications;
+            if (successes.length) {
+                let maxCount = successes.reduce((acc, value) => value < acc ? value : acc).count;
+                newReplications = replications.filter((e, index) => successes.find(f => f.iteration_number == e.iteration_number && f.replication == e.replication).count == maxCount);
+            } else {
+                newReplications = [replications[0]];
+            }
+            if (this.goalData.find(e => e.priority > goals[0].priority)) {
+                return this.getReplicationsForPriority(newReplications, goals[0].priority)
+            } else {
+                return  newReplications.map(({ utilizationData, throughputData, ...rest }) => rest);
+            }
+        },
+        async getCanonReplication() {
+            let replications = this.throughputData.filter(e => e.iteration_number !== 0).map(({ experiment_id, weekly_throughput, ...rest }) => rest);
+            console.log(replications);
+            replications.forEach(replication => {
+                replication.utilizationData = this.resourceUtilizationData.filter(e => e.iteration_number == replication.iteration_number && e.replication == replication.replication);
+                replication.throughputData = this.throughputData.filter(e => e.iteration_number == replication.iteration_number && e.replication == replication.replication);
+            })
+            this.replicationSelection = this.getReplicationsForPriority(replications, 0)[0];
+            await this.getProductionScheduleData(this.replicationSelection.iteration_number, this.replicationSelection.replication);
+        },
         async getData() {
             this.loading = true;
             await Promise.all([
@@ -146,51 +210,11 @@ export default {
                 this.getResourceUtilization(),
                 this.getThroughput(),
                 this.getExperimentData(),
+                this.getAssetData(),
                 this.getGoalData()
             ])
             if (this.experimentData.scenario.scenario_id == 8) {
-                let compatibleRuns = [{ iteration_number: 1, replication: 0, count: 0 }]
-                this.goalData.forEach(goal => {
-                    let replications = this.resourceUtilizationData.filter(e => e.display_name == goal.asset.display_name && e.iteration_number !== 0);
-                    replications.forEach(replication => {
-                        if (goal.greater_than) {
-                            if (replication.utilization > goal.utilization * 100) {
-                                let entry = compatibleRuns.find(e => e.iteration_number == replication.iteration_number && e.replication == replication.replication);
-                                if (entry) {
-                                    entry.count = entry.count + 1;
-                                } else {
-                                    compatibleRuns.push({
-                                        iteration_number: replication.iteration_number,
-                                        replication: replication.replication,
-                                        count: 1
-                                    })
-                                }
-                            }
-                        } else {
-                            if (replication.utilization < goal.utilization * 100) {
-                                let entry = compatibleRuns.find(e => e.iteration_number == replication.iteration_number && e.replication == replication.replication);
-                                if (entry) {
-                                    entry.count = entry.count + 1;
-                                } else {
-                                    compatibleRuns.push({
-                                        iteration_number: replication.iteration_number,
-                                        replication: replication.replication,
-                                        count: 1
-                                    })
-                                }
-                            }
-                        }
-                    })
-                })
-                let bestRun = compatibleRuns.reduce((acc, value) => {
-                    if (value.count > acc.count) {
-                        return value;
-                    } else {
-                        return acc;
-                    }
-                });
-                this.replicationSelection = bestRun;
-                await this.getProductionScheduleData(bestRun.iteration_number, bestRun.replication);
+                await this.getCanonReplication();
             }
             this.loading = false;
             this.warning = (this.throughputData.length == 0 || this.resourceUtilizationData.length == 0);
@@ -204,7 +228,7 @@ export default {
                 this.downloadData(this.productionScheduleData.filter(e => e.cell_name == cell), cell + "-" + this.experimentData.experiment_name);
             })
             } else {
-                window.aler("Please select a cell before attempting to download.");
+                window.alert("Please select a cell before attempting to download.");
             }
         },
         clickBack() {

@@ -1,8 +1,8 @@
 <template>
+    <Header />
     <div class="site-container">
         <Sidebar />
         <div class="content">
-            <Header />
             <h1>404: Page Not Found</h1>
         </div>
     </div>

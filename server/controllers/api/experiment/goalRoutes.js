@@ -16,10 +16,7 @@ router.get('/:id', (req, res) => {
     ExperimentGoal.findAll({
         where: {
             experiment_id: req.params.id
-        },
-        include: [{
-            model: Asset
-        }]
+        }
     })
         .then(dbExperimentGoalData => res.json(dbExperimentGoalData))
         .catch(err => {
@@ -55,8 +52,10 @@ router.put('/bulk', async (req, res) => {
             }
         }))
     })
+    console.log(promises);
     try {
-        await Promise.allSettled(promises)
+        let responses = await Promise.allSettled(promises)
+        console.log(responses);
         res.json({ message: 'Success' })
     } catch (err) {
         res.status(400).json(err);

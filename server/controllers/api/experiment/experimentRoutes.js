@@ -177,8 +177,8 @@ router.post('/inputs/:id', async (req, res) => {
     let dbExperimentTaskSequenceData = await ExperimentTaskSequence.findAll({ where: { experiment_id: id, iteration_number: b.targetIteration } });
     // Clear Data for Iteration
 
-    await Promise.allSettled([
-        sequelize.query("DELETE asset FROM asset INNER JOIN experiment_asset ON asset.asset_id = experiment_asset.asset_id WHERE experiment_asset.experiment_id = :expId AND experiment_asset.iteration_number = :iteration",
+    let deleteResults = await Promise.allSettled([
+        sequelize.query("DELETE asset FROM asset INNER JOIN experiment_asset ON asset.asset_id = experiment_asset.asset_id WHERE experiment_asset.experiment_id = 15 AND experiment_asset.iteration_number = 1 AND asset.is_default = 0",
             { replacements: { expId: id, iteration: b.iteration } }),
         ExperimentAsset.destroy({
             where: { experiment_id: id, iteration_number: b.iteration }
@@ -193,6 +193,7 @@ router.post('/inputs/:id', async (req, res) => {
             where: { experiment_id: id, iteration_number: b.iteration }
         })
     ])
+    console.log(deleteResults[0]);
     // Get Asset Data 
     let assetData = b.data.asset.filter(e => e.capacity == 0 || e.capacity == "RESET");
     assetData = assetData.map(e => {
@@ -202,7 +203,8 @@ router.post('/inputs/:id', async (req, res) => {
         }
         return obj;
     })
-    let dbAssetData = await Asset.bulkCreate(assetData.map(({ asset_id, ...rest }) => rest));
+    let bulkAssetData = assetData.map(({ asset_id, ...rest }) => rest)
+    let dbAssetData = await Asset.bulkCreate(bulkAssetData);
     // Asset Substitution
     let assetIdTable = {};
     dbAssetData.forEach((asset, index) => {

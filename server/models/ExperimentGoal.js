@@ -18,21 +18,29 @@ ExperimentGoal.init(
                 key: 'experiment_id'
             }
         },
-        asset_id: {
+        type: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        target_id: {
+            type: DataTypes.INTEGER
+        },
+        method: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        value: {
+            type: DataTypes.FLOAT,
+        },
+        priority: {
             type: DataTypes.INTEGER,
-            allowNull: false,
-            references: {
-                model: 'asset',
-                key: 'asset_id'
-            }
-        },
-        utilization: {
-            type: DataTypes.DOUBLE(5,5),
-        },
-        greater_than: {
-            type: DataTypes.BOOLEAN,
+            allowNull: false
         },
         created: {
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW
+        },
+        last_modified: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW
         },

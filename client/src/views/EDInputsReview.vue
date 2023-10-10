@@ -403,7 +403,7 @@
                         <Collapsable @toggle-collapse="collapsableToggleChange" title="Routing" name="routing" back="labor"
                             next="queuing" :reset="collapsableStatus['routing']" tbd="true">
                             <div v-if="routingData" class="limit-width">
-                                <SmartTable :jsonData="routingData.map(item => item.routing)" :advancedSearchEnabled="false"
+                                <SmartTable :jsonData="routingDisplayData" :advancedSearchEnabled="false"
                                     :excludedColumns="['destinations']" :id="3" />
                             </div>
                         </Collapsable>
@@ -643,6 +643,7 @@ export default {
             formattedTaskSequenceData: null,
             assetData: null,
             routingData: null,
+            routingDisplayData: null,
             jobMixData: null,
             jobData: null,
             coreModelData: null,
@@ -759,6 +760,14 @@ export default {
             let data = await dataRequest("/api/experiment/routing/" + this.experimentID, "GET");
             console.log(data);
             this.routingData = data;
+            this.routingDisplayData = data.map(e => {
+                let f = e.routing;
+                let obj = f;
+                obj.origin_asset = f.origin_asset.display_name;
+                obj.destination_asset = f.destination_asset.display_name;
+                return obj;
+            });
+            console.log(this.routingDisplayData);
         },
         async getJobMixData() {
             let data = await dataRequest("/api/experiment/job-mix/" + this.experimentID, "GET");
@@ -879,6 +888,7 @@ export default {
             window.open('/api/experiment/backlog/template');
         },
         async saveAllChanges() {
+            this.loading = true;
             let data = {
                 asset: this.assetData.map(e => {
                     let obj = {};
@@ -912,7 +922,6 @@ export default {
                     return obj;
                 })
             }
-            this.loading = true;
             let coreData = this.coreModelData.map(({ experiment_core_id, available, ...rest }) => { return { experiment_core_id, available } })
             await Promise.allSettled([
                 dataRequest("/api/experiment/site/" + this.experimentID, "PUT", JSON.stringify({ site_id: this.selectedSite })),

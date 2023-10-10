@@ -26,12 +26,12 @@
                             </thead>
                             <tbody>
                                 <tr v-for="row in this.recentExperiments">
-                                    <router-link :to="'/experiments/design/experiment-configuration/' + row.experiment_id">
-                                        <td>{{ row.experiment_name }}</td>
-                                        <td>{{ row.scenario.scenario_name }}</td>
-                                        <td>{{ row.user.first_name + " " + row.user.last_name }}</td>
-                                        <td>{{ dayjs(row.created).format("M-D-YYYY h:mm:ss") }}</td>
-                                    </router-link>
+                                    <td><router-link
+                                            :to="'/experiments/design/experiment-configuration/' + row.experiment_id">{{
+                                                row.experiment_name }}</router-link></td>
+                                    <td>{{ row.scenario.scenario_name }}</td>
+                                    <td>{{ row.user.first_name + " " + row.user.last_name }}</td>
+                                    <td>{{ dayjs(row.created).format("M-D-YYYY h:mm:ss") }}</td>
                                 </tr>
                             </tbody>
                         </table>

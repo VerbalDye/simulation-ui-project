@@ -31,6 +31,7 @@ router.get('/:id', (req, res) => {
 
 router.post('/bulk/:id', (req, res) => {
     let models = [];
+    let invalidData = false;
     Backlog.destroy({
         where: {
             experiment_id: req.params.id
@@ -40,19 +41,24 @@ router.post('/bulk/:id', (req, res) => {
             req.body.data.forEach(entry => {
                 models.push(
                     new Promise(resolve => {
-                        ModelObject.findOrCreate({
-                            where: {
-                                model_number: entry.model_number
-                            },
-                            defaults: {
-                                model_number: entry.model_number
-                            }
-                        })
-                        resolve();
+                        if (entry.model_number) {
+                            ModelObject.findOrCreate({
+                                where: {
+                                    model_number: entry.model_number
+                                },
+                                defaults: {
+                                    model_number: entry.model_number
+                                }
+                            })
+                            resolve();
+                        } else {
+                            invalidData = true;
+                        }
                     })
                 )
             })
-            Promise.allSettled(models)
+            if (!invalidData) {
+                Promise.allSettled(models)
                 .then(dbPromiseData => {
                     Backlog.bulkCreate(req.body.data)
                         .then(dbBacklogData => res.json(dbBacklogData))
@@ -61,6 +67,9 @@ router.post('/bulk/:id', (req, res) => {
                             res.status(400).json(err);
                         });
                 })
+            } else {
+                res.status(400).json({ message: "Invalid Backlog Input"});
+            }
         })
 });
 

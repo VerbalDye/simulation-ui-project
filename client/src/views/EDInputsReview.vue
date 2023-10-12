@@ -445,7 +445,8 @@
                                         <td>
                                             <input type="number" class="small-number-input" step="1" min="0"
                                                 name="demand-target-min-input" :value="demandSettings.dailyTarget.min"
-                                                @input="e => this.demandSettings.dailyTarget.min = parseInt(e.target.value)" @blur="handleDailyTargetMinBlur">
+                                                @input="e => this.demandSettings.dailyTarget.min = parseInt(e.target.value)"
+                                                @blur="handleDailyTargetMinBlur">
                                         </td>
                                     </tr>
                                     <tr>
@@ -453,7 +454,8 @@
                                         <td>
                                             <input type="number" class="small-number-input" step="1" min="1"
                                                 name="demand-target-max-input" :value="demandSettings.dailyTarget.max"
-                                                @input="e => this.demandSettings.dailyTarget.max = parseInt(e.target.value)" @blur="handleDailyTargetMaxBlur">
+                                                @input="e => this.demandSettings.dailyTarget.max = parseInt(e.target.value)"
+                                                @blur="handleDailyTargetMaxBlur">
                                         </td>
                                     </tr>
                                 </table>
@@ -967,10 +969,15 @@ export default {
                     return false
                 }
             })
-            this.backlogData = await dataRequest("/api/experiment/backlog/bulk/" + this.experimentID, "POST", JSON.stringify({ data: backlogData }));
-            await this.saveAllChanges();
-            await dataRequest("/api/experiment/populate/from-backlog", "POST", JSON.stringify({ expId: this.experimentID, numReplications: 3 }));
-            await this.getJobData();
+            let backlogStatus = await dataRequest("/api/experiment/backlog/bulk/" + this.experimentID, "POST", JSON.stringify({ data: backlogData }), { statusOnly: true });
+            if (backlogStatus.status == 200) {
+                await this.getBacklogData();
+                await this.saveAllChanges();
+                await dataRequest("/api/experiment/populate/from-backlog", "POST", JSON.stringify({ expId: this.experimentID, numReplications: 3 }));
+                await this.getJobData();
+            } else {
+                window.alert('Backlog validation error. Please review file and try again. Expected format available to download under "Download Template"')
+            }
             this.loading = false;
         },
         async populateFromUI() {

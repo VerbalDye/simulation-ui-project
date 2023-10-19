@@ -8,9 +8,9 @@
                 <main>
                     <div class="section">
                         <h2>Start</h2>
-                        <router-link to="/experiments/design"><i class="bi bi-file-earmark-plus-fill"></i> New
+                        <router-link to="/experiments/design" class="experiment-start-options"><i class="bi bi-file-earmark-plus-fill"></i> New
                             Experiment...</router-link>
-                        <router-link to="/experiments/search"><i class="bi bi-folder-fill"></i> Open
+                        <router-link to="/experiments/search" class="experiment-start-options"><i class="bi bi-folder-fill"></i> Open
                             Experiment Results...</router-link>
                     </div>
                     <div class="section">
@@ -26,7 +26,7 @@
                             </thead>
                             <tbody>
                                 <tr v-for="row in this.recentExperiments">
-                                    <td><router-link
+                                    <td><router-link class="experiment-start-options"
                                             :to="'/experiments/design/experiment-configuration/' + row.experiment_id">{{
                                                 row.experiment_name }}</router-link></td>
                                     <td>{{ row.scenario.scenario_name }}</td>
@@ -36,6 +36,10 @@
                             </tbody>
                         </table>
                         <p v-else>No Recent Experiments</p>
+                    </div>
+                    <div v-if="isAdmin" class="section">
+                        <h2>Admin Controls</h2>
+                        <router-link to="/admin/add-asset" class="link-button space">Asset Management</router-link>
                     </div>
                 </main>
             </div>
@@ -54,7 +58,8 @@ export default {
     data() {
         return {
             recentExperiments: null,
-            dayjs: dayjs
+            dayjs: dayjs,
+            isAdmin: false
         }
     },
     mixins: [titleMixin],
@@ -71,6 +76,7 @@ export default {
     },
     mounted() {
         this.getRecentExperiments();
+        this.isAdmin = auth.isAdmin();
     }
 }
 </script>
@@ -84,7 +90,7 @@ export default {
     margin: 0 0 10px 0;
 }
 
-.experiment a {
+.experiment-start-options {
     display: block;
     margin: 0 5px;
     padding: 5px 0;

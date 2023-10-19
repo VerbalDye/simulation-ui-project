@@ -39,7 +39,7 @@
                         replicationSelection.replication }}</p>
                 </div>
                 <PlotlyChart v-if="resourceUtilizationData" :data="resourceUtilizationData" id="2" title="Asset Utilization"
-                    group="display_name" x="AVG(util.processing_time )" xTitle="Average Processing Time (Minutes)"
+                    group="asset_name" x="AVG(util.processing_time )" xTitle="Average Processing Time (Minutes)"
                     y="utilization" yTitle="Utilization (%)" :hover="['iteration_number', 'replication', 'utilization']"
                     :hoverTitles="['Iteration Number ', 'Replication Number ', 'Utilization ']" type="scatter" />
                 <PlotlyChart v-if="throughputData" :data="throughputData" id="3" title="Weekly Throughput"

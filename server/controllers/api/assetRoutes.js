@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { Asset } = require('../../models');
+const sequelize = require('../../config/connection');
 
 router.get('/', (req, res) => {
     Asset.findAll()
@@ -22,6 +23,18 @@ router.get('/', (req, res) => {
 router.post('/create-bulk', (req, res) => {
     Asset.bulkCreate(req.body)
         .then(dbAssetData => res.json(dbAssetData))
+        .catch(err => {
+            console.log(err);
+            res.status(400).json(err);
+        });
+})
+
+router.post('/create-default', (req, res) => {
+    sequelize.query('CALL add_newAsset (:aname, :atype, :x, :y, :z, :l, :w, :h, :capacity, :op_id, :proc_time, :fromList, :fromTime, :toList, :toTime)',
+    {
+        replacements: req.body
+    })
+        .then(dbResponse => res.json({ message: 'Success' }))
         .catch(err => {
             console.log(err);
             res.status(400).json(err);

@@ -23,10 +23,10 @@
         <ExperimentDesignerSidebar currentPage="6" />
         <div class="content">
             <h1>7. Results Save & Export</h1>
-            <Collapsable title="Save" name="save" next="export">
+            <Collapsable title="Save" name="save" next="export" :reset="collapsableStatus['save']" @toggle-collapse="collapsableToggleChange">
                 TBD
             </Collapsable>
-            <Collapsable title="Export" name="export" back="save" :defaultOpen="true">
+            <Collapsable title="Export" name="export" back="save" :defaultOpen="true" :reset="collapsableStatus['export']" @toggle-collapse="collapsableToggleChange">
                 <div class="flex-vertical flex-align-start extra-height">
                     <div v-if="cellOptions.length" class="card-with-title">
                         <div class="card-title">Cell Production Schedule</div>
@@ -87,7 +87,8 @@ export default {
             cellOptions: [],
             running: null,
             loading: false,
-            warning: false
+            warning: false,
+            collapsableStatus: {}
         }
     },
     mixins: [titleMixin],
@@ -129,7 +130,13 @@ export default {
         async getProductionScheduleData(iteration_number, replication) {
             let data = await dataRequest("/api/experiment/production-schedule/processed/" + this.experimentID + "-" + iteration_number + "-" + replication, "GET");
             console.log(data);
-            this.productionScheduleData = data;
+            this.productionScheduleData = data.map(({ task_start, task_end, ...rest }) => {
+                rest.task_start_date = task_start.split("T")[0]
+                rest.task_start_time = task_start.split("T")[1].replace("Z", "");
+                rest.task_end_date = task_end.split("T")[0]
+                rest.task_end_time = task_end.split("T")[1].replace("Z", "");
+                return rest
+            });
             data.forEach(entry => {
                 if (this.cellOptions.indexOf(entry.cell_name) == -1) {
                     // this.selectedJobs.push(entry.job_number);
@@ -137,13 +144,7 @@ export default {
                 }
             })
             console.log(this.cellOptions);
-            // data.forEach(entry => {
-            //     if (uniqueJobNumbers.indexOf(entry.job_number) == -1) {
-            //         uniqueJobNumbers.push(entry.job_number);
-            //         this.selectedJobs[entry.job_number] = true;
-            //     }
-            // })
-            // this.displayTimelineData = this.jobTimelineData.filter(e => this.selectedCells.indexOf(e.job_number) !== -1);
+            console.log(this.productionScheduleData);
         },
         testReplication(data, test) {
             let method = test.method;
@@ -234,8 +235,19 @@ export default {
         clickBack() {
             this.$router.push("/experiments/design/results-review/" + this.experimentID);
         },
+        createCollapsableObject() {
+            const collapsableEls = document.querySelectorAll(".collapse-component");
+            collapsableEls.forEach(element => {
+                let name = element.id.split('collapsable-component-')[1]
+                this.collapsableStatus[name] = { open: false, toggle: true }
+            })
+        },
+        collapsableToggleChange({ name, open }) {
+            this.collapsableStatus[name] = { open: open, toggle: !this.collapsableStatus[name].toggle };
+        },
     },
     mounted() {
+        this.createCollapsableObject();
         this.getExperimentID();
         this.getData();
     }

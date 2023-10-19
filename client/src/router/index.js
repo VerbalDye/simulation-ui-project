@@ -22,6 +22,12 @@ const routes = [
     meta: { requiresAdmin: true }
   },
   {
+    path: '/admin/add-asset',
+    name: 'admin-add-asset',
+    component: () => import('../views/AddAsset.vue'),
+    meta: { requiresAdmin: true }
+  },
+  {
     path: '/account',
     name: 'account',
     component: () => import('../views/Account.vue'),

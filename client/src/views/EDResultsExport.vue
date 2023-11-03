@@ -23,7 +23,7 @@
         <ExperimentDesignerSidebar currentPage="6" />
         <div class="content">
             <h1>7. Results Save & Export</h1>
-            <Collapsable title="Save" name="save" next="export" :reset="collapsableStatus['save']" @toggle-collapse="collapsableToggleChange">
+            <Collapsable title="Save" name="save" next="export" :reset="collapsableStatus['save']" @toggle-collapse="collapsableToggleChange" :tbd="true">
                 TBD
             </Collapsable>
             <Collapsable title="Export" name="export" back="save" :defaultOpen="true" :reset="collapsableStatus['export']" @toggle-collapse="collapsableToggleChange">

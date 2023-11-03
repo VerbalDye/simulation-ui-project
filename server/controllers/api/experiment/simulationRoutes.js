@@ -27,7 +27,7 @@ router.post('/start/:id', (req, res) => {
         })
     ])
         .then(dbPromiseData => {
-            const simulationProcess = child_process.exec('..\\simulation\\"PV_Fluid v0_39 (Enhanced bartel release)_windows.bat"', {maxBuffer: 1024 * 1024 * 200})
+            const simulationProcess = child_process.exec('..\\simulation\\"PV_Fluid v0_40 (Line crossing)_windows.bat"', {maxBuffer: 1024 * 1024 * 200})
             let simProcessOut;
             simulationProcess.stdout.on('data', (data) => {
                 console.log(data);

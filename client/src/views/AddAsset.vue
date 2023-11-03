@@ -21,32 +21,32 @@
                         </td>
                     </tr>
                     <tr>
-                        <th><label for="asset-xpos-input">X Position:</label></th>
+                        <th><label for="asset-xpos-input">X Position (Feet):</label></th>
                         <td><input type="number" id="asset-xpos-input" name="asset-xpos-input" value="0"
                                 class="small-number-input" /></td>
                     </tr>
                     <tr>
-                        <th><label for="asset-ypos-input">Y Position:</label></th>
+                        <th><label for="asset-ypos-input">Y Position (Feet):</label></th>
                         <td><input type="number" id="asset-ypos-input" name="asset-ypos-input" value="0"
                                 class="small-number-input" /></td>
                     </tr>
                     <tr>
-                        <th><label for="asset-zpos-input">Z Position:</label></th>
+                        <th><label for="asset-zpos-input">Z Position (Feet):</label></th>
                         <td><input type="number" id="asset-zpos-input" name="asset-zpos-input" value="0"
                                 class="small-number-input" /></td>
                     </tr>
                     <tr>
-                        <th><label for="asset-width-input">Width:</label></th>
+                        <th><label for="asset-width-input">Width (Feet):</label></th>
                         <td><input type="number" min="0" id="asset-width-input" name="asset-width-input" value="5"
                                 class="small-number-input" /></td>
                     </tr>
                     <tr>
-                        <th><label for="asset-length-input">Length:</label></th>
+                        <th><label for="asset-length-input">Length (Feet):</label></th>
                         <td><input type="number" min="0" id="asset-length-input" name="asset-length-input" value="5"
                                 class="small-number-input" /></td>
                     </tr>
                     <tr>
-                        <th><label for="asset-height-input">Height:</label></th>
+                        <th><label for="asset-height-input">Height (Feet):</label></th>
                         <td><input type="number" min="0" id="asset-height-input" name="asset-height-input" value="5"
                                 class="small-number-input" /></td>
                     </tr>
@@ -73,7 +73,7 @@
                                 class="small-number-input" /></td>
                     </tr>
                     <tr>
-                        <th>Processing Times:</th>
+                        <th>Processing Time(s) in Minutes:</th>
                         <td><input v-for="(processingTime, index) in processingTimes" type="number" min="0"
                                 :value="processingTime" :id="'asset-process-time-input-' + index"
                                 :name="'asset-process-time-input-' + index" class="small-number-input"
@@ -91,7 +91,7 @@
                         </td>
                     </tr>
                     <tr v-if="fromRoutes && selectedFromRoutes && selectedFromRoutes.length">
-                        <th>Routing From Time(s):</th>
+                        <th>Routing From Time(s) in Minutes:</th>
                         <td><input v-for="(selection, index) in selectedFromRoutes" value="0" min="0" type="number"
                                 :id="'asset-routing-from-time-input-' + index"
                                 :name="'asset-routing-from-time-input-' + index" class="small-number-input" />
@@ -109,7 +109,7 @@
                         </td>
                     </tr>
                     <tr v-if="toRoutes && selectedToRoutes && selectedToRoutes.length">
-                        <th>Routing To Time(s):</th>
+                        <th>Routing To Time(s) in Minutes:</th>
                         <td><input v-for="(selection, index) in selectedToRoutes" value="0" min="0" type="number"
                                 :id="'asset-routing-to-time-input-' + index" :name="'asset-routing-to-time-input-' + index"
                                 class="small-number-input" /></td>

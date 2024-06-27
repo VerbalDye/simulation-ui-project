@@ -26,6 +26,14 @@ ProcessTime.init(
                 key: 'operation_id'
             }
         },
+        model_number: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'model',
+                key:'model_number'
+            }
+        },
         process_time: {
             type: DataTypes.INTEGER,
             allowNull: false

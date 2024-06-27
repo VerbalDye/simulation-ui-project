@@ -11,10 +11,28 @@
         <Sidebar />
         <ExperimentDesignerSidebar currentPage="2" />
         <div class="content">
+            <div class="card">
+                <table class="grid-less flex-right">
+                    <tr>
+                        <th>Advanced Mode?*</th>
+                        <td>
+                            <label class="switch">
+                                <input type="checkbox" name="advanced-mode-toggle"
+                                    @input="e => this.advancedMode = e.target.checked">
+                                <span class="slider round"></span>
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+            </div>
             <h1>3. Inputs Definition & Review</h1>
             <div id="input-collapsables">
-                <Collapsable @toggle-collapse="collapsableToggleChange" title="Site Selection" name="site"
-                    next="phases-cells-operations" :reset="collapsableStatus['site']" tbd="true">
+                <Collapsable @toggle-collapse="collapsableToggleChange" title="General Information" name="general-info"
+                    next="phases-cells-operations" :reset="collapsableStatus['general-info']">
+                    <h3>Start Date</h3>
+                    <input type="date" :value="demandSettings.startDate" name="demand-start-date-input" class="space"
+                        @input="e => demandSettings.startDate = e.target.value">
+                    <h3>Site Selection</h3>
                     <form
                         @change="this.selectedSite = document.querySelector(`input[name='site-selection']:checked`).value">
                         <label v-for="site in siteData" :for="site.site_id" class="radio-container">
@@ -28,7 +46,7 @@
                 <Collapsable @toggle-collapse="collapsableToggleChange" title="Production Process" :defaultOpen="true"
                     name="production-process-settings" :reset="collapsableStatus['production-process-settings']">
                     <Collapsable @toggle-collapse="collapsableToggleChange" title="Phases, Cells, & Operations"
-                        name="phases-cells-operations" back="site" next="locations-processing-times" :heading="3"
+                        name="phases-cells-operations" back="general-info" next="locations-processing-times" :heading="3"
                         :reset="collapsableStatus['phases-cells-operations']" tbd="true">
                         <div>
                             <div v-for="(task, index) in formattedTaskSequenceData" class="drop-zone"
@@ -179,6 +197,16 @@
                                             <div v-if="processTimeSettings.applyToAll">
                                                 <div>
                                                     <p v-for="asset in selectedAssets">{{ asset.display_name }}</p>
+                                                    <VueMultiselect v-model="this.processTimeSettings.selectedModels[selectedAssets[0].asset_id]"
+                                                        :options="this.processTimeSettings.modelData" :multiple="true"
+                                                        :close-on-select="false" placeholder="Select at least one model"
+                                                        @update:model-value="handleModelSelectChange(selectedAssets[0].asset_id)"
+                                                        :preselect-first="true">
+                                                        <template slot="selection"
+                                                            slot-scope="{ values, search, isOpen }"><span
+                                                                class="multiselect__single" v-show="!isOpen"> options
+                                                                selected</span></template>
+                                                    </VueMultiselect>
                                                     <table class="grid-less">
                                                         <tr>
                                                             <th><i class="bi bi-hash"></i> Number of Samples*</th>
@@ -187,7 +215,7 @@
                                                                     :value="Object.keys(processTimeSettings.elements[selectedAssets[0].asset_id].values).length"
                                                                     class="small-number-input"
                                                                     :name="'samples-' + selectedAssets[0].asset_id"
-                                                                    @input="handleNumberOfSamplesChange(selectedAssets[0].asset_id, $event)">
+                                                                    @input="handleNumberOfSamplesChange(selectedAssets[0].asset_id, processTimeSettings.selectedModels[selectedAssets[0].asset_id][0], $event)">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -204,11 +232,21 @@
                                                             </td>
                                                         </tr>
                                                     </table>
+                                                    <button class="space">Apply</button>
                                                 </div>
                                             </div>
                                             <div v-else>
                                                 <div v-for="(element, asset_id) in processTimeSettings.elements">
                                                     <p>{{ element.name }}</p>
+                                                    <VueMultiselect v-model="this.processTimeSettings.selectedModels[asset_id]"
+                                                        :options="this.processTimeSettings.modelData" :multiple="true"
+                                                        :close-on-select="false" placeholder="Select at least one model"
+                                                        @update:model-value="handleModelSelectChange(asset_id)" :preselect-first="true">
+                                                        <template slot="selection"
+                                                            slot-scope="{ values, search, isOpen }"><span
+                                                                class="multiselect__single" v-show="!isOpen"> options
+                                                                selected</span></template>
+                                                    </VueMultiselect>
                                                     <table class="grid-less">
                                                         <tr>
                                                             <th><i class="bi bi-hash"></i> Number of Samples*</th>
@@ -216,7 +254,7 @@
                                                                 <input type="number"
                                                                     :value="Object.keys(element.values).length"
                                                                     class="small-number-input" :name="'samples-' + asset_id"
-                                                                    @input="handleNumberOfSamplesChange(asset_id, $event)">
+                                                                    @input="handleNumberOfSamplesChange(asset_id, this.processTimeSettings.selectedModels[asset_id], $event)">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -232,6 +270,33 @@
                                                             </td>
                                                         </tr>
                                                     </table>
+                                                    <!-- <table class="grid-less">
+                                                        <tr>
+                                                            <th><i class="bi bi-hash"></i> Number of Samples*</th>
+                                                            :value="Object.keys(processTimeSettings.elements[selectedAssets[0].asset_id].values).length"
+                                                            <td>
+                                                                <input type="number"
+                                                                    :value="this.tempProcessTime.times.length"
+                                                                    class="small-number-input"
+                                                                    :name="'samples-' + selectedAssets[0].asset_id"
+                                                                    @input="tempHandleNumberOfSamplesChange($event)">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th><i class="bi bi-clock-fill"></i> Enter Processing Times
+                                                                (minutes)*</th>
+                                                            <td>
+                                                                <div class="flex-left">
+                                                                    <input v-for="(value) in this.tempProcessTime.times"
+                                                                        class="small-number-input" type="number"
+                                                                        :value="value">
+                                                                    :name="'times-' + key"
+                                                                        @input="handleProcessTimeDataChange(key, $event)"
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </table> -->
+                                                    <button class="space">Apply</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -306,7 +371,63 @@
                     </Collapsable>
                     <Collapsable @toggle-collapse="collapsableToggleChange" title="Equipment/Machines"
                         name="equipment-machines" next="cores-tools" back="buildings" :heading="3"
-                        :reset="collapsableStatus['equipment-machines']" tbd="true">TBD</Collapsable>
+                        :reset="collapsableStatus['equipment-machines']">
+                        <select @change="e => this.downtimeSettings.selectedEquipment = e.target.value">
+                            <option v-for="asset in assetData" :id="'equipment-select-option' + asset.asset.asset_id"
+                                :value="asset.asset.asset_id">{{ asset.asset.display_name }}</option>
+                        </select>
+                        <div>
+                            <h3 class="space">{{ assetData.find(e => e.asset.asset_id ==
+                                this.downtimeSettings.selectedEquipment).asset.display_name }}</h3>
+                            <div v-if="advancedMode == false">
+                                <label for="equipment-downtime-hours">Total Hour Equipment Will Be Down:</label>
+                                <input type="number" name="equipment-downtime-hours" id="equipment-downtime-hours"
+                                    @change="e => this.downtimeSettings.downtimeHours = e.target.value" />
+                                <button class="space" @click="handleDowntimeSave">Save</button>
+                                <div>
+                                    <div v-for="(downtime, index) in savedDowntime">
+                                        <table class="grid-less">
+                                            <tr>
+                                                <th>{{ downtime.display_name }}</th>
+                                                <td>Start Date: {{ downtime.start_date }}</td>
+                                                <td>End Date: {{ downtime.end_date }}</td>
+                                                <td><button @click="e => savedDowntime.splice(index, 1)">Remove</button>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else>
+                                <label for="start-date-equipment-downtime">Downtime Start:</label>
+                                <input type="datetime-local" name="start-date-equipment-downtime"
+                                    id="start-date-equipment-downtime"
+                                    @change="e => downtimeSettings.downtimeStart = e.target.value" />
+                                <label for="end-date-equipment-downtime">Downtime End:</label>
+                                <input type="datetime-local" name="end-date-equipment-downtime"
+                                    id="end-date-equipment-downtime"
+                                    @change="e => downtimeSettings.downtimeEnd = e.target.value" />
+                                <button class="space" @click="handleDowntimeSave">Save</button>
+                                <!-- <div v-if="savedDowntime.length > 0">
+                                    <p v-for="downtime in savedDowntime.filter(e => e.asset_id == selectedEquipment)">{{
+                                        downtime.startDate }}</p>
+                                </div> -->
+                                <div>
+                                    <div v-for="(downtime, index) in savedDowntime">
+                                        <table class="grid-less">
+                                            <tr>
+                                                <th>{{ downtime.display_name }}</th>
+                                                <td>Start Date: {{ downtime.start_date }}</td>
+                                                <td>End Date: {{ downtime.end_date }}</td>
+                                                <td><button @click="e => savedDowntime.splice(index, 1)">Remove</button>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </Collapsable>
                     <Collapsable @toggle-collapse="collapsableToggleChange" title="Cores & Tools" name="cores-tools"
                         next="materials" back="equipment-machines" :heading="3" :reset="collapsableStatus['cores-tools']">
                         <div>
@@ -435,9 +556,6 @@
                                 </tr>
                             </table>
                             <div v-if="!demandSettings.default">
-                                <h4>Start Date</h4>
-                                <input type="date" :value="demandSettings.startDate" name="demand-start-date-input"
-                                    class="space" @input="e => demandSettings.startDate = e.target.value">
                                 <h4>Daily Target</h4>
                                 <table class="grid-less">
                                     <tr>
@@ -629,6 +747,7 @@ import SmartTable from '@/components/SmartTable.vue';
 import Collapsable from '@/components/Collapsable.vue';
 import LoadingModal from '@/components/LoadingModal.vue';
 import WarningModal from '@/components/WarningModal.vue';
+import VueMultiselect from 'vue-multiselect';
 import dataRequest from '@/utils/dataRequest';
 import csvJson from '@/utils/csvJson';
 import dayjs from 'dayjs';
@@ -657,14 +776,24 @@ export default {
             backlogData: null,
             warning: false,
             loading: false,
+            advancedMode: false,
+            downtimeSettings: {
+                downtimeStart: null,
+                downtimeEnd: null,
+                downtimeHours: null,
+                selectedEquipment: 1
+            },
+            savedDowntime: [],
             jobLocationChanges: {},
             jobCoreChanges: {},
             processTimeSettings: {
                 default: true,
                 applyToAll: true,
                 discrete: true,
+                assets: {},
                 elements: {},
-                ids: []
+                modelData: [],
+                selectedModels: {}
             },
             demandSettings: {
                 default: true,
@@ -691,12 +820,12 @@ export default {
             excludedAssets: [],
             selectedAssetInclusion: null,
             coreUsage: [],
-            collapsableStatus: {}
+            collapsableStatus: {},
         }
     },
     mixins: [titleMixin],
     title: 'Experiment Designer',
-    components: { Sidebar, Header, ExperimentDesignerSidebar, ExperimentDesignerSidebar, LayoutMaker, SmartTable, Collapsable, LoadingModal, WarningModal },
+    components: { Sidebar, Header, ExperimentDesignerSidebar, ExperimentDesignerSidebar, LayoutMaker, SmartTable, Collapsable, LoadingModal, WarningModal, VueMultiselect },
     methods: {
         getExperimentID() {
             this.experimentID = window.location.href.split("/")[window.location.href.split("/").length - 1];
@@ -748,6 +877,7 @@ export default {
         },
         async getProcessTimeData() {
             let data = await dataRequest("/api/experiment/process-time/" + this.experimentID, "GET");
+            // console.log(data);
             let secondIterationData = data.filter(e => e.iteration_number == 1);
             if (secondIterationData.length > 0) {
                 this.backupProcessTimeData = JSON.parse(JSON.stringify(secondIterationData));
@@ -760,7 +890,6 @@ export default {
         },
         async getRoutingData() {
             let data = await dataRequest("/api/experiment/routing/" + this.experimentID, "GET");
-            console.log(data);
             this.routingData = data;
             this.routingDisplayData = data.map(e => {
                 let f = e.routing;
@@ -769,7 +898,6 @@ export default {
                 obj.destination_asset = f.destination_asset.display_name;
                 return obj;
             });
-            console.log(this.routingDisplayData);
         },
         async getJobMixData() {
             let data = await dataRequest("/api/experiment/job-mix/" + this.experimentID, "GET");
@@ -780,6 +908,12 @@ export default {
             let data = await dataRequest("/api/experiment/job-list/" + this.experimentID, "GET");
             // console.log(data)
             this.jobListData = data;
+        },
+        async getModelData() {
+            let data = await dataRequest("/api/model/", "GET");
+            data = data.map(e => e.model_number);
+            // console.log(data);
+            this.processTimeSettings.modelData = data;
         },
         async getCoreModelData() {
             let data = await dataRequest("/api/experiment/core/" + this.experimentID, "GET");
@@ -872,7 +1006,8 @@ export default {
                 this.getProcessTimeData(),
                 this.getExperimentData(),
                 this.getSiteData(),
-                this.getCurrentlyRunning()
+                this.getCurrentlyRunning(),
+                this.getModelData(),
             ])
             this.excludedAssets = this.assetData.filter(e => e.asset.capacity == 0).map(e => e.asset.asset_id);
             this.selectedOperationChange();
@@ -921,6 +1056,7 @@ export default {
                     obj.asset_id = e.process_time.asset_id;
                     obj.operation_id = e.process_time.operation_id;
                     obj.process_time = e.process_time.process_time;
+                    obj.model_number = e.process_time.model_number;
                     return obj;
                 })
             }
@@ -1034,7 +1170,7 @@ export default {
             let currentID = data.find(e => e.task_sequence.start == true).task_sequence_id;
             let currentPosition = 0;
             for (let i = 0; i < data.length; i++) {
-                let sequenceItem = data.find(e => e.task_sequence_id == currentID).task_sequence;
+                let sequenceItem = data.find(e => e.task_sequence.operation_id == currentID).task_sequence;
                 if (!completedPhases.includes(sequenceItem.phase.phase_id)) {
                     formattedData.push({
                         type: 'phase',
@@ -1136,6 +1272,10 @@ export default {
                 let selectedAssets = selectedExperimentAssets.map(item => item.asset);
                 this.selectedAssets = selectedAssets.map(({ operation_to_locations, ...rest }) => rest);
                 this.selectedAssetInclusion = this.selectedAssets.map(e => this.excludedAssets.indexOf(e.asset_id) == -1);
+                this.processTimeSettings.selectedModels = {};
+                this.selectedAssets.forEach(asset => {
+                    this.processTimeSettings.selectedModels[asset.asset_id] = [this.processTimeSettings.modelData[0]];
+                });
             } else {
                 this.selectedAssets = [{ Status: "No Associated Assets" }];
             }
@@ -1148,7 +1288,7 @@ export default {
         processTimeElementChange() {
             this.processTimeSettings.elements = {};
             this.selectedAssets.forEach(asset => {
-                let processTimes = this.processTimeData.filter(e => e.process_time.asset_id == asset.asset_id);
+                let processTimes = this.processTimeData.filter(e => e.process_time.asset_id == asset.asset_id && e.process_time.model_number == this.processTimeSettings.selectedModels[asset.asset_id][0]);
                 this.processTimeSettings.elements[asset.asset_id] = {
                     name: asset.display_name,
                     values: {}
@@ -1158,16 +1298,22 @@ export default {
                 })
             })
         },
-        processTimeDataChange(mode, { process_time, experiment_process_time_id, operation_id, asset_id }) {
+        handleModelSelectChange(asset_id) {
+            if (this.processTimeSettings.selectedModels[asset_id].length == 1) {
+                this.processTimeElementChange();
+            };
+        },
+        processTimeDataChange(mode, { process_time, model_number, experiment_process_time_id, operation_id, asset_id }) {
             let processTime = parseFloat(process_time);
             let operationID = parseInt(operation_id);
             let assetID = parseInt(asset_id);
             let experimentProcessTimeID = experiment_process_time_id;
+            let modelNumber = parseInt(model_number);
             // let experimentProcessTimeID = parseInt(experiment_process_time_id);
             if (mode == "add" && operation_id !== undefined && asset_id !== undefined) {
                 if (!process_time) { processTime = 0 }
-                let entryIds = this.processTimeData.filter(e => e.process_time.asset_id == assetID && e.process_time.operation_id == operationID).map(e => e.experiment_process_time_id);
-                let backupTimes = this.backupProcessTimeData.filter(e => e.process_time.asset_id == assetID && e.process_time.operation_id == operationID).filter(e => entryIds.indexOf(e.experiment_process_time_id) == -1);
+                let entryIds = this.processTimeData.filter(e => e.process_time.asset_id == assetID && e.process_time.operation_id == operationID && e.process_time.model_number == modelNumber).map(e => e.experiment_process_time_id);
+                let backupTimes = this.backupProcessTimeData.filter(e => e.process_time.asset_id == assetID && e.process_time.operation_id == operationID && e.process_time.model_number == modelNumber).filter(e => entryIds.indexOf(e.experiment_process_time_id) == -1);
                 if (backupTimes.length > 0) {
                     let entry = this.processTimeData[this.processTimeData.push(backupTimes[0]) - 1];
                     if (process_time) {
@@ -1180,9 +1326,10 @@ export default {
                         process_time: {
                             process_time: processTime,
                             asset_id: asset_id,
-                            operation_id: operation_id
+                            operation_id: operation_id,
+                            model_number: modelNumber
                         }
-                    })
+                    });
                 }
             } else if (mode == "remove" && experiment_process_time_id !== undefined) {
                 this.processTimeData.splice(this.processTimeData.findIndex(e => e.experiment_process_time_id == experimentProcessTimeID), 1);
@@ -1190,29 +1337,32 @@ export default {
                 let data = this.processTimeData.find(e => e.experiment_process_time_id == experimentProcessTimeID);
                 // console.log(data);
                 data.process_time.process_time = processTime;
-            } else if (mode == "overwrite" && operation_id !== undefined && asset_id !== undefined) {
-                let template = this.processTimeData.filter(e => e.process_time.operation_id == operationID && e.process_time.asset_id == assetID);
+            } else if (mode == "overwrite" && operation_id !== undefined && asset_id !== undefined && model_number !== undefined) {
+                let template = this.processTimeData.filter(e => e.process_time.operation_id == operationID && e.process_time.asset_id == assetID && e.process_time.model_number == modelNumber);
                 let assetIds = this.operationToLocationData.filter(e => e.operation_to_location.operation_id == operationID).map(e => e.operation_to_location.asset_id);
                 assetIds.splice(assetIds.indexOf(asset_id), 1);
                 assetIds.forEach(id => {
-                    this.processTimeData.filter(e => e.process_time.operation_id == operationID && e.process_time.asset_id == id).forEach(entry => {
-                        this.processTimeDataChange("remove", { experiment_process_time_id: entry.experiment_process_time_id });
-                    })
-                    template.forEach(entry => {
-                        this.processTimeDataChange("add", { operation_id: operation_id, asset_id: id, process_time: entry.process_time.process_time });
+                    this.processTimeSettings.selectedModels[id].forEach(modelNum => {
+                        this.processTimeData.filter(e => e.process_time.operation_id == operationID && e.process_time.asset_id == id && e.process_time.model_number == modelNum).forEach(entry => {
+                            this.processTimeDataChange("remove", { experiment_process_time_id: entry.experiment_process_time_id });
+                        })
+                        template.forEach(entry => {
+                            this.processTimeDataChange("add", { model_number: modelNum, operation_id: operation_id, asset_id: id, process_time: entry.process_time.process_time });
+                        })
                     })
                 })
             } else {
                 throw new Error('Incorrect Inputs Provided: ' + operation_id + " " + asset_id + " " + experiment_process_time_id + " " + process_time);
             }
         },
-        handleNumberOfSamplesChange(asset_id, { target }) {
+        handleNumberOfSamplesChange(asset_id, model_number, { target }) {
+            console.log(this.processTimeSettings.elements);
             let selectedOperation = this.taskSequenceData[this.selectedOperation];
             let samples = parseInt(target.value);
             let keys = Object.keys(this.processTimeSettings.elements[asset_id].values);
             if (samples > keys.length) {
                 for (let i = keys.length; i < samples; i++) {
-                    this.processTimeDataChange("add", { operation_id: selectedOperation.task_sequence.operation_id, asset_id: asset_id });
+                    this.processTimeDataChange("add", { model_number: model_number, operation_id: selectedOperation.task_sequence.operation_id, asset_id: asset_id });
                 }
             } else if (samples < keys.length) {
                 let stop = keys.length;
@@ -1221,25 +1371,17 @@ export default {
                 }
             }
             if (this.processTimeSettings.applyToAll) {
-                this.processTimeDataChange("overwrite", { operation_id: selectedOperation.task_sequence.operation_id, asset_id: asset_id });
+                this.processTimeDataChange("overwrite", { model_number: model_number, operation_id: selectedOperation.task_sequence.operation_id, asset_id: asset_id });
             }
             this.processTimeElementChange();
         },
         handleProcessTimeDataChange(id, e) {
-            //     e.preventDefault();
-            //     console.log(e);
-            //     console.log(e.target.value);
-            //     console.log(e.target._value);
-            //     console.log([...e.target.value.matchAll(/[^0-9.]/g)])
-            //     e.target.value = e.target.value.replace(/[^0-9.]/g, '');
-            //     console.log(e.target.value);
-            //     console.log(e.target._value);
             if (e.data !== '.') {
                 let selectedOperation = this.taskSequenceData[this.selectedOperation];
                 let data = this.processTimeData.find(f => f.experiment_process_time_id == id);
                 this.processTimeDataChange("change", { experiment_process_time_id: id, process_time: e.target.value });
                 if (this.processTimeSettings.applyToAll) {
-                    this.processTimeDataChange("overwrite", { operation_id: selectedOperation.task_sequence.operation_id, asset_id: data.process_time.asset_id })
+                    this.processTimeDataChange("overwrite", { model_number: data.process_time.model_number, operation_id: selectedOperation.task_sequence.operation_id, asset_id: data.process_time.asset_id })
                 }
                 this.processTimeElementChange();
             }
@@ -1346,6 +1488,27 @@ export default {
                 let jobCoreID = this.jobData.find(e => e.job_number == data.job_number).job_core_id;
                 this.jobCoreChanges[jobCoreID] = value;
             }
+        },
+        handleDowntimeSave(event) {
+            let asset = this.assetData.find(e => e.asset.asset_id == this.downtimeSettings.selectedEquipment);
+            if (this.advancedMode) {
+                // let startDate = this.document.getElementById("start-date-equipment-downtime");
+                // let endDate = this.document.getElementById("end-date-equipment-downtime");
+
+                this.savedDowntime.push({
+                    display_name: asset.asset.display_name,
+                    start_date: this.downtimeSettings.downtimeStart,
+                    end_date: this.downtimeSettings.downtimeEnd,
+                    asset_id: asset.asset.asset_id
+                })
+            } else {
+                this.savedDowntime.push({
+                    display_name: asset.asset.display_name,
+                    start_date: dayjs(this.demandSettings.startDate).format("YYYY-MM-DDTHH:MM").toString(),
+                    end_date: dayjs(this.demandSettings.startDate).add(parseInt(this.downtimeSettings.downtimeHours), 'hour').format("YYYY-MM-DDTHH:MM").toString(),
+                    asset_id: asset.asset.asset_id
+                })
+            }
         }
     },
     mounted() {
@@ -1354,6 +1517,8 @@ export default {
     }
 }
 </script>
+
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>
 
 <style>
 .content h1 {

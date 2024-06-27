@@ -767,6 +767,7 @@ export default {
             routingDisplayData: null,
             jobMixData: null,
             jobData: null,
+            downtimeData: null,
             coreModelData: null,
             jobListData: null,
             selectedOperation: 0,
@@ -915,6 +916,11 @@ export default {
             // console.log(data);
             this.processTimeSettings.modelData = data;
         },
+        async getDowntimeData() {
+            let data = await dataRequest("/api/experiment/downtime/" + this.experimentID, "GET");
+            console.log(data);
+            this.downtimeData = data;
+        },
         async getCoreModelData() {
             let data = await dataRequest("/api/experiment/core/" + this.experimentID, "GET");
             this.coreUsage = data.map(e => e.available);
@@ -1008,6 +1014,7 @@ export default {
                 this.getSiteData(),
                 this.getCurrentlyRunning(),
                 this.getModelData(),
+                this.getDowntimeData(),
             ])
             this.excludedAssets = this.assetData.filter(e => e.asset.capacity == 0).map(e => e.asset.asset_id);
             this.selectedOperationChange();

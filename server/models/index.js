@@ -7,10 +7,12 @@ const Core = require('./Core');
 const CoreModel = require('./CoreModel');
 const CoreSoakTime = require('./CoreSoakTime');
 const CurrentlyRunning = require('./CurrentlyRunning');
+const Downtime = require('./Downtime');
 const Experiment = require('./Experiment');
 const ExperimentAsset = require('./ExperimentAsset');
 const ExperimentCore = require('./ExperimentCore');
 const ExperimentCoreSoakTime = require('./ExperimentCoreSoakTime');
+const ExperimentDowntime = require('./ExperimentDowntime');
 const ExperimentGoal = require('./ExperimentGoal');
 const ExperimentHoo = require('./ExperimentHoo');
 const ExperimentInfo = require('./ExperimentInfo');
@@ -46,6 +48,15 @@ Asset.hasMany(AssetAvailability, {
     foreignKey: 'asset_id'
 });
 AssetAvailability.belongsTo(Asset, {
+    foreignKey: 'asset_id',
+    onDelete: 'CASCADE'
+});
+
+//Asset-Downtime
+Asset.hasMany(Downtime, {
+    foreignKey: 'asset_id'
+});
+Downtime.belongsTo(Asset, {
     foreignKey: 'asset_id',
     onDelete: 'CASCADE'
 });
@@ -323,6 +334,22 @@ CurrentlyRunning.belongsTo(Experiment, {
     onDelete: 'CASCADE'
 });
 
+// Experiment Downtime
+Experiment.hasMany(ExperimentDowntime, {
+    foreignKey: 'experiment_id'
+});
+ExperimentDowntime.belongsTo(Experiment, {
+    foreignKey: 'experiment_id',
+    onDelete: 'CASCADE'
+});
+Downtime.hasMany(ExperimentDowntime, {
+    foreignKey: 'asset_downtime_id'
+});
+ExperimentDowntime.belongsTo(Downtime, {
+    foreignKey: 'asset_downtime_id',
+    onDelete: 'CASCADE'
+});
+
 // Experiment-Goal
 Experiment.hasMany(ExperimentGoal, {
     foreignKey: 'experiment_id'
@@ -517,10 +544,12 @@ module.exports = {
     CoreModel,
     CoreSoakTime,
     CurrentlyRunning,
+    Downtime,
     Experiment,
     ExperimentAsset,
     ExperimentCore,
     ExperimentCoreSoakTime,
+    ExperimentDowntime,
     ExperimentGoal,
     ExperimentHoo,
     ExperimentInfo,

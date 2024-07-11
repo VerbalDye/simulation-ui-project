@@ -4,10 +4,12 @@ const { copyFromModel } = require('../../../utils/sqlMethods');
 const {
     Asset,
     CurrentlyRunning,
+    Downtime,
     Experiment,
     ExperimentAsset,
     ExperimentCore,
     ExperimentCoreSoakTime,
+    ExperimentDowntime,
     ExperimentHoo,
     ExperimentJobMix,
     ExperimentOpToLoc,
@@ -191,6 +193,11 @@ router.post('/inputs/:id', async (req, res) => {
             { replacements: { expId: id, iteration: b.iteration } }),
         ExperimentTaskSequence.destroy({
             where: { experiment_id: id, iteration_number: b.iteration }
+        }),
+        sequelize.query("DELETE asset_downtime FROM asset_downtime INNER JOIN experiment_asset_downtime ON asset_downtime.asset_downtime_id = experiment_asset_downtime.asset_downtime_id WHERE experiment_asset_downtime.experiment_id = :expId AND experiment_asset_downtime.iteration_number = :iteration",
+            { replacements: { expId: id, iteration: b.iteration } }),
+        ExperimentDowntime.destroy({
+            where: { experiment_id: id, iteration_number: b.iteration }
         })
     ])
     console.log(deleteResults[0]);
@@ -246,6 +253,7 @@ router.post('/inputs/:id', async (req, res) => {
     let dbProcessTimeData = await ProcessTime.bulkCreate(processTimeData);
     let dbNewOperationToLocationData = await OperationToLocation.bulkCreate(opToLocData);
     let dbNewRoutingData = await Routing.bulkCreate(routingData);
+    let dbDowntimeData = await Downtime.bulkCreate(b.data.downtime);
     //Experiment Data Creation
     let experimentAssetData = b.data.asset.map(e => {
         let obj = {};
@@ -286,12 +294,20 @@ router.post('/inputs/:id', async (req, res) => {
         obj.iteration_number = b.iteration;
         return obj;
     })
+    let experimentDowntimeData = dbDowntimeData.map(e => {
+        let obj = {};
+        obj.experiment_id = id;
+        obj.iteration_number = b.iteration;
+        obj.asset_downtime_id = e.asset_downtime_id;
+        return obj;
+    })
     await Promise.allSettled([
         ExperimentAsset.bulkCreate(experimentAssetData),
         ExperimentOpToLoc.bulkCreate(experimentOperationToLocationData),
         ExperimentProcessTime.bulkCreate(experimentProcessTimeData),
         ExperimentRouting.bulkCreate(experimentRoutingData),
-        ExperimentTaskSequence.bulkCreate(experimentTaskSequenceData)
+        ExperimentTaskSequence.bulkCreate(experimentTaskSequenceData),
+        ExperimentDowntime.bulkCreate(experimentDowntimeData)
     ])
     res.json({ message: "Success" });
 })

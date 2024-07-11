@@ -197,7 +197,8 @@
                                             <div v-if="processTimeSettings.applyToAll">
                                                 <div>
                                                     <p v-for="asset in selectedAssets">{{ asset.display_name }}</p>
-                                                    <VueMultiselect v-model="this.processTimeSettings.selectedModels[selectedAssets[0].asset_id]"
+                                                    <VueMultiselect
+                                                        v-model="this.processTimeSettings.selectedModels[selectedAssets[0].asset_id]"
                                                         :options="this.processTimeSettings.modelData" :multiple="true"
                                                         :close-on-select="false" placeholder="Select at least one model"
                                                         @update:model-value="handleModelSelectChange(selectedAssets[0].asset_id)"
@@ -238,10 +239,12 @@
                                             <div v-else>
                                                 <div v-for="(element, asset_id) in processTimeSettings.elements">
                                                     <p>{{ element.name }}</p>
-                                                    <VueMultiselect v-model="this.processTimeSettings.selectedModels[asset_id]"
+                                                    <VueMultiselect
+                                                        v-model="this.processTimeSettings.selectedModels[asset_id]"
                                                         :options="this.processTimeSettings.modelData" :multiple="true"
                                                         :close-on-select="false" placeholder="Select at least one model"
-                                                        @update:model-value="handleModelSelectChange(asset_id)" :preselect-first="true">
+                                                        @update:model-value="handleModelSelectChange(asset_id)"
+                                                        :preselect-first="true">
                                                         <template slot="selection"
                                                             slot-scope="{ values, search, isOpen }"><span
                                                                 class="multiselect__single" v-show="!isOpen"> options
@@ -1026,6 +1029,18 @@ export default {
             const siteSelectionEl = document.querySelector('input[value="' + this.experimentData.experiment_site.site_id + '"]');
             siteSelectionEl.checked = true;
             await this.getJobData();
+            this.downtimeData.forEach(downtime => {
+                console.log(downtime);
+                let d = downtime.asset_downtime;
+                let startTime = dayjs().set('hour', d.start_time.split(':')[0]).set('minute', d.start_time.split(':')[1]).set('second', d.start_time.split(':')[2]);
+                let endTime = dayjs().set('hour', d.end_time.split(':')[0]).set('minute', d.end_time.split(':')[1]).set('second', d.end_time.split(':')[2]);
+                this.savedDowntime.push({
+                    start_date: dayjs(this.demandSettings.startDate).set('hour', 0).set('minute', 0).add(d.day_num, 'day').set('hour', startTime.hour()).set('minute', startTime.minute()).format("YYYY-MM-DDTHH:MM").toString(),
+                    end_date: dayjs(this.demandSettings.startDate).set('hour', 0).set('minute', 0).add(d.day_num, 'day').set('hour', endTime.hour()).set('minute', endTime.minute()).format("YYYY-MM-DDTHH:MM").toString(),
+                    display_name: this.assetData.find(e => e.asset_id == d.asset_id).asset.display_name,
+                    asset_id: d.asset_id,
+                })
+            })
             this.loading = false;
         },
         downloadTemplate() {
@@ -1033,6 +1048,52 @@ export default {
         },
         async saveAllChanges() {
             this.loading = true;
+            let downtime = [];
+            this.savedDowntime.forEach(entry => {
+                let startDate = dayjs(entry.start_date);
+                let endDate = dayjs(entry.end_date);
+                if (startDate.date() == endDate.date()) {
+                    downtime.push({
+                        day_num: startDate.day(),
+                        start_time: startDate.format('HH:MM:ss').toString(),
+                        end_time: endDate.format('HH:MM:ss').toString(),
+                        asset_id: entry.asset_id
+                    })
+                } else {
+                    let downtimeCheck = true;
+                    let currentDay = startDate.day();
+                    while (downtimeCheck) {
+                        if (currentDay == startDate.day()) {
+                            downtime.push({
+                                day_num: currentDay,
+                                start_time: startDate.format('HH:MM:ss').toString(),
+                                end_time: '23:59:59',
+                                asset_id: entry.asset_id
+                            })
+                        } else if (currentDay == endDate.day()) {
+                            downtime.push({
+                                day_num: currentDay,
+                                start_time: '00:00:00',
+                                end_time: endDate.format('HH:MM:ss').toString(),
+                                asset_id: entry.asset_id
+                            })
+                            downtimeCheck = false;
+                        } else {
+                            downtime.push({
+                                day_num: currentDay,
+                                start_time: '00:00:00',
+                                end_time: '23:59:59',
+                                asset_id: entry.asset_id
+                            })
+                        }
+                        if (currentDay == 6) {
+                            currentDay = 0;
+                        } else {
+                            currentDay++;
+                        }
+                    }
+                }
+            })
             let data = {
                 asset: this.assetData.map(e => {
                     let obj = {};
@@ -1065,7 +1126,8 @@ export default {
                     obj.process_time = e.process_time.process_time;
                     obj.model_number = e.process_time.model_number;
                     return obj;
-                })
+                }),
+                downtime: downtime
             }
             let coreData = this.coreModelData.map(({ experiment_core_id, available, ...rest }) => { return { experiment_core_id, available } })
             await Promise.allSettled([
@@ -1511,8 +1573,8 @@ export default {
             } else {
                 this.savedDowntime.push({
                     display_name: asset.asset.display_name,
-                    start_date: dayjs(this.demandSettings.startDate).format("YYYY-MM-DDTHH:MM").toString(),
-                    end_date: dayjs(this.demandSettings.startDate).add(parseInt(this.downtimeSettings.downtimeHours), 'hour').format("YYYY-MM-DDTHH:MM").toString(),
+                    start_date: dayjs(this.demandSettings.startDate).set('hour', 0).set('minute', 0).format("YYYY-MM-DDTHH:MM").toString(),
+                    end_date: dayjs(this.demandSettings.startDate).set('hour', 0).set('minute', 0).add(parseInt(this.downtimeSettings.downtimeHours), 'hour').format("YYYY-MM-DDTHH:MM").toString(),
                     asset_id: asset.asset.asset_id
                 })
             }
@@ -1663,5 +1725,4 @@ export default {
     border: none;
     margin: 4px;
     width: 50px;
-}
-</style>
+}</style>

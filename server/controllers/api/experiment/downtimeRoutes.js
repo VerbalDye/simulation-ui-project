@@ -15,7 +15,10 @@ router.get('/:id', (req, res) => {
     ExperimentDowntime.findAll({
         where: {
             experiment_id: req.params.id
-        }
+        },
+        include: [{
+            model: Downtime,
+        }]
     })
         .then(dbExperimentDowntimeData => res.json(dbExperimentDowntimeData))
         .catch(err => {

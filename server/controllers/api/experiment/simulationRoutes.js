@@ -69,6 +69,12 @@ router.post('/start/:id', (req, res) => {
                 "value": req.params.id
             },
             {
+                "name": "ITERATION_ID",
+                "type": "INTEGER",
+                "units": null,
+                "value": 1
+            },
+            {
                 "name": "DATABASE_CONNECTION_URL",
                 "type": "STRING",
                 "units": null,
@@ -88,14 +94,14 @@ router.post('/start/:id', (req, res) => {
                 });
         }),
         new Promise(resolve => {
-            CurrentlyRunning.create({
-                experiment_id: req.params.id
-            })
-                .then(dbCurrentlyRunningData => resolve())
-                .catch(err => {
-                    console.log(err);
-                    res.status(400).json(err);
-                });
+            // CurrentlyRunning.create({
+            //     experiment_id: req.params.id
+            // })
+            //     .then(dbCurrentlyRunningData => resolve())
+            //     .catch(err => {
+            //         console.log(err);
+            //         res.status(400).json(err);
+            //     });
         })
     ])
         .then(dbPromiseData => {

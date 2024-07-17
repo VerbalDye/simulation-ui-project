@@ -57,7 +57,7 @@ const fs = require('fs');
 // })
 
 
-router.post('/start/:id', (req, res) => {
+router.post('/start/:id', async (req, res) => {
     let url = "http://172.28.0.58/api/open/8.5.0/versions/" + process.env.VERSION_ID + "/run";
     let body = {
         "experimentType": "SIMULATION",
@@ -105,7 +105,7 @@ router.post('/start/:id', (req, res) => {
     //     // })
     // ])
         // .then(dbPromiseData => {
-            fetch(url, {
+            let result = await fetch(url, {
                 method: "POST", // *GET, POST, PUT, DELETE, etc.
                 mode: "cors", // no-cors, *cors, same-origin
                 cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -117,9 +117,9 @@ router.post('/start/:id', (req, res) => {
                 redirect: "follow", // manual, *follow, error
                 referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
                 body: JSON.stringify(body), // body data type must match "Content-Type" header
-            }).then(result => {
-                res.status(200).json(result);
             })
+            console.log(result);
+            res.status(200).json(result);
         // })
 })
 

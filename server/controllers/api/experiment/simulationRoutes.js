@@ -118,8 +118,8 @@ router.post('/start/:id', async (req, res) => {
                 referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
                 body: JSON.stringify(body), // body data type must match "Content-Type" header
             })
-            console.log(result);
-            res.status(200).json(result);
+            console.log(result.json());
+            res.status(200).json(result.json());
         // })
 })
 

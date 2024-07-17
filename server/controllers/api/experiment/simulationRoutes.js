@@ -58,6 +58,7 @@ const fs = require('fs');
 
 
 router.post('/start/:id', (req, res) => {
+    let url = "http://172.28.0.58/api/open/8.5.0/versions/" + process.env.VERSION_ID + "/run";
     let body = {
         "experimentType": "SIMULATION",
         "inputs": [
@@ -71,7 +72,7 @@ router.post('/start/:id', (req, res) => {
                 "name": "DATABASE_CONNECTION_URL",
                 "type": "STRING",
                 "units": null,
-                "value": "jdbc:mysql://address=(host=172.28.0.56)(port=3306)(user=PVFAdmin)(password=1)/pvfluid_test"
+                "value": "jdbc:mysql://address=(host=172.28.0.56)(port=3306)(user=" + process.env.DB_USER + ")(password=" + process.env.DB_PW + ")/" + process.env.DB_NAME
             }
         ]
     }

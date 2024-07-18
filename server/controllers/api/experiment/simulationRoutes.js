@@ -55,9 +55,7 @@ const fs = require('fs');
 //             res.status(400).json(err);
 //         });
 // })
-
-
-router.post('/start/:id', async (req, res) => {
+router.get('/status/:id', async (req, res) => {
     let url = "http://172.28.0.58/api/open/8.5.0/versions/" + process.env.VERSION_ID + "/run";
     let body = {
         "experimentType": "SIMULATION",
@@ -79,6 +77,60 @@ router.post('/start/:id', async (req, res) => {
                 "type": "STRING",
                 "units": null,
                 "value": "jdbc:mysql://address=(host=172.28.0.56)(port=3306)(user=" + process.env.DB_USER + ")(password=" + process.env.DB_PW + ")/" + process.env.DB_NAME
+            },
+            {
+              "name": "{MAX_MEMORY_MB}",
+              "type": "INTEGER",
+              "units": null,
+              "value": "2048"
+            }
+        ]
+    }
+    let result = await fetch(url, {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        // credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+            "Content-Type": "application/json",
+            'Authorization': process.env.ANYLOGIC_CLOUD_KEY,
+        },
+        redirect: "follow", // manual, *follow, error
+        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: JSON.stringify(body), // body data type must match "Content-Type" header
+    })
+    console.log(result.json());
+    res.status(200).json(result.json());
+})
+
+router.post('/start/:id', async (req, res) => {
+    let url = "http://172.28.0.58/api/open/8.5.0/versions/" + process.env.VERSION_ID + "/runs";
+    let body = {
+        "experimentType": "SIMULATION",
+        "inputs": [
+            {
+                "name": "EXPERIMENT_ID",
+                "type": "INTEGER",
+                "units": null,
+                "value": req.params.id
+            },
+            {
+                "name": "ITERATION_ID",
+                "type": "INTEGER",
+                "units": null,
+                "value": 1
+            },
+            {
+                "name": "DATABASE_CONNECTION_URL",
+                "type": "STRING",
+                "units": null,
+                "value": "jdbc:mysql://address=(host=172.28.0.56)(port=3306)(user=" + process.env.DB_USER + ")(password=" + process.env.DB_PW + ")/" + process.env.DB_NAME
+            },
+            {
+              "name": "{MAX_MEMORY_MB}",
+              "type": "INTEGER",
+              "units": null,
+              "value": "2048"
             }
         ]
     }

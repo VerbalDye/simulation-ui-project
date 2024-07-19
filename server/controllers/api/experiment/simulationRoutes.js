@@ -150,6 +150,7 @@ router.post('/start/:id', async (req, res) => {
             body: JSON.stringify(body2)
         })
     ]);
+    console.log(responses);
     if (responses[0].ok && responses[1].ok) { 
         res.status(200).json(json);
     } else {

@@ -142,7 +142,7 @@ router.post('/start/:id', async (req, res) => {
                 },
                 body: JSON.stringify(body)
             }).then(result => {
-                resolve(result.json())
+                resolve(result)
             })
         }),
         new Promise(resolve => {
@@ -154,7 +154,7 @@ router.post('/start/:id', async (req, res) => {
                 },
                 body: JSON.stringify(body2)
             }).then(result => {
-                resolve(result.json())
+                resolve(result)
             })
         })
     ]);

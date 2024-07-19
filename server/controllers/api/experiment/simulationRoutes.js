@@ -86,17 +86,19 @@ router.get('/status/:id', (req, res) => {
             }
         ]
     }
-    fetch(url, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            'Authorization': process.env.ANYLOGIC_CLOUD_KEY,
-        },
-        body: JSON.stringify(body),
-    }).then(result => {
+    let apiCall = async () => {
+        let result = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': process.env.ANYLOGIC_CLOUD_KEY,
+            },
+            body: JSON.stringify(body),
+        })
         console.log(result.json());
         res.status(200).json(result);
-    })
+    }
+    apiCall();
 })
 
 router.post('/start/:id', (req, res) => {

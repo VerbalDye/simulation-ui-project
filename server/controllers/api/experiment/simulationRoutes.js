@@ -130,7 +130,8 @@ router.post('/start/:id', async (req, res) => {
             }
         ]
     }
-    let body2 = body.inputs[1].value = 0
+    let body2 = structuredClone(body);
+    body2.inputs[1].value = 0
     let responses = await Promise.allSettled([
         fetch(url, {
             method: "POST",

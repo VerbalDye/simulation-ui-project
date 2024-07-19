@@ -158,9 +158,9 @@ router.post('/start/:id', async (req, res) => {
             })
         })
     ]);
-    console.log(responses);
+    console.log(responses[0].value);
     if (responses[0].value.ok && responses[1].value.ok) {
-        res.status(200);
+        res.status(200).json({"message":"Simulation Started"});
     } else {
         res.status(400);
     }

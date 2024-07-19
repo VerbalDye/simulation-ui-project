@@ -96,7 +96,7 @@ router.get('/status/:id', async (req, res) => {
         })
         let json = await result.json();
         console.log(json);
-        res.status(200).json(result);
+        res.status(200).json(json);
 })
 
 router.post('/start/:id', async (req, res) => {
@@ -139,7 +139,7 @@ router.post('/start/:id', async (req, res) => {
         body: JSON.stringify(body),
     })
     let json = await result.json();
-    res.status(200).json(result);
+    res.status(200).json(json);
 })
 
 module.exports = router;

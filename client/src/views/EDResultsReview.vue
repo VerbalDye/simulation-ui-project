@@ -94,8 +94,10 @@ export default {
             this.experimentID = window.location.href.split("/")[window.location.href.split("/").length - 1];
         },
         async getCurrentlyRunning() {
-            let data = await dataRequest("/api/experiment/running/" + this.experimentID, "GET");
-            this.running = data.running
+            let data = await dataRequest("/api/experiment/simulation/status/" + this.experimentID, "GET");
+            if (data.status == "RUNNING") {
+                this.warning = true;
+            }
         },
         async getResourceUtilization() {
             let data = await dataRequest("/api/experiment/resource-util/processed/" + this.experimentID, "GET");

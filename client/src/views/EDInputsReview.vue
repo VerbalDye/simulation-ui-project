@@ -835,8 +835,10 @@ export default {
             this.experimentID = window.location.href.split("/")[window.location.href.split("/").length - 1];
         },
         async getCurrentlyRunning() {
-            let data = await dataRequest("/api/experiment/running/" + this.experimentID, "GET");
-            this.warning = data.running;
+            let data = await dataRequest("/api/experiment/simulation/status/" + this.experimentID, "GET");
+            if (data.status == "RUNNING") {
+                this.warning = true;
+            }
         },
         async getExperimentData() {
             let data = await dataRequest("/api/experiment/" + this.experimentID, "GET");

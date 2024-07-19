@@ -3,7 +3,6 @@ const sequelize = require('../../../config/connection');
 const { copyFromModel } = require('../../../utils/sqlMethods');
 const {
     Asset,
-    CurrentlyRunning,
     Downtime,
     Experiment,
     ExperimentAsset,
@@ -71,25 +70,6 @@ router.get('/user/:id', (req, res) => {
             res.status(500).json(err);
         });
 });
-
-router.get('/running/:id', (req, res) => {
-    CurrentlyRunning.findOne({
-        where: {
-            experiment_id: req.params.id
-        }
-    })
-        .then(dbExperimentData => {
-            if (dbExperimentData) {
-                res.json({ running: true, started: dbExperimentData.started })
-            } else {
-                res.json({ running: false })
-            }
-        })
-        .catch(err => {
-            console.log(err);
-            res.status(500).json(err);
-        });
-})
 
 router.get('/log/:id', (req, res) => {
     Log.findOne({

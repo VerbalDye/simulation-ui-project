@@ -160,7 +160,7 @@ router.post('/start/:id', async (req, res) => {
     ]);
     console.log(responses);
     if (responses[0].value.ok && responses[1].value.ok) {
-        res.status(200).json(json);
+        res.status(200);
     } else {
         res.status(400);
     }

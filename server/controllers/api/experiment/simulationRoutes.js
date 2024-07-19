@@ -138,7 +138,7 @@ router.post('/start/:id', (req, res) => {
         body: JSON.stringify(body),
     }).then(result => {
         console.log(result.json());
-        res.status(200).json(result.json());
+        res.status(200).json(result);
     })
     
 })

@@ -86,17 +86,17 @@ router.get('/status/:id', async (req, res) => {
             }
         ]
     }
-        let result = await fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                'Authorization': process.env.ANYLOGIC_CLOUD_KEY,
-            },
-            body: JSON.stringify(body),
-        })
-        let json = await result.json();
-        console.log(json);
-        res.status(200).json(json);
+    let result = await fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            'Authorization': process.env.ANYLOGIC_CLOUD_KEY,
+        },
+        body: JSON.stringify(body),
+    })
+    let json = await result.json();
+    console.log(json);
+    res.status(200).json(json);
 })
 
 router.post('/start/:id', async (req, res) => {
@@ -133,25 +133,33 @@ router.post('/start/:id', async (req, res) => {
     let body2 = structuredClone(body);
     body2.inputs[1].value = 0
     let responses = await Promise.allSettled([
-        fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                'Authorization': process.env.ANYLOGIC_CLOUD_KEY,
-            },
-            body: JSON.stringify(body)
+        new Promise(resolve => {
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': process.env.ANYLOGIC_CLOUD_KEY,
+                },
+                body: JSON.stringify(body)
+            }).then(result => {
+                resolve(result.json())
+            })
         }),
-        fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                'Authorization': process.env.ANYLOGIC_CLOUD_KEY,
-            },
-            body: JSON.stringify(body2)
+        new Promise(resolve => {
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': process.env.ANYLOGIC_CLOUD_KEY,
+                },
+                body: JSON.stringify(body2)
+            }).then(result => {
+                resolve(result.json())
+            })
         })
     ]);
     console.log(responses);
-    if (responses[0].ok && responses[1].ok) { 
+    if (responses[0].ok && responses[1].ok) {
         res.status(200).json(json);
     } else {
         res.status(400);

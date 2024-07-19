@@ -96,7 +96,7 @@ export default {
         statusInterval() {
             this.interval = setInterval(async () => {
                 await this.getRunning();
-                if (this.status == "Finished") {
+                if (this.status !== "Running") {
                     clearInterval(this.interval);
                     window.alert("Simulation Run Complete!");
                 }
@@ -106,7 +106,7 @@ export default {
     async mounted() {
         this.getExperimentID();
         await this.getRunning();
-        if (this.status = 'Running') {
+        if (this.status == 'Running') {
             this.statusInterval()
         }
     }

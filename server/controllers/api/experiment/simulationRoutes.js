@@ -130,16 +130,30 @@ router.post('/start/:id', async (req, res) => {
             }
         ]
     }
-    let result = await fetch(url, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            'Authorization': process.env.ANYLOGIC_CLOUD_KEY,
-        },
-        body: JSON.stringify(body),
-    })
-    let json = await result.json();
-    res.status(200).json(json);
+    let body2 = body.inputs[1].value = 0
+    let responses = await Promise.allSettled([
+        fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': process.env.ANYLOGIC_CLOUD_KEY,
+            },
+            body: JSON.stringify(body)
+        }),
+        fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': process.env.ANYLOGIC_CLOUD_KEY,
+            },
+            body: JSON.stringify(body2)
+        })
+    ]);
+    if (responses[0].ok && responses[1].ok) { 
+        res.status(200).json(json);
+    } else {
+        res.status(400);
+    }
 })
 
 module.exports = router;

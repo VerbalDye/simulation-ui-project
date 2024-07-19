@@ -30,7 +30,8 @@
             <div v-else>
                 <button @click="startSimulation">Run Simulation</button>
             </div>
-            <div class="flex-right space"><button @click="clickBack">Back</button><button @click="clickNext">Next</button></div>
+            <div class="flex-right space"><button @click="clickBack">Back</button><button
+                    @click="clickNext">Next</button></div>
         </div>
     </div>
 </template>
@@ -63,14 +64,21 @@ export default {
             this.experimentID = window.location.href.split("/")[window.location.href.split("/").length - 1];
         },
         async getRunning() {
-            let data = await dataRequest("/api/experiment/running/" + this.experimentID, "GET");
-            if (data.running && !this.wasRunning) {
-                this.startTime = data.started;
-                this.status = "Running";
-                this.wasRunning = true;
-            } else if (!data.running && this.wasRunning) {
-                this.endTime = dayjs();
-                this.status = "Finished";
+            // let data = await dataRequest("/api/experiment/running/" + this.experimentID, "GET");
+            // if (data.running && !this.wasRunning) {
+            //     this.startTime = data.started;
+            //     this.status = "Running";
+            //     this.wasRunning = true;
+            // } else if (!data.running && this.wasRunning) {
+            //     this.endTime = dayjs();
+            //     this.status = "Finished";
+            // }
+            let data = await dataRequest("/api/experiment/simulation/status/" + this.experimentID, "GET");
+            console.log(data);
+            if (data.status == "COMPLETED") {
+                this.status = 'Finished';
+            } else if (data.status == "RUNNING") {
+                this.status = 'Running';
             }
         },
         clickBack() {
@@ -83,25 +91,24 @@ export default {
             this.status = 'Running';
             this.startTime = dayjs();
             await dataRequest("/api/experiment/simulation/start/" + this.experimentID, "POST", JSON.stringify({ num_replications: 5 }));
-            this.status = 'Finished';
-            this.endTime = dayjs();
-            clearInterval(this.interval);
-            window.alert("Simulation Run Complete!");
+            this.statusInterval();
+        },
+        statusInterval() {
+            this.interval = setInterval(async () => {
+                await this.getRunning();
+                if (this.status == "Finished") {
+                    clearInterval(this.interval);
+                    window.alert("Simulation Run Complete!");
+                }
+            }, 10000)
         }
     },
-    mounted() {
+    async mounted() {
         this.getExperimentID();
-        this.getRunning();
-        this.interval = setInterval(async () => {
-            this.currentTime = dayjs();
-            if (this.wasRunning) {
-                await this.getRunning();
-            } 
-            if (this.status == "Finished") {
-                clearInterval(this.interval);
-                window.alert("Simulation Run Complete!");
-            }
-        }, 10000)
+        await this.getRunning();
+        if (this.status = 'Running') {
+            this.statusInterval()
+        }
     }
 }
 </script>

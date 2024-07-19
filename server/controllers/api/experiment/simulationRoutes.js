@@ -79,25 +79,20 @@ router.get('/status/:id', async (req, res) => {
                 "value": "jdbc:mysql://address=(host=172.28.0.56)(port=3306)(user=" + process.env.DB_USER + ")(password=" + process.env.DB_PW + ")/" + process.env.DB_NAME
             },
             {
-              "name": "{MAX_MEMORY_MB}",
-              "type": "INTEGER",
-              "units": null,
-              "value": "2048"
+                "name": "{MAX_MEMORY_MB}",
+                "type": "INTEGER",
+                "units": null,
+                "value": "2048"
             }
         ]
     }
-    let result = await fetch(url, {
-        method: "POST", // *GET, POST, PUT, DELETE, etc.
-        mode: "cors", // no-cors, *cors, same-origin
-        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-        // credentials: "same-origin", // include, *same-origin, omit
+    const result = await fetch(url, {
+        method: "POST",
         headers: {
             "Content-Type": "application/json",
             'Authorization': process.env.ANYLOGIC_CLOUD_KEY,
         },
-        redirect: "follow", // manual, *follow, error
-        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        body: JSON.stringify(body), // body data type must match "Content-Type" header
+        body: JSON.stringify(body),
     })
     console.log(result.json());
     res.status(200).json(result.json());
@@ -127,52 +122,23 @@ router.post('/start/:id', async (req, res) => {
                 "value": "jdbc:mysql://address=(host=172.28.0.56)(port=3306)(user=" + process.env.DB_USER + ")(password=" + process.env.DB_PW + ")/" + process.env.DB_NAME
             },
             {
-              "name": "{MAX_MEMORY_MB}",
-              "type": "INTEGER",
-              "units": null,
-              "value": "2048"
+                "name": "{MAX_MEMORY_MB}",
+                "type": "INTEGER",
+                "units": null,
+                "value": "2048"
             }
         ]
     }
-    // Promise.allSettled([
-    //     new Promise(resolve => {
-    //         ExperimentInfo.create({
-    //             experiment_id: req.params.id
-    //         })
-    //             .then(dbExperimentInfoData => resolve())
-    //             .catch(err => {
-    //                 console.log(err);
-    //                 res.status(400).json(err);
-    //             });
-    //     }),
-    //     // new Promise(resolve => {
-    //         // CurrentlyRunning.create({
-    //         //     experiment_id: req.params.id
-    //         // })
-    //         //     .then(dbCurrentlyRunningData => resolve())
-    //         //     .catch(err => {
-    //         //         console.log(err);
-    //         //         res.status(400).json(err);
-    //         //     });
-    //     // })
-    // ])
-        // .then(dbPromiseData => {
-            let result = await fetch(url, {
-                method: "POST", // *GET, POST, PUT, DELETE, etc.
-                mode: "cors", // no-cors, *cors, same-origin
-                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-                // credentials: "same-origin", // include, *same-origin, omit
-                headers: {
-                    "Content-Type": "application/json",
-                    'Authorization': process.env.ANYLOGIC_CLOUD_KEY,
-                },
-                redirect: "follow", // manual, *follow, error
-                referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: JSON.stringify(body), // body data type must match "Content-Type" header
-            })
-            console.log(result.json());
-            res.status(200).json(result.json());
-        // })
+    let result = await fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            'Authorization': process.env.ANYLOGIC_CLOUD_KEY,
+        },
+        body: JSON.stringify(body),
+    })
+    console.log(result.json());
+    res.status(200).json(result.json());
 })
 
 module.exports = router;

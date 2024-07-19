@@ -98,7 +98,7 @@ router.get('/status/:id', async (req, res) => {
     res.status(200).json(result.json());
 })
 
-router.post('/start/:id', async (req, res) => {
+router.post('/start/:id', (req, res) => {
     let url = "http://172.28.0.58/api/open/8.5.0/versions/" + process.env.VERSION_ID + "/runs";
     let body = {
         "experimentType": "SIMULATION",
@@ -129,16 +129,18 @@ router.post('/start/:id', async (req, res) => {
             }
         ]
     }
-    let result = await fetch(url, {
+    fetch(url, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             'Authorization': process.env.ANYLOGIC_CLOUD_KEY,
         },
         body: JSON.stringify(body),
+    }).then(result => {
+        console.log(result.json());
+        res.status(200).json(result.json());
     })
-    console.log(result.json());
-    res.status(200).json(result.json());
+    
 })
 
 module.exports = router;

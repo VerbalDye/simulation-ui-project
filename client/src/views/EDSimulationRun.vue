@@ -10,23 +10,14 @@
                     <th><i class="bi bi-activity"></i> Simulation Status</th>
                     <td>{{ status }}</td>
                 </tr>
-                <tr>
+                <tr v-if="status == 'Running'">
                     <th><i class="bi bi-clock-fill"></i> Start:</th>
                     <td>{{ dayjs(startTime).format("YYYY-MM-DD hh:mm:ss") }}</td>
                 </tr>
-                <tr v-if="endTime">
-                    <th><i class="bi bi-sign-stop-fill"></i> Finished:</th>
-                    <td>{{ dayjs(endTime).format("YYYY-MM-DD hh:mm:ss") }}</td>
-                </tr>
-                <tr>
-                    <th><i class="bi bi-stopwatch-fill"></i> Time Running:</th>
-                    <td>{{ currentTime.diff(startTime, 'minute') }} minutes</td>
-                </tr>
-                <!-- <tr>
-                    <th><i class="bi bi-hash"></i> Iterations:</th>
-                    <td>{{ currentTime.diff(startTime, 'minute') }} minutes</td>
-                </tr> -->
             </table>
+            <div v-else-if="status == 'Finished'">
+                <button @click="startSimulation">Rerun Simulation</button>
+            </div>
             <div v-else>
                 <button @click="startSimulation">Run Simulation</button>
             </div>

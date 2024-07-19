@@ -86,16 +86,17 @@ router.get('/status/:id', async (req, res) => {
             }
         ]
     }
-    const result = await fetch(url, {
+    fetch(url, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             'Authorization': process.env.ANYLOGIC_CLOUD_KEY,
         },
         body: JSON.stringify(body),
+    }).then(result => {
+        console.log(result.json());
+        res.status(200).json(result);
     })
-    console.log(result.json());
-    res.status(200).json(result.json());
 })
 
 router.post('/start/:id', (req, res) => {

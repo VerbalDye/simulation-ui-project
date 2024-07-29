@@ -122,8 +122,7 @@ router.post('/start/:id', async (req, res) => {
         where: {
             experiment_id: req.params.id
         }
-    })
-    experimentData.update({ last_run_id: runID });
+    });
     let url = "http://172.28.0.58/api/open/8.5.0/versions/" + process.env.VERSION_ID + "/runs";
     let body = {
         "experimentType": "SIMULATION",

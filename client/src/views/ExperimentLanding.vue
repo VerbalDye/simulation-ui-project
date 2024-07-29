@@ -40,6 +40,7 @@
                     <div v-if="isAdmin" class="section">
                         <h2>Admin Controls</h2>
                         <router-link to="/admin/add-asset" class="link-button space">Asset Management</router-link>
+                        <router-link to="/admin/process-time" class="link-button space">Process Time Defaults</router-link>
                     </div>
                 </main>
             </div>

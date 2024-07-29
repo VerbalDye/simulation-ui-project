@@ -30,6 +30,9 @@ Experiment.init(
                 key: 'scenario_id'
             }
         },
+        last_run_id: {
+            type: DataTypes.INTEGER,
+        },
         created: {
             type: DataTypes.DATE,
             allowNull: false,

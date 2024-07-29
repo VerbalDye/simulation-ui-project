@@ -33,6 +33,7 @@ const Operation = require('./Operation');
 const OperationToLocation = require('./OperationToLocation');
 const Phases = require('./Phases');
 const ProcessTime = require('./ProcessTime');
+const ProcessTimeDistribution = require('./ProcessTimeDistribution');
 const ResourceUtilization = require('./ResourceUtilization');
 const Routing = require('./Routing');
 const Scenario = require('./Scenario');
@@ -570,6 +571,7 @@ module.exports = {
     OperationToLocation,
     Phases,
     ProcessTime,
+    ProcessTimeDistribution,
     ResourceUtilization,
     Routing,
     Scenario,

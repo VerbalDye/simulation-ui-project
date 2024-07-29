@@ -1,7 +1,5 @@
 const router = require('express').Router();
-const { CurrentlyRunning, ExperimentInfo, Log } = require('../../../models');
-const fs = require('fs');
-
+const { Experiment } = require('../../../models');
 
 // router.post('/start/:id', (req, res) => {
 //     var child_process = require('child_process');
@@ -56,6 +54,11 @@ const fs = require('fs');
 //         });
 // })
 router.get('/status/:id', async (req, res) => {
+    const experimentData = await Experiment.findOne({
+        where: {
+            experiment_id: req.params.id
+        }
+    })
     let url = "http://172.28.0.58/api/open/8.5.0/versions/" + process.env.VERSION_ID + "/run";
     let body = {
         "experimentType": "SIMULATION",
@@ -71,6 +74,18 @@ router.get('/status/:id', async (req, res) => {
                 "type": "INTEGER",
                 "units": null,
                 "value": 1
+            },
+            {
+                "name": "NUM_REPLICATION",
+                "type": "INTEGER",
+                "units": null,
+                "value": 5
+            },
+            {
+                "name": "RUN_ID",
+                "type": "INTEGER",
+                "units": null,
+                "value": experimentData.last_run_id
             },
             {
                 "name": "DATABASE_CONNECTION_URL",
@@ -100,6 +115,15 @@ router.get('/status/:id', async (req, res) => {
 })
 
 router.post('/start/:id', async (req, res) => {
+    const runID = Math.floor(Math.random()*10000000);
+    Experiment.update({
+        last_run_id: runID
+    }, {
+        where: {
+            experiment_id: req.params.id
+        }
+    })
+    experimentData.update({ last_run_id: runID });
     let url = "http://172.28.0.58/api/open/8.5.0/versions/" + process.env.VERSION_ID + "/runs";
     let body = {
         "experimentType": "SIMULATION",
@@ -115,6 +139,18 @@ router.post('/start/:id', async (req, res) => {
                 "type": "INTEGER",
                 "units": null,
                 "value": 1
+            },
+            {
+                "name": "NUM_REPLICATION",
+                "type": "INTEGER",
+                "units": null,
+                "value": 5
+            },
+            {
+                "name": "RUN_ID",
+                "type": "INTEGER",
+                "units": null,
+                "value": runID
             },
             {
                 "name": "DATABASE_CONNECTION_URL",

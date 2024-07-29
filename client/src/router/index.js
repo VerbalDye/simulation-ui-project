@@ -28,6 +28,12 @@ const routes = [
     meta: { requiresAdmin: true }
   },
   {
+    path: '/admin/process-time',
+    name: 'admin-process-time',
+    component: () => import('../views/ProcessTimeDefaults.vue'),
+    meta: { requiresAdmin: true }
+  },
+  {
     path: '/account',
     name: 'account',
     component: () => import('../views/Account.vue'),

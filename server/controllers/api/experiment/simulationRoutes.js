@@ -79,7 +79,7 @@ router.get('/status/:id', async (req, res) => {
                 "name": "NUM_REPLICATION",
                 "type": "INTEGER",
                 "units": null,
-                "value": 5
+                "value": 3
             },
             {
                 "name": "RUN_ID",
@@ -143,7 +143,7 @@ router.post('/start/:id', async (req, res) => {
                 "name": "NUM_REPLICATION",
                 "type": "INTEGER",
                 "units": null,
-                "value": 5
+                "value": 3
             },
             {
                 "name": "RUN_ID",

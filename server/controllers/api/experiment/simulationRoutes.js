@@ -101,13 +101,94 @@ router.get('/status/:id', async (req, res) => {
             }
         ]
     }
-    let result = await fetch(url, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            'Authorization': process.env.ANYLOGIC_CLOUD_KEY,
-        },
-        body: JSON.stringify(body),
+    let body2 = structuredClone(body);
+    let body3 = structuredClone(body);
+    let body4 = structuredClone(body);
+    let body5 = structuredClone(body);
+    let body6 = structuredClone(body);
+    body2.inputs[2].value = 1;
+    body3.inputs[2].value = 2;
+    body4.inputs[1].value = 1;
+    body5.inputs[1].value = 1;
+    body5.inputs[2].value = 1;
+    body6.inputs[1].value = 1;
+    body6.inputs[2].value = 2;
+    let responses = await Promise.allSettled([
+        new Promise(resolve => {
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': process.env.ANYLOGIC_CLOUD_KEY,
+                },
+                body: JSON.stringify(body),
+            }).then(result => {
+                resolve(result)
+            })
+        }),
+        new Promise(resolve => {
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': process.env.ANYLOGIC_CLOUD_KEY,
+                },
+                body: JSON.stringify(body2),
+            }).then(result => {
+                resolve(result)
+            })
+        }),
+        new Promise(resolve => {
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': process.env.ANYLOGIC_CLOUD_KEY,
+                },
+                body: JSON.stringify(body3),
+            }).then(result => {
+                resolve(result)
+            })
+        }),
+        new Promise(resolve => {
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': process.env.ANYLOGIC_CLOUD_KEY,
+                },
+                body: JSON.stringify(body4),
+            }).then(result => {
+                resolve(result)
+            })
+        }),
+        new Promise(resolve => {
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': process.env.ANYLOGIC_CLOUD_KEY,
+                },
+                body: JSON.stringify(body5),
+            }).then(result => {
+                resolve(result)
+            })
+        }),
+        new Promise(resolve => {
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': process.env.ANYLOGIC_CLOUD_KEY,
+                },
+                body: JSON.stringify(body6),
+            }).then(result => {
+                resolve(result)
+            })
+        })
+    ])
+    results.forEach(result => {
+        console.log(result);
     })
     let json = await result.json();
     console.log(json);

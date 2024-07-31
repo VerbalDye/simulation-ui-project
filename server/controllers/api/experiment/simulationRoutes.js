@@ -190,7 +190,7 @@ router.get('/status/:id', async (req, res) => {
     let running = false;
     responses.forEach(async result => {
 		let json = await (result.value.json());
-        // console.log(json);
+        console.log(json.status);
         if (json.status == "RUNNING") {
             running = true;
         }

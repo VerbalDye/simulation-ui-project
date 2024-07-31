@@ -187,7 +187,7 @@ router.get('/status/:id', async (req, res) => {
             })
         })
     ])
-    results.forEach(result => {
+    responses.forEach(result => {
         console.log(result);
     })
     let json = await result.json();

@@ -123,7 +123,9 @@ router.get('/status/:id', async (req, res) => {
                 },
                 body: JSON.stringify(body),
             }).then(result => {
-                resolve(result)
+                result.json().then(json => {
+                    resolve(json)
+                })
             })
         }),
         new Promise(resolve => {
@@ -135,7 +137,9 @@ router.get('/status/:id', async (req, res) => {
                 },
                 body: JSON.stringify(body2),
             }).then(result => {
-                resolve(result)
+                result.json().then(json => {
+                    resolve(json)
+                })
             })
         }),
         new Promise(resolve => {
@@ -147,7 +151,9 @@ router.get('/status/:id', async (req, res) => {
                 },
                 body: JSON.stringify(body3),
             }).then(result => {
-                resolve(result)
+                result.json().then(json => {
+                    resolve(json)
+                })
             })
         }),
         new Promise(resolve => {
@@ -159,7 +165,9 @@ router.get('/status/:id', async (req, res) => {
                 },
                 body: JSON.stringify(body4),
             }).then(result => {
-                resolve(result)
+                result.json().then(json => {
+                    resolve(json)
+                })
             })
         }),
         new Promise(resolve => {
@@ -171,7 +179,9 @@ router.get('/status/:id', async (req, res) => {
                 },
                 body: JSON.stringify(body5),
             }).then(result => {
-                resolve(result)
+                result.json().then(json => {
+                    resolve(json)
+                })
             })
         }),
         new Promise(resolve => {
@@ -183,18 +193,19 @@ router.get('/status/:id', async (req, res) => {
                 },
                 body: JSON.stringify(body6),
             }).then(result => {
-                resolve(result)
+                result.json().then(json => {
+                    resolve(json)
+                })
             })
         })
     ])
     let running = false;
     let notRun = false;
     responses.forEach(async result => {
-		let json = await (result.value.json());
-        console.log(json.status);
-        if (json.status == "RUNNING") {
+        console.log(result.status);
+        if (result.status == "RUNNING") {
             running = true;
-        } else if (json.status === null) {
+        } else if (result.status === null) {
             notRun = true;
         }
     });

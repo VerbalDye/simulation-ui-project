@@ -1180,7 +1180,7 @@ export default {
             if (backlogStatus.status == 200) {
                 await this.getBacklogData();
                 await this.saveAllChanges();
-                await dataRequest("/api/experiment/populate/from-backlog", "POST", JSON.stringify({ expId: this.experimentID, numReplications: 4 }));
+                await dataRequest("/api/experiment/populate/from-backlog", "POST", JSON.stringify({ expId: this.experimentID, numReplications: 3 }));
                 await this.getJobData();
             } else {
                 window.alert('Backlog validation error. Please review file and try again. Expected format available to download under "Download Template"')
@@ -1190,7 +1190,7 @@ export default {
         async populateFromUI() {
             let populateFromUIData = {
                 expId: this.experimentID,
-                numReplications: 4,
+                numReplications: 3,
                 start_date: this.demandSettings.startDate,
                 min_jobs: this.demandSettings.dailyTarget.min,
                 max_jobs: this.demandSettings.dailyTarget.max,

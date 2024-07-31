@@ -189,16 +189,17 @@ router.get('/status/:id', async (req, res) => {
     ])
     let running = false;
     responses.forEach(result => {
-        console.log(result.body);
-        if (result.body.status == "RUNNING") {
-            running = true;
-        }
+        console.log(result);
+        // if (result.body.status == "RUNNING") {
+        //     running = true;
+        // }
     });
-    if (running) {
-        res.status(200).json({status: "RUNNING"});
-    } else {
-        res.status(200).json({status: "COMPLETED"});
-    }
+    // if (running) {
+    //     res.status(200).json({status: "RUNNING"});
+    // } else {
+    //     res.status(200).json({status: "COMPLETED"});
+    // }
+    res.status(200)
 })
 
 router.post('/start/:id', async (req, res) => {

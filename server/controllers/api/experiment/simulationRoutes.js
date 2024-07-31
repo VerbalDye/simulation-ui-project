@@ -188,15 +188,20 @@ router.get('/status/:id', async (req, res) => {
         })
     ])
     let running = false;
+    let notRun = false;
     responses.forEach(async result => {
 		let json = await (result.value.json());
         console.log(json.status);
         if (json.status == "RUNNING") {
             running = true;
+        } else if (json.status == "null") {
+            notRun = true;
         }
     });
     if (running) {
         res.status(200).json({status: "RUNNING"});
+    } else if (notRun) {
+        res.status(200).json({status: null});
     } else {
         res.status(200).json({status: "COMPLETED"});
     }

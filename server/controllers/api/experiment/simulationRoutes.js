@@ -189,7 +189,7 @@ router.get('/status/:id', async (req, res) => {
     ])
     let running = false;
     responses.forEach(result => {
-        console.log(result.value.body.read());
+        console.log(JSON.parse(result.value.text()));
         // if (result.body.status == "RUNNING") {
         //     running = true;
         // }

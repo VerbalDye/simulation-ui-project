@@ -194,10 +194,11 @@ router.get('/status/:id', async (req, res) => {
         console.log(json.status);
         if (json.status == "RUNNING") {
             running = true;
-        } else if (json.status == null) {
+        } else if (json.status === null) {
             notRun = true;
         }
     });
+    console.log(notRun);
     if (running) {
         res.status(200).json({status: "RUNNING"});
     } else if (notRun) {

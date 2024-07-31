@@ -194,7 +194,7 @@ router.get('/status/:id', async (req, res) => {
         console.log(json.status);
         if (json.status == "RUNNING") {
             running = true;
-        } else if (json.status == "null") {
+        } else if (json.status == null) {
             notRun = true;
         }
     });

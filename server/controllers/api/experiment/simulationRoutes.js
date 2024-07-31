@@ -202,10 +202,10 @@ router.get('/status/:id', async (req, res) => {
     let running = false;
     let notRun = false;
     responses.forEach(async result => {
-        console.log(result.status);
-        if (result.status == "RUNNING") {
+        console.log(result.value.status);
+        if (result.value.status == "RUNNING") {
             running = true;
-        } else if (result.status === null) {
+        } else if (result.value.status === null) {
             notRun = true;
         }
     });

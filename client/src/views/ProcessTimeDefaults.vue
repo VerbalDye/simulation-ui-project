@@ -56,6 +56,7 @@
                         </td>
                     </tr>
                 </table>
+                <button>Save</button>
             </div>
         </div>
     </div>
@@ -106,8 +107,14 @@ export default {
         handleModelSelectChange() {
 
         },
-        handleNumberOfSamplesChange() {
-
+        handleNumberOfSamplesChange(e) {
+            while (parseInt(e.target.value) != this.processingTimes.length) {
+            if (parseInt(e.target.value) > this.processingTimes.length) {
+                this.processingTimes.push(0);
+            } else if (parseInt(e.target.value) < this.processingTimes.length) {
+                this.processingTimes.pop();
+            }
+        }
         },
         handleProcessTimeDataChange() {
 

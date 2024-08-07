@@ -19,7 +19,7 @@
                         <td>
                             <label class="switch">
                                 <input type="checkbox" name="advanced-mode-toggle"
-                                    @input="handleAdvanceModeChange(e)">
+                                    @input="handleAdvanceModeChange">
                                 <span class="slider round"></span>
                             </label>
                         </td>

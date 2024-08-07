@@ -318,21 +318,8 @@
                                                     </div>
                                                 </div>
                                                 <div v-else>
-                                                    <!-- <div v-for="(element, asset_id) in processTimeSettings.elements">
+                                                    <div v-for="(element, asset_id) in processTimeSettings.elements">
                                                         <p>{{ element.name }}</p>
-                                                        <VueMultiselect
-                                                            v-model="this.processTimeSettings.selectedModels[asset_id]"
-                                                            :options="this.processTimeSettings.modelData"
-                                                            :multiple="true" :close-on-select="false"
-                                                            placeholder="Select at least one model"
-                                                            @update:model-value="handleModelSelectChange(asset_id)"
-                                                            :preselect-first="true">
-                                                            <template slot="selection"
-                                                                slot-scope="{ values, search, isOpen }"><span
-                                                                    class="multiselect__single" v-show="!isOpen">
-                                                                    options
-                                                                    selected</span></template>
-                                                        </VueMultiselect>
                                                         <table class="grid-less">
                                                             <tr>
                                                                 <th><i class="bi bi-hash"></i> Number of Samples*</th>
@@ -358,7 +345,7 @@
                                                                 </td>
                                                             </tr>
                                                         </table>
-                                                    </div> -->
+                                                    </div>
                                                 </div>
 
                                             </div>

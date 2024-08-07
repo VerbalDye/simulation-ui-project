@@ -6,25 +6,25 @@
         <div class="content">
             <h1>Process Time Defaults</h1>
             <div>
-                <!-- <VueMultiselect v-model="selectedAssets"
+                <VueMultiselect v-model="selectedAssets"
                     :options="this.formattedAssets" :multiple="true" :close-on-select="false"
                     placeholder="Select at least one model"
-                    @update:model-value="handleModelSelectChange(selectedAssets[0].asset_id)" :preselect-first="true">
+                    @update:model-value="handleAssetSelectChange()" :preselect-first="true">
                     <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single"
                             v-show="!isOpen">
                             options
                             selected</span></template>
                 </VueMultiselect>
-                <VueMultiselect v-model="this.processTimeSettings.selectedModels[selectedAssets[0].asset_id]"
-                    :options="this.processTimeSettings.modelData" :multiple="true" :close-on-select="false"
+                <VueMultiselect v-model="this.selectedModels"
+                    :options="this.modelData" :multiple="true" :close-on-select="false"
                     placeholder="Select at least one model"
-                    @update:model-value="handleModelSelectChange(selectedAssets[0].asset_id)" :preselect-first="true">
+                    @update:model-value="handleModelSelectChange()" :preselect-first="true">
                     <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single"
                             v-show="!isOpen">
                             options
                             selected</span></template>
                 </VueMultiselect>
-                <table class="grid-less">
+                <!-- <table class="grid-less">
                     <tr>
                         <th><i class="bi bi-hash"></i> Number of Samples*</th>
                         <td>
@@ -64,13 +64,12 @@ import dayjs from 'dayjs';
 export default {
     data() {
         return {
-            assetData: {},
-            formattedAssets: {},
+            assetData: [],
+            formattedAssets: [],
             experimentID: 2,
             selectedAssets: [],
-            processTimeSettings: {
-                selectedModels: []
-            }
+            modelData: [],
+            selectedModels: [],
         }
     },
     mixins: [titleMixin],
@@ -84,12 +83,24 @@ export default {
             this.formattedAssets = data.map(e => e.asset.display_name);
             console.log(this.formattedAssets);
         },
+        async getModelData() {
+            let data = await dataRequest("/api/model/", "GET");
+            console.log(data);
+            this.modelData = data.map(e => e.model_number);
+        },
         async getProcessTimeData() {
             // let data = await dataRequest("/api/")
-        }
+        },
+        handleAssetSelectChange() {
+
+        },
+        handleModelSelectChange() {
+
+        },
     },
     mounted() {
         this.getAssetData();
+        this.getModelData();
     }
 }
 </script>

@@ -81,6 +81,8 @@ export default {
             let data = await dataRequest("/api/experiment/asset/" + this.experimentID, "GET");
             console.log(data);
             this.assetData = data.map(e => e.asset);
+            this.formattedAssets = data.map(e => e.asset.display_name);
+            console.log(this.formattedAssets);
         },
         async getProcessTimeData() {
             // let data = await dataRequest("/api/")

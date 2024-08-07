@@ -15,6 +15,10 @@
                             options
                             selected</span></template>
                 </VueMultiselect>
+                <div>
+                    <button>Select All</button>
+                    <button>Select None</button>
+                </div>
                 <VueMultiselect v-model="this.selectedModels"
                     :options="this.modelData" :multiple="true" :close-on-select="false"
                     placeholder="Select at least one model"
@@ -24,14 +28,18 @@
                             options
                             selected</span></template>
                 </VueMultiselect>
-                <!-- <table class="grid-less">
+                <div>
+                    <button>Select All</button>
+                    <button>Select None</button>
+                </div>
+                <table class="grid-less">
                     <tr>
                         <th><i class="bi bi-hash"></i> Number of Samples*</th>
                         <td>
                             <input type="number"
-                                :value="Object.keys(processTimeSettings.elements[selectedAssets[0].asset_id].values).length"
-                                class="small-number-input" :name="'samples-' + selectedAssets[0].asset_id"
-                                @input="handleNumberOfSamplesChange(selectedAssets[0].asset_id, processTimeSettings.selectedModels[selectedAssets[0].asset_id][0], $event)">
+                                :value="this.processingTimes.length"
+                                class="small-number-input" :name="'number-of-samples-selection'"
+                                @input="handleNumberOfSamplesChange">
                         </td>
                     </tr>
                     <tr>
@@ -41,13 +49,13 @@
                         <td>
                             <div class="flex-left">
                                 <input
-                                    v-for="(value, key) in this.processTimeSettings.elements[selectedAssets[0].asset_id].values"
-                                    class="small-number-input" type="number" :value="value" :name="'times-' + key"
-                                    @input="handleProcessTimeDataChange(key, $event)">
+                                    v-for="(time, index) in processingTimes"
+                                    class="small-number-input" type="number" :value="time" :name="'times-' + index"
+                                    @input="handleProcessTimeDataChange">
                             </div>
                         </td>
                     </tr>
-                </table> -->
+                </table>
             </div>
         </div>
     </div>
@@ -70,6 +78,7 @@ export default {
             selectedAssets: [],
             modelData: [],
             selectedModels: [],
+            processingTimes: [10]
         }
     },
     mixins: [titleMixin],
@@ -78,14 +87,14 @@ export default {
     methods: {
         async getAssetData() {
             let data = await dataRequest("/api/experiment/asset/" + this.experimentID, "GET");
-            console.log(data);
+            // console.log(data);
             this.assetData = data.map(e => e.asset);
             this.formattedAssets = data.map(e => e.asset.display_name);
             console.log(this.formattedAssets);
         },
         async getModelData() {
             let data = await dataRequest("/api/model/", "GET");
-            console.log(data);
+            // console.log(data);
             this.modelData = data.map(e => e.model_number);
         },
         async getProcessTimeData() {
@@ -97,6 +106,12 @@ export default {
         handleModelSelectChange() {
 
         },
+        handleNumberOfSamplesChange() {
+
+        },
+        handleProcessTimeDataChange() {
+
+        }
     },
     mounted() {
         this.getAssetData();

@@ -16,8 +16,8 @@
                             selected</span></template>
                 </VueMultiselect>
                 <div>
-                    <button>Select All</button>
-                    <button>Select None</button>
+                    <button @click="e => this.selectedAssets = this.formattedAssets">Select All</button>
+                    <button @click="e => this.selectedAssets = []">Select None</button>
                 </div>
                 <VueMultiselect v-model="this.selectedModels"
                     :options="this.modelData" :multiple="true" :close-on-select="false"
@@ -29,8 +29,8 @@
                             selected</span></template>
                 </VueMultiselect>
                 <div>
-                    <button>Select All</button>
-                    <button>Select None</button>
+                    <button @click="e => this.selectedModels = this.modelData">Select All</button>
+                    <button @click="e => this.selectedModels = []">Select None</button>
                 </div>
                 <table class="grid-less">
                     <tr>
@@ -56,7 +56,7 @@
                         </td>
                     </tr>
                 </table>
-                <button>Save</button>
+                <button @click="handleSaveProcessTimes">Save</button>
             </div>
         </div>
     </div>
@@ -118,6 +118,9 @@ export default {
         },
         handleProcessTimeDataChange() {
 
+        },
+        handleSaveProcessTimes() {
+            window.alert("Saved!");
         }
     },
     mounted() {

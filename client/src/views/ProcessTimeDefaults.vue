@@ -104,6 +104,8 @@ export default {
             let data = await dataRequest("/api/experiment/process-time/" + this.experimentID, "GET");
             console.log(data);
             this.processingTimeData = data;
+            let data2 = await dataRequest("/api/process-time/", "POST", {model_number: 2875120, asset_id: 1});
+            console.log(data2);
         },
         handleAssetSelectChange() {
             this.handleSelectionChange();

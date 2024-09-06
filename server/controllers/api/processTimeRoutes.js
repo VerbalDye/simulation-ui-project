@@ -39,6 +39,7 @@ router.post('/change-default', (req, res) => {
             model: OperationToLocation
         }]
     }).then(dbAssetData => {
+        console.log(dbAssetData);
         Scenario.findAll()
             .then(dbScenarioData => {
                 ProcessTime.findAll({

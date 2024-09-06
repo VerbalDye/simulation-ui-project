@@ -2,6 +2,7 @@ const router = require('express').Router();
 const { Sequelize } = require('sequelize');
 const sequelize = require('../../config/connection');
 const { ExperimentProcessTime, ProcessTime, Scenario } = require('../../models');
+const { withAdminAuth } = require('../../utils/auth');
 
 // router.get('/', (req, res) => {
 //     ExperimentProcessTime.findAll()
@@ -31,7 +32,7 @@ const { ExperimentProcessTime, ProcessTime, Scenario } = require('../../models')
 //         });
 // });
 
-router.post('/', (req, res) => {
+router.post('/change-default', withAdminAuth, (req, res) => {
     // Scenario.findAll()
     //     .then(dbScenarioData => {
     //         dbScenarioData.forEach(entry => {
@@ -53,7 +54,7 @@ router.post('/', (req, res) => {
     //     });
         ExperimentProcessTime.findAll({
             where: {
-                experiment_id: entry.experiment_id,
+                experiment_id: 2,
                 '$ProcessTime.model_number$': req.body.model_number,
                 '$ProcessTime.asset_id': req.body.asset_id
             },

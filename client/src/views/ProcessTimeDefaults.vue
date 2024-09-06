@@ -136,8 +136,8 @@ export default {
 
         },
         async handleSaveProcessTimes() {
-            let data = await dataRequest("/api/process-time/", "POST", {model_number: 2875120, asset_id: 1});
-            console.log(data2);
+            let data = await dataRequest("/api/process-time/change-default", "POST", {model_number: 2875120, asset_id: 1});
+            console.log(data);
             window.alert("Saved!");
         }
     },

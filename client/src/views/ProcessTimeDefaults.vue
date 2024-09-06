@@ -81,7 +81,8 @@ export default {
             selectedModels: [],
             processingTimes: [],
             currentEntries: [],
-            processingTimeData: []
+            processingTimeData: [],
+            assetOperationMap: {}
         }
     },
     mixins: [titleMixin],
@@ -94,6 +95,9 @@ export default {
             this.assetData = data.map(e => e.asset);
             this.formattedAssets = data.map(e => e.asset.display_name);
             console.log(this.formattedAssets);
+            this.assetData.forEach(asset => {
+                this.assetOperationMap[asset.asset_id] = asset.operation_id
+            })
         },
         async getModelData() {
             let data = await dataRequest("/api/model/", "GET");
@@ -141,7 +145,13 @@ export default {
             this.selectedAssets.forEach(asset => {
                 selectedAssetIDs.push(this.assetData.find(e => e.display_name == asset).asset_id)
             })
-            let data = await dataRequest("/api/process-time/change-default", "POST", JSON.stringify({model_number: this.selectedModels, asset_id: selectedAssetIDs}));
+            let body = {
+                model_number: this.selectedModels,
+                asset_id: selectedAssetIDs,
+                operation_id: this.assetOperationMap,
+                process_time: this.processingTimes
+            }
+            let data = await dataRequest("/api/process-time/change-default", "POST", JSON.stringify(body));
             console.log(data);
             window.alert("Saved!");
         }

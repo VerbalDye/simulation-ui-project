@@ -62,7 +62,7 @@ router.post('/change-default', (req, res) => {
                                     asset_id: asset_id,
                                     model_number: model_number,
                                     is_default: true,
-                                    operation_id: dbAssetData.find(asset => asset.asset_id = asset_id).operation_to_location.operation_id,
+                                    operation_id: dbAssetData.find(asset => asset.asset_id = asset_id).operation_to_locations[0].operation_id,
                                     process_time: process_time,
                                 }))
                             })

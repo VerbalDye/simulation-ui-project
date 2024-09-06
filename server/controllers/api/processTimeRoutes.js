@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { Sequelize } = require('sequelize');
 const sequelize = require('../../config/connection');
-const { ExperimentProcessTime, ProcessTime, Scenario } = require('../../../models');
+const { ExperimentProcessTime, ProcessTime, Scenario } = require('../../models');
 
 // router.get('/', (req, res) => {
 //     ExperimentProcessTime.findAll()

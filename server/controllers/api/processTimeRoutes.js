@@ -39,7 +39,6 @@ router.post('/change-default', (req, res) => {
             model: OperationToLocation
         }]
     }).then(dbAssetData => {
-        console.log(dbAssetData);
         Scenario.findAll()
             .then(dbScenarioData => {
                 ProcessTime.findAll({
@@ -54,7 +53,7 @@ router.post('/change-default', (req, res) => {
                         asset_id: req.body.asset_id,
                         // '$experiment_process_time.experiment_id$': 2
                     }
-                }).then(dbProcessTimeData => {
+                }).then(dbProcessTimeDeleteData => {
                     req.body.model_number.forEach(model_number => {
                         req.body.asset_id.forEach(asset_id => {
                             req.body.process_time.forEach(process_time => {
@@ -68,8 +67,10 @@ router.post('/change-default', (req, res) => {
                             })
                         })
                     })
-                    console.log(processTimeEntries)
-                    res.status(200).json({ "message": "Processing Time Saved" })
+                    Promise.allSettled(processTimeEntries).then(dbProcessTimeCreateData => {
+                        console.log(dbProcessTimeCreateData)
+                        res.status(200).json({ "message": "Processing Time Saved" })
+                    })
                 });
             })
     })

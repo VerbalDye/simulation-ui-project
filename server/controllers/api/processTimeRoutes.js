@@ -56,7 +56,7 @@ router.post('/change-default', (req, res) => {
             include: [{
                 model: ExperimentProcessTime,
                 where: {
-                    experiment_id: 2
+                    experiment_id: [2, 3, 4]
                 }
             }],
             where: {

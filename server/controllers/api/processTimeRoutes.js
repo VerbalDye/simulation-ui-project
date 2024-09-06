@@ -53,14 +53,14 @@ router.post('/change-default', (req, res) => {
     //         res.status(400).json(err);
     //     });
         ExperimentProcessTime.findAll({
+            include: [{
+                model: ProcessTime
+            }],
             where: {
                 experiment_id: 2,
                 '$ProcessTime.model_number$': req.body.model_number,
                 '$ProcessTime.asset_id': req.body.asset_id
             },
-            include: [{
-                model: ProcessTime
-            }]
         }).then(dbProcessTimeData => res.json(dbProcessTimeData));
 })
 

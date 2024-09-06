@@ -132,6 +132,7 @@ export default {
     mounted() {
         this.getAssetData();
         this.getModelData();
+        this.getProcessTimeData();
     }
 }
 </script>

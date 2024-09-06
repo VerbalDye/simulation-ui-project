@@ -41,7 +41,7 @@ router.post('/change-default', (req, res) => {
     }).then(dbAssetData => {
         Scenario.findAll()
             .then(dbScenarioData => {
-                ProcessTime.findAll({
+                ProcessTime.destroy({
                     // include: [{
                     //     model: ExperimentProcessTime,
                     //     where: {
@@ -68,8 +68,17 @@ router.post('/change-default', (req, res) => {
                         })
                     })
                     Promise.allSettled(processTimeEntries).then(dbProcessTimeCreateData => {
-                        console.log(dbProcessTimeCreateData)
-                        res.status(200).json({ "message": "Processing Time Saved" })
+                        console.log(dbProcessTimeCreateData);
+                        let experimentProcessTimeEntries = []
+                        dbProcessTimeCreateData.forEach(entry => {
+                            dbScenarioData.forEach(scenario => {
+                                experimentProcessTimeEntries.push(ExperimentProcessTime.create({
+                                    experiment_id: scenario.experiment_id,
+                                    process_time_id: entry.value.process_time_id
+                                }))
+                            })
+                        })
+                        Promise.allSettled(experimentProcessTimeEntries).then(dbExperimentProcessTimeData => res.status(200).json(dbExperimentProcessTimeData));
                     })
                 });
             })

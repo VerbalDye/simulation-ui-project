@@ -51,7 +51,7 @@
                                 <input
                                     v-for="(time, index) in processingTimes"
                                     class="small-number-input" type="number" :value="time" :name="'times-' + index"
-                                    @input="handleProcessTimeDataChange">
+                                    @input="handleProcessTimeDataChange($event, index)">
                             </div>
                         </td>
                     </tr>
@@ -133,8 +133,8 @@ export default {
             }
         }
         },
-        handleProcessTimeDataChange() {
-
+        handleProcessTimeDataChange(e, index) {
+            this.processingTimes[index] = e.target.value;
         },
         async handleSaveProcessTimes() {
             let selectedAssetIDs = [];

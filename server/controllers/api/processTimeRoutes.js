@@ -59,7 +59,7 @@ router.post('/change-default', (req, res) => {
             where: {
                 experiment_id: 2,
                 '$process_time.model_number$': req.body.model_number,
-                '$process_time.asset_id': req.body.asset_id
+                '$process_time.asset_id$': req.body.asset_id
             },
         }).then(dbProcessTimeData => res.json(dbProcessTimeData));
 })

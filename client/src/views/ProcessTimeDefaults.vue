@@ -118,7 +118,7 @@ export default {
                 selectedAssetIDs.push(this.assetData.find(e => e.display_name == asset).asset_id)
             })
             console.log(selectedAssetIDs);
-            this.currentEntries = this.processingTimeData.filter(e => this.selectedAssetIDs.includes(e.process_time.asset_id) && this.selectedModels.includes(e.process_time.model_number))
+            this.currentEntries = this.processingTimeData.filter(e => selectedAssetIDs.includes(e.process_time.asset_id) && this.selectedModels.includes(e.process_time.model_number))
         },
         handleNumberOfSamplesChange(e) {
             while (parseInt(e.target.value) != this.processingTimes.length) {

@@ -112,6 +112,7 @@ export default {
             this.handleSelectionChange();
         },
         handleSelectionChange() {
+            console.log(this.selectedAssets);
             this.currentEntries = this.processingTimeData.filter(e => this.selectedAssets.includes(e.process_time.asset_id) && this.selectedModels.includes(e.process_time.model_number))
         },
         handleNumberOfSamplesChange(e) {

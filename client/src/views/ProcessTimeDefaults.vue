@@ -98,6 +98,7 @@ export default {
             this.assetData.forEach(asset => {
                 this.assetOperationMap[asset.asset_id] = asset.operation_id
             })
+            console.log(this.assetOperationMap)
         },
         async getModelData() {
             let data = await dataRequest("/api/model/", "GET");

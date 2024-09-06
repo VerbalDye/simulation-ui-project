@@ -119,6 +119,7 @@ export default {
             console.log(selectedAssetIDs);
             this.currentEntries = this.processingTimeData.filter(e => selectedAssetIDs[0] == e.process_time.asset_id && this.selectedModels[0] == e.process_time.model_number);
             console.log(this.currentEntries);
+            this.processingTimes = [];
             this.currentEntries.forEach(processingTime => {
                 this.processingTimes.push(processingTime.process_time.process_time);
             })

@@ -33,38 +33,43 @@ const { withAdminAuth } = require('../../utils/auth');
 // });
 
 router.post('/change-default', (req, res) => {
-    // Scenario.findAll()
-    //     .then(dbScenarioData => {
-    //         dbScenarioData.forEach(entry => {
-    //             ExperimentProcessTime.findAll({
-    //                 where: {
-    //                     experiment_id: entry.experiment_id,
-    //                     '$ProcessTime.model_number$': req.body.model_number,
-    //                     '$ProcessTime.asset_id': req.body.asset_id
-    //                 },
-    //                 include: [{
-    //                     model: ProcessTime
-    //                 }]
-    //             }).then(db)
-    //         })
-    //     })
-    //     .catch(err => {
-    //         console.log(err);
-    //         res.status(400).json(err);
-    //     });
-        ProcessTime.findAll({
-            include: [{
-                model: ExperimentProcessTime,
+    let processTimeEntries = []
+    Scenario.findAll()
+        .then(dbScenarioData => {
+            ProcessTime.findAll({
+                // include: [{
+                //     model: ExperimentProcessTime,
+                //     where: {
+                //         experiment_id: [2, 3, 4]
+                //     }
+                // }],
                 where: {
-                    experiment_id: [2, 3, 4]
+                    model_number: req.body.model_number,
+                    asset_id: req.body.asset_id,
+                    // '$experiment_process_time.experiment_id$': 2
                 }
-            }],
-            where: {
-                model_number: req.body.model_number,
-                asset_id: req.body.asset_id,
-                // '$experiment_process_time.experiment_id$': 2
-            }
-        }).then(dbProcessTimeData => res.json(dbProcessTimeData));
+            }).then(dbProcessTimeData => {
+                req.body.model_number.forEach(model_number => {
+                    req.body.asset_id.forEach(asset_id => {
+                        req.body.process_time.forEach(process_time => {
+                            processTimeEntries.push(ProcessTime.create({
+                                asset_id: asset_id,
+                                model_number: model_number,
+                                is_default: true,
+                                operation_id: req.body.operation_id(asset_id),
+                                process_time: process_time,
+                            }))
+                        })
+                    })
+                })
+                console.log(processTimeEntries)
+                res.status(200).json({"message": "Processing Time Saved"})
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(400).json(err);
+        });
 })
 
 // router.put('/:id', (req, res) => {

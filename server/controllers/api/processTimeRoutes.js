@@ -32,7 +32,7 @@ const { withAdminAuth } = require('../../utils/auth');
 //         });
 // });
 
-router.post('/change-default', withAdminAuth, (req, res) => {
+router.post('/change-default', (req, res) => {
     // Scenario.findAll()
     //     .then(dbScenarioData => {
     //         dbScenarioData.forEach(entry => {

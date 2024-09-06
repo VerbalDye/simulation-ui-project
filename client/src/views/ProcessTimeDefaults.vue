@@ -80,7 +80,8 @@ export default {
             modelData: [],
             selectedModels: [],
             processingTimes: [],
-            currentEntries: []
+            currentEntries: [],
+            processingTimeData: []
         }
     },
     mixins: [titleMixin],
@@ -102,7 +103,7 @@ export default {
         async getProcessTimeData() {
             let data = await dataRequest("/api/experiment/process-time/" + this.experimentID, "GET");
             console.log(data);
-            this.processingTimes = data;
+            this.processingTimeData = data;
         },
         handleAssetSelectChange() {
             this.handleSelectionChange();
@@ -111,7 +112,7 @@ export default {
             this.handleSelectionChange();
         },
         handleSelectionChange() {
-            // this.currentEntries = this.
+            this.currentEntries = this.processingTimeData.filter(e => this.selectedAssets.includes(e.process_time.asset_id) && this.selectedModels.includes(e.process_time.model_number))
         },
         handleNumberOfSamplesChange(e) {
             while (parseInt(e.target.value) != this.processingTimes.length) {

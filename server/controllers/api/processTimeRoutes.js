@@ -52,15 +52,15 @@ router.post('/change-default', (req, res) => {
     //         console.log(err);
     //         res.status(400).json(err);
     //     });
-        ExperimentProcessTime.findAll({
+        ProcessTime.findAll({
             include: [{
-                model: ProcessTime
+                model: ExperimentProcessTime
             }],
             where: {
-                experiment_id: 2,
-                '$process_time.model_number$': req.body.model_number,
-                '$process_time.asset_id$': req.body.asset_id
-            },
+                model_number: req.body.model_number,
+                asset_id: req.body.asset_id,
+                '$experiment_process_time.experiment_id$': 2
+            }
         }).then(dbProcessTimeData => res.json(dbProcessTimeData));
 })
 

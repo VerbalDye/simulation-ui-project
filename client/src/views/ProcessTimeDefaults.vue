@@ -136,7 +136,11 @@ export default {
 
         },
         async handleSaveProcessTimes() {
-            let data = await dataRequest("/api/process-time/change-default", "POST", JSON.stringify({model_number: 2875120, asset_id: 1}));
+            let selectedAssetIDs = [];
+            this.selectedAssets.forEach(asset => {
+                selectedAssetIDs.push(this.assetData.find(e => e.display_name == asset).asset_id)
+            })
+            let data = await dataRequest("/api/process-time/change-default", "POST", JSON.stringify({model_number: this.selectedModels, asset_id: selectedAssetIDs}));
             console.log(data);
             window.alert("Saved!");
         }

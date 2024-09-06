@@ -112,13 +112,16 @@ export default {
             this.handleSelectionChange();
         },
         handleSelectionChange() {
-            console.log(this.selectedAssets);
             let selectedAssetIDs = [];
             this.selectedAssets.forEach(asset => {
                 selectedAssetIDs.push(this.assetData.find(e => e.display_name == asset).asset_id)
             })
             console.log(selectedAssetIDs);
-            this.currentEntries = this.processingTimeData.filter(e => selectedAssetIDs.includes(e.process_time.asset_id) && this.selectedModels.includes(e.process_time.model_number))
+            this.currentEntries = this.processingTimeData.filter(e => selectedAssetIDs.includes(e.process_time.asset_id) && this.selectedModels.includes(e.process_time.model_number));
+            console.log(this.currentEntries);
+            this.currentEntries.forEach(processingTime => {
+                this.processingTimes.push(processingTime.process_time.process_time);
+            })
         },
         handleNumberOfSamplesChange(e) {
             while (parseInt(e.target.value) != this.processingTimes.length) {

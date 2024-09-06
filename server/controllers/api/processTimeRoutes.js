@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { Sequelize } = require('sequelize');
 const sequelize = require('../../config/connection');
-const { ExperimentProcessTime, ProcessTime, Scenario } = require('../../models');
+const { ExperimentProcessTime, ProcessTime, Scenario, Asset, OperationToLocation } = require('../../models');
 const { withAdminAuth } = require('../../utils/auth');
 
 // router.get('/', (req, res) => {
@@ -34,38 +34,44 @@ const { withAdminAuth } = require('../../utils/auth');
 
 router.post('/change-default', (req, res) => {
     let processTimeEntries = []
-    Scenario.findAll()
-        .then(dbScenarioData => {
-            ProcessTime.findAll({
-                // include: [{
-                //     model: ExperimentProcessTime,
-                //     where: {
-                //         experiment_id: [2, 3, 4]
-                //     }
-                // }],
-                where: {
-                    model_number: req.body.model_number,
-                    asset_id: req.body.asset_id,
-                    // '$experiment_process_time.experiment_id$': 2
-                }
-            }).then(dbProcessTimeData => {
-                req.body.model_number.forEach(model_number => {
-                    req.body.asset_id.forEach(asset_id => {
-                        req.body.process_time.forEach(process_time => {
-                            processTimeEntries.push(ProcessTime.create({
-                                asset_id: asset_id,
-                                model_number: model_number,
-                                is_default: true,
-                                operation_id: req.body.operation_id(asset_id),
-                                process_time: process_time,
-                            }))
+    Asset.findAll({
+        include: [{
+            model: OperationToLocation
+        }]
+    }).then(dbAssetData => {
+        Scenario.findAll()
+            .then(dbScenarioData => {
+                ProcessTime.findAll({
+                    // include: [{
+                    //     model: ExperimentProcessTime,
+                    //     where: {
+                    //         experiment_id: [2, 3, 4]
+                    //     }
+                    // }],
+                    where: {
+                        model_number: req.body.model_number,
+                        asset_id: req.body.asset_id,
+                        // '$experiment_process_time.experiment_id$': 2
+                    }
+                }).then(dbProcessTimeData => {
+                    req.body.model_number.forEach(model_number => {
+                        req.body.asset_id.forEach(asset_id => {
+                            req.body.process_time.forEach(process_time => {
+                                processTimeEntries.push(ProcessTime.create({
+                                    asset_id: asset_id,
+                                    model_number: model_number,
+                                    is_default: true,
+                                    operation_id: dbAssetData.find(asset => asset.asset_id = asset_id).operation_to_location.operation_id,
+                                    process_time: process_time,
+                                }))
+                            })
                         })
                     })
-                })
-                console.log(processTimeEntries)
-                res.status(200).json({"message": "Processing Time Saved"})
-            });
-        })
+                    console.log(processTimeEntries)
+                    res.status(200).json({ "message": "Processing Time Saved" })
+                });
+            })
+    })
         .catch(err => {
             console.log(err);
             res.status(400).json(err);

@@ -115,7 +115,7 @@ export default {
             console.log(this.selectedAssets);
             let selectedAssetIDs = [];
             this.selectedAssets.forEach(asset => {
-                selectedAssetIDs.push(this.assetData.find(e => e.asset.display_name == asset).asset.asset_id)
+                selectedAssetIDs.push(this.assetData.find(e => e.display_name == asset).asset_id)
             })
             console.log(selectedAssetIDs);
             this.currentEntries = this.processingTimeData.filter(e => this.selectedAssetIDs.includes(e.process_time.asset_id) && this.selectedModels.includes(e.process_time.model_number))

@@ -74,7 +74,8 @@ router.post('/change-default', (req, res) => {
                             dbScenarioData.forEach(scenario => {
                                 experimentProcessTimeEntries.push(ExperimentProcessTime.create({
                                     experiment_id: scenario.experiment_id,
-                                    process_time_id: entry.value.process_time_id
+                                    process_time_id: entry.value.process_time_id,
+                                    iteration_number: 0
                                 }))
                             })
                         })

@@ -1187,7 +1187,9 @@ export default {
                 }),
                 downtime: downtime
             }
+            console.log(this.coreModelData)
             let coreData = this.coreModelData.map(({ experiment_core_id, available, ...rest }) => { return { experiment_core_id, available } })
+            console.log(coreData);
             await Promise.allSettled([
                 dataRequest("/api/experiment/site/" + this.experimentID, "PUT", JSON.stringify({ site_id: this.selectedSite })),
                 dataRequest("/api/experiment/core/bulk/" + this.experimentID, "PUT", JSON.stringify({ data: coreData })),

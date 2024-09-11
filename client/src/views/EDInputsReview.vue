@@ -997,6 +997,7 @@ export default {
                     last_modified: core.core_model.last_modified
                 }
             });
+            console.log(coreModelData);
             this.coreModelData = coreModelData;
         },
         async getJobData() {

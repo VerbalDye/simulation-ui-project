@@ -979,7 +979,7 @@ export default {
         },
         async getDowntimeData() {
             let data = await dataRequest("/api/experiment/downtime/" + this.experimentID, "GET");
-            console.log(data);
+            // console.log(data);
             this.downtimeData = data;
         },
         async getCoreModelData() {
@@ -1011,6 +1011,7 @@ export default {
             });
             console.log(coreModelData);
             this.coreModelData = coreModelData;
+            console.log(this.coreModelData);
         },
         async getJobData() {
             let results = await Promise.allSettled([

@@ -984,9 +984,7 @@ export default {
         },
         async getCoreModelData() {
             let data = await dataRequest("/api/experiment/core/" + this.experimentID, "GET");
-            console.log(data);
             this.coreUsage = data.map(e => e.available);
-            console.log(data)
             let coreModelData = data.map(({ experiment_core_id, available, core, ...rest }) => {
                 console.log({
                     experiment_core_id: experiment_core_id,
@@ -1009,9 +1007,7 @@ export default {
                     last_modified: core.core_model.last_modified
                 }
             });
-            console.log(coreModelData);
             this.coreModelData = coreModelData;
-            console.log(this.coreModelData);
         },
         async getJobData() {
             let results = await Promise.allSettled([

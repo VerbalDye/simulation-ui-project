@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { Experiment } = require('../../../models');
+const { Experiment, Throughput, AssetAvailability, ResourceUtilization } = require('../../../models');
 
 // router.post('/start/:id', (req, res) => {
 //     var child_process = require('child_process');
@@ -220,6 +220,9 @@ router.get('/status/:id', async (req, res) => {
 })
 
 router.post('/start/:id', async (req, res) => {
+    Throughput.destroy({ where: { experiment_id: req.params.id }});
+    AssetAvailability.destroy({ where: { experiment_id: req.params.id }});
+    ResourceUtilization.destroy({ where: { experiment_id: req.params.id }});
     const runID = Math.floor(Math.random()*10000000);
     Experiment.update({
         last_run_id: runID

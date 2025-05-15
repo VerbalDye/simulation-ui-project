@@ -35,7 +35,7 @@ const routes = [
   },
   {
     path: '/admin/hours-of-operation',
-    name: 'admin-equipment',
+    name: 'admin-hoo',
     component: () => import('../views/AdminHOO.vue'),
     meta: { requiresAdmin: true }
   },

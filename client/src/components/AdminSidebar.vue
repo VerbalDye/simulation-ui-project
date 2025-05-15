@@ -20,7 +20,7 @@ export default {
             currentPage: ''
         }
     },
-    name: 'Sidebar',
+    name: 'AdminSidebar',
     methods: {
         getCurrentPage() {
             this.currentPage = document.location.pathname;

@@ -5,8 +5,7 @@
         <div class="content">
             <h1>AnyLogic Simulation UI Project</h1>
             <router-link to="/account" class="link-button space">Account Information</router-link><br/>
-            <router-link to="/admin/account-management" v-if="admin" class="link-button space">Admin Account Management</router-link><br/>
-            <router-link to="/admin/process-time" v-if="admin" class="link-button space">Admin Process Time Management</router-link>
+            <router-link to="/admin/account-management" v-if="admin" class="link-button space">Admin Settings</router-link><br/>
         </div>
     </div>
 </template>

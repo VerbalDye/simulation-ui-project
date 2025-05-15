@@ -11,7 +11,7 @@
             <li class="sidebar-departments-item"><router-link :style="{pointerEvents: 'none'}" to="/departments/supply-chain"><i class="bi bi-truck"></i><div class="sidebar-text">Supply Chain</div></router-link></li>
             <li class="sidebar-departments-item"><router-link :style="{pointerEvents: 'none'}" to="/departments/safety"><i class="bi bi-cone-striped"></i><div class="sidebar-text">Safety</div></router-link></li>
             <li class="sidebar-departments-item"><router-link :style="{pointerEvents: 'none'}" to="/departments/sales-customer-service"><i class="bi bi-briefcase-fill"></i><div class="sidebar-text">Sales & Customer Service</div></router-link></li>
-            <li class="sidebar-departments-item"><router-link :style="{pointerEvents: 'none'}" to="/departments/r-d"><i class="bi bi-moisture"></i><div class="sidebar-text">Reaserch & Development (R&D)</div></router-link></li>
+            <li class="sidebar-departments-item"><router-link :style="{pointerEvents: 'none'}" to="/departments/r-d"><i class="bi bi-moisture"></i><div class="sidebar-text">Research & Development (R&D)</div></router-link></li>
             <li class="sidebar-departments-item"><router-link :style="{pointerEvents: 'none'}" to="/departments/hr"><i class="bi bi-file-person-fill"></i><div class="sidebar-text">Human Resources (HR)</div></router-link></li>
             <li class="sidebar-header"><router-link :style="{pointerEvents: 'none'}" to="/schedules"><i class="bi bi-table"></i><div class="sidebar-text">Schedules</div></router-link></li>
             <li class="sidebar-schedules-item"><router-link :style="{pointerEvents: 'none'}" to="/schedules/production"><i class="bi bi-box2-fill"></i><div class="sidebar-text">Production</div></router-link></li>

@@ -8,7 +8,7 @@
             <li class="sidebar-header"><router-link to="/admin/job"><i class="bi bi-briefcase-fill"></i><div class="sidebar-text">Job Management</div></router-link></li>
             <li class="sidebar-header"><router-link to="/admin/route-task"><i class="bi bi-bezier2"></i><div class="sidebar-text">Route and Task</div></router-link></li>
             <li class="sidebar-header"><router-link to="/admin/core"><i class="bi bi-tools"></i><div class="sidebar-text">Core</div></router-link></li>
-            <li class="sidebar-header"><router-link to="/admin/hoo"><i class="bi bi-clock-fill"></i><div class="sidebar-text">Hours of Operation</div></router-link></li>
+            <li class="sidebar-header"><router-link to="/admin/hours-of-operation"><i class="bi bi-clock-fill"></i><div class="sidebar-text">Hours of Operation</div></router-link></li>
         </ul>
     </nav>
 </template>

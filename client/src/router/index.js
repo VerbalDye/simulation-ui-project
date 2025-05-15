@@ -22,15 +22,39 @@ const routes = [
     meta: { requiresAdmin: true }
   },
   {
-    path: '/admin/add-asset',
-    name: 'admin-add-asset',
-    component: () => import('../views/AddAsset.vue'),
+    path: '/admin/core',
+    name: 'admin-core',
+    component: () => import('../views/AdminCore.vue'),
+    meta: { requiresAdmin: true }
+  },
+  {
+    path: '/admin/equipment',
+    name: 'admin-equipment',
+    component: () => import('../views/AdminEquipment.vue'),
+    meta: { requiresAdmin: true }
+  },
+  {
+    path: '/admin/hours-of-operation',
+    name: 'admin-equipment',
+    component: () => import('../views/AdminHOO.vue'),
+    meta: { requiresAdmin: true }
+  },
+  {
+    path: '/admin/job',
+    name: 'admin-job',
+    component: () => import('../views/AdminJob.vue'),
     meta: { requiresAdmin: true }
   },
   {
     path: '/admin/process-time',
     name: 'admin-process-time',
-    component: () => import('../views/ProcessTimeDefaults.vue'),
+    component: () => import('../views/AdminProcessTime.vue'),
+    meta: { requiresAdmin: true }
+  },
+  {
+    path: '/admin/route-task',
+    name: 'admin-route-task',
+    component: () => import('../views/AdminRouteTask.vue'),
     meta: { requiresAdmin: true }
   },
   {

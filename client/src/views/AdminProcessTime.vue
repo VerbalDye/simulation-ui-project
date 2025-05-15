@@ -3,6 +3,7 @@
     <Header />
     <div class="site-container">
         <Sidebar />
+        <AdminSidebar />
         <div class="content">
             <h1>Process Time Defaults</h1>
             <div>
@@ -67,6 +68,7 @@ import Header from '@/components/Header.vue';
 import titleMixin from '../mixins/titleMixin';
 import Sidebar from '@/components/Sidebar.vue';
 import VueMultiselect from 'vue-multiselect';
+import AdminSidebar from '@/components/AdminSidebar.vue';
 import auth from '../utils/auth';
 import dataRequest from '@/utils/dataRequest';
 import dayjs from 'dayjs';
@@ -86,7 +88,7 @@ export default {
     },
     mixins: [titleMixin],
     title: 'Process Time Default',
-    components: { Sidebar, Header, VueMultiselect },
+    components: { AdminSidebar, Sidebar, Header, VueMultiselect },
     methods: {
         async getAssetData() {
             let data = await dataRequest("/api/experiment/asset/" + this.experimentID, "GET");

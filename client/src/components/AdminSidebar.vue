@@ -1,6 +1,6 @@
 <template>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <nav id="sidebar-nav">
+    <nav id="admin-sidebar-nav">
         <ul>
             <li class="sidebar-header"><router-link to="/admin/equipment"><i class="bi bi-wrench"></i><div class="sidebar-text">Equipment</div></router-link></li>
             <li class="sidebar-header"><router-link to="/admin/account-management"><i class="bi bi-person-fill"></i><div class="sidebar-text">User Management</div></router-link></li>
@@ -71,7 +71,7 @@ export default {
 </script>
 
 <style>
-#sidebar-nav {
+#admin-sidebar-nav {
     height: 100vh;
     border-right: 1px solid var(--black);
     font-size: 18px;
@@ -82,17 +82,17 @@ export default {
     position: sticky;
     top: 0;
 }
-#sidebar-nav ul {
+#admin-sidebar-nav ul {
     list-style-type: none;
 }
-#sidebar-nav li {
+#admin-sidebar-nav li {
     border-radius: 10px;
     margin: 5px;
 }
-#sidebar-nav li:hover {
+#admin-sidebar-nav li:hover {
     background-color: rgba(0, 0, 0, 0.2);
 }
-#sidebar-nav a {
+#admin-sidebar-nav a {
     display: inline-block;
     width: 100%;
     height: 100%;
@@ -101,10 +101,10 @@ export default {
     color: inherit;
     white-space: nowrap;
 }
-#sidebar-nav i {
+#admin-sidebar-nav i {
     margin: 0 10px;
 }
-#sidebar-nav .sidebar-header {
+#admin-sidebar-nav .sidebar-header {
     font-size: 32px;
 }
 .sidebar-departments-item, .sidebar-schedules-item {
@@ -114,7 +114,7 @@ export default {
     display: none;
     font-weight: normal;
 }
-#sidebar-nav:hover .sidebar-text {
+#admin-sidebar-nav:hover .sidebar-text {
     display: inline-block;
 }
 </style>

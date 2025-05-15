@@ -3,8 +3,10 @@
     <Header />
     <div class="site-container">
         <Sidebar />
+        <AdminSidebar />
         <div class="content">
-            <h1>Add Asset</h1>
+            <h1>Equipment Management</h1>
+            <h2>Add Asset</h2>
             <form @submit.prevent="handleAddAsset">
                 <table class="grid-less">
                     <tr>
@@ -125,6 +127,7 @@
 import Header from '@/components/Header.vue';
 import titleMixin from '../mixins/titleMixin';
 import Sidebar from '@/components/Sidebar.vue';
+import AdminSidebar from '@/components/AdminSidebar.vue';
 import dataRequest from '@/utils/dataRequest';
 import VueMultiselect from 'vue-multiselect';
 import LoadingModal from '@/components/LoadingModal.vue';
@@ -147,7 +150,7 @@ export default {
     },
     mixins: [titleMixin],
     title: 'Experiment Designer',
-    components: { Sidebar, Header, VueMultiselect, LoadingModal },
+    components: { AdminSidebar, Sidebar, Header, VueMultiselect, LoadingModal },
     methods: {
         async getAssetData() {
             let data = await dataRequest("/api/experiment/asset/" + this.experimentID, "GET");

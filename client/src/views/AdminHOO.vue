@@ -88,18 +88,18 @@ export default {
             this.hourOfOperationData = data;
             for (let i = 0; i < 7; i++) {
                 if (data.find(e => e.day_num == i).start_time !== null) {
-                    this.closingData[days[i]].opens = true;
-                    this.closingData[days[i]].starts = data.find(e => e.day_num == i).start_time
+                    this.closingData[this.days[i]].opens = true;
+                    this.closingData[this.days[i]].starts = data.find(e => e.day_num == i).start_time
                 } else {
-                    this.closingData[days[i]].opens = false;
-                    this.closingData[days[i]].starts = null;
+                    this.closingData[this.days[i]].opens = false;
+                    this.closingData[this.days[i]].starts = null;
                 }
                 if (data.find(e => e.day_num == i).end_time !== null) {
-                    this.closingData[days[i]].closes = true;
-                    this.closingData[days[i]].ends = data.find(e => e.day_num == i).end_time;
+                    this.closingData[this.days[i]].closes = true;
+                    this.closingData[this.days[i]].ends = data.find(e => e.day_num == i).end_time;
                 } else {
-                    this.closingData[days[i]].closes = false;
-                    this.closingData[days[i]].ends = null;
+                    this.closingData[this.days[i]].closes = false;
+                    this.closingData[this.days[i]].ends = null;
                 }
             }
             // // monday

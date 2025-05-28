@@ -33,12 +33,12 @@
                     <tr v-if="this.closingData[day].opens">
                         <th><label :for="day+'-start'">Start:</label></th>
                         <td><input :name="day+'-start'" :id="day+'-start'" type="time" :value="this.closingData[day].starts"
-                                step="3600" @change="timeChange($event, day, 'start')" /></td>
+                                step="3600" @change="timeChange($event, day, 'starts')" /></td>
                     </tr>
                     <tr v-if="this.closingData[day].opens && this.closingData[day].closes">
                         <th><label :for="day+'-end'">End:</label></th>
                         <td><input :name="day+'-end'" :id="day+'-end'" type="time" :value="this.closingData[day].ends"
-                                step="3600" @change="timeChange($event, day, 'end')" /></td>
+                                step="3600" @change="timeChange($event, day, 'ends')" /></td>
                     </tr>
                 </table>
             </div>
@@ -106,8 +106,9 @@ export default {
         },
         timeChange(e, day, type) {
             e.target.value = e.target.value.split(":")[0] + ":00:00"
-            if (type == 'end') {
-                if (this.closingData[day].starts.split(":")[0] > this.closingData[day].ends.split(":")[0]) {
+            this.closingData[day][type] = e.target.value;
+            if (type == 'ends') {
+                if (parseInt(this.closingData[day].starts.split(":")[0]) > parseInt(this.closingData[day].ends.split(":")[0])) {
                     e.target.value = this.closingData[day].starts;
                 }
             }

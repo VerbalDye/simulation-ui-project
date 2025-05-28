@@ -385,13 +385,13 @@
                                                             <tr>
                                                                 <th><i class="bi bi-dash-lg"></i> Min (minutes)*</th>
                                                                 <td>
-                                                                    <input type="number" value="0"/>
+                                                                    <input type="number" value="0" class="small-number-input"/>
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <th><i class="bi bi-plus-lg"></i> Max (minutes)*</th>
                                                                 <td>
-                                                                    <input type="number" value="15"/>
+                                                                    <input type="number" value="15" class="small-number-input"/>
                                                                 </td>
                                                             </tr>
                                                         </table>
@@ -417,13 +417,13 @@
                                                             <tr>
                                                                 <th><i class="bi bi-dash-lg"></i> Min (minutes)*</th>
                                                                 <td>
-                                                                    <input type="number" value="0"/>
+                                                                    <input type="number" value="0" class="small-number-input"/>
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <th><i class="bi bi-plus-lg"></i> Max (minutes)*</th>
                                                                 <td>
-                                                                    <input type="number" value="15"/>
+                                                                    <input type="number" value="15" class="small-number-input"/>
                                                                 </td>
                                                             </tr>
                                                         </table>
@@ -464,13 +464,13 @@
                                                             <tr>
                                                                 <th><i class="bi bi-dash-lg"></i> Min (minutes)*</th>
                                                                 <td>
-                                                                    <input type="number" value="0"/>
+                                                                    <input type="number" value="0" class="small-number-input"/>
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <th><i class="bi bi-plus-lg"></i> Max (minutes)*</th>
                                                                 <td>
-                                                                    <input type="number" value="15"/>
+                                                                    <input type="number" value="15" class="small-number-input"/>
                                                                 </td>
                                                             </tr>
                                                         </table>
@@ -496,13 +496,13 @@
                                                             <tr>
                                                                 <th><i class="bi bi-dash-lg"></i> Min (minutes)*</th>
                                                                 <td>
-                                                                    <input type="number" value="0"/>
+                                                                    <input type="number" value="0" class="small-number-input"/>
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <th><i class="bi bi-plus-lg"></i> Max (minutes)*</th>
                                                                 <td>
-                                                                    <input type="number" value="15"/>
+                                                                    <input type="number" value="15" class="small-number-input"/>
                                                                 </td>
                                                             </tr>
                                                         </table>

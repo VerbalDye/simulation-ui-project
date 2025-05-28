@@ -5,6 +5,28 @@
         <AdminSidebar />
         <div class="content">
             <h1>Hours of Operation Management</h1>
+            <div>
+                <table class="grid-less">
+                    <tr>
+                        <th>Monday</th>
+                        <td>
+                            <input type="time" value="00:00" step="60" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Tuesday</th>
+                        <td>
+                            <input type="number" value="0" class="small-number-input" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Wednesday</th>
+                        <td>
+                            <input type="number" value="15" class="small-number-input" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
 </template>

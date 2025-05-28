@@ -13,7 +13,7 @@
                         <td>
                             <label class="switch">
                                 <input name="mon-closes" id="mon-closes" type="checkbox"
-                                    @change="e => this.closingData.monday.opens = e.target.value" />
+                                    @change="e => this.closingData.monday.opens = e.target.checked" />
                                 <span class="slider round"></span>
                             </label>
                         </td>
@@ -23,7 +23,7 @@
                         <td>
                             <label class="switch">
                                 <input name="mon-closes" id="mon-closes" type="checkbox"
-                                    @change="e => this.closingData.monday.opens = e.target.value" />
+                                    @change="e => this.closingData.monday.closes = e.target.checked" />
                                 <span class="slider round"></span>
                             </label>
                         </td>

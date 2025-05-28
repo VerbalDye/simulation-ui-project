@@ -124,19 +124,19 @@
                                             <th>Phase:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.phase.display_name
-                                            }}</td>
+                                                }}</td>
                                         </tr>
                                         <tr>
                                             <th>Cell:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.cell.display_name
-                                            }}</td>
+                                                }}</td>
                                         </tr>
                                         <tr>
                                             <th>Operation:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.operation.display_name
-                                            }}</td>
+                                                }}</td>
                                         </tr>
                                     </table>
                                     <p>Location(s):</p>
@@ -580,8 +580,8 @@
                                     </thead>
                                     <tbody>
                                         <tr v-for="day in hoursOfOperationData">
-                                            <td v-if="day.hours_of_operation.day_num">{{ day.hours_of_operation.day_num
-                                                }}
+                                            <td v-if="day.hours_of_operation.day_num">{{ days[day.hours_of_operation.day_num]
+                                            }}
                                             </td>
                                             <td v-else>-</td>
                                             <td v-if="day.hours_of_operation.start_time">{{
@@ -597,45 +597,45 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                                <div v-for="day in this.days">
-                                    <h2>{{ day[0].toUpperCase() + day.slice(1) }}</h2>
-                                    <table class="grid-less">
-                                        <tr>
-                                            <th>Opens {{ day[0].toUpperCase() + day.slice(1) }}?</th>
-                                            <td>
-                                                <label class="switch">
-                                                    <input :name="day + '-closes'" :id="day + '-closes'" type="checkbox"
-                                                        :checked="this.closingData[day].opens"
-                                                        @change="e => this.closingData[day].opens = e.target.checked" />
-                                                    <span class="slider round"></span>
-                                                </label>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>Closes {{ day[0].toUpperCase() + day.slice(1) }}?</th>
-                                            <td>
-                                                <label class="switch">
-                                                    <input :name="day + '-closes'" :id="day + '-closes'" type="checkbox"
-                                                        :checked="this.closingData[day].closes"
-                                                        @change="e => this.closingData[day].closes = e.target.checked" />
-                                                    <span class="slider round"></span>
-                                                </label>
-                                            </td>
-                                        </tr>
-                                        <tr v-if="this.closingData[day].opens">
-                                            <th><label :for="day + '-start'">Start:</label></th>
-                                            <td><input :name="day + '-start'" :id="day + '-start'" type="time"
-                                                    :value="this.closingData[day].starts" step="3600"
-                                                    @change="timeChange($event, day, 'starts')" /></td>
-                                        </tr>
-                                        <tr v-if="this.closingData[day].opens && this.closingData[day].closes">
-                                            <th><label :for="day + '-end'">End:</label></th>
-                                            <td><input :name="day + '-end'" :id="day + '-end'" type="time"
-                                                    :value="this.closingData[day].ends" step="3600"
-                                                    @change="timeChange($event, day, 'ends')" /></td>
-                                        </tr>
-                                    </table>
-                                </div>
+                            </div>
+                            <div v-for="day in this.days">
+                                <h2>{{ day[0].toUpperCase() + day.slice(1) }}</h2>
+                                <table class="grid-less">
+                                    <tr>
+                                        <th>Opens {{ day[0].toUpperCase() + day.slice(1) }}?</th>
+                                        <td>
+                                            <label class="switch">
+                                                <input :name="day + '-closes'" :id="day + '-closes'" type="checkbox"
+                                                    :checked="this.closingData[day].opens"
+                                                    @change="e => this.closingData[day].opens = e.target.checked" />
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Closes {{ day[0].toUpperCase() + day.slice(1) }}?</th>
+                                        <td>
+                                            <label class="switch">
+                                                <input :name="day + '-closes'" :id="day + '-closes'" type="checkbox"
+                                                    :checked="this.closingData[day].closes"
+                                                    @change="e => this.closingData[day].closes = e.target.checked" />
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr v-if="this.closingData[day].opens">
+                                        <th><label :for="day + '-start'">Start:</label></th>
+                                        <td><input :name="day + '-start'" :id="day + '-start'" type="time"
+                                                :value="this.closingData[day].starts" step="3600"
+                                                @change="timeChange($event, day, 'starts')" /></td>
+                                    </tr>
+                                    <tr v-if="this.closingData[day].opens && this.closingData[day].closes">
+                                        <th><label :for="day + '-end'">End:</label></th>
+                                        <td><input :name="day + '-end'" :id="day + '-end'" type="time"
+                                                :value="this.closingData[day].ends" step="3600"
+                                                @change="timeChange($event, day, 'ends')" /></td>
+                                    </tr>
+                                </table>
                             </div>
                         </div>
                     </Collapsable>
@@ -1173,22 +1173,22 @@ export default {
             let data = await dataRequest("/api/experiment/hours-of-operation/" + this.experimentID, "GET");
             console.log(data);
             this.hoursOfOperationData = data;
-            // for (let i = 0; i < 7; i++) {
-            //     if (data.find(e => e.day_num == i).start_time !== null) {
-            //         this.closingData[this.days[i]].opens = true;
-            //         this.closingData[this.days[i]].starts = data.find(e => e.day_num == i).start_time
-            //     } else {
-            //         this.closingData[this.days[i]].opens = false;
-            //         this.closingData[this.days[i]].starts = null;
-            //     }
-            //     if (data.find(e => e.day_num == i).end_time !== null) {
-            //         this.closingData[this.days[i]].closes = true;
-            //         this.closingData[this.days[i]].ends = data.find(e => e.day_num == i).end_time;
-            //     } else {
-            //         this.closingData[this.days[i]].closes = false;
-            //         this.closingData[this.days[i]].ends = null;
-            //     }
-            // }
+            for (let i = 0; i < 7; i++) {
+                if (data.find(e => e.hours_of_operation.day_num == i).start_time !== null) {
+                    this.closingData[this.days[i]].opens = true;
+                    this.closingData[this.days[i]].starts = data.find(e => e.hours_of_operation.day_num == i).start_time
+                } else {
+                    this.closingData[this.days[i]].opens = false;
+                    this.closingData[this.days[i]].starts = null;
+                }
+                if (data.find(e => e.hours_of_operation.day_num == i).end_time !== null) {
+                    this.closingData[this.days[i]].closes = true;
+                    this.closingData[this.days[i]].ends = data.find(e => e.hours_of_operation.day_num == i).end_time;
+                } else {
+                    this.closingData[this.days[i]].closes = false;
+                    this.closingData[this.days[i]].ends = null;
+                }
+            }
         },
         async getProcessTimeData() {
             let data = await dataRequest("/api/experiment/process-time/" + this.experimentID, "GET");

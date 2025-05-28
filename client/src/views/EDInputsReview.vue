@@ -1189,6 +1189,7 @@ export default {
                     this.closingData[this.days[i]].ends = null;
                 }
             }
+            console.log(this.closingData);
         },
         async getProcessTimeData() {
             let data = await dataRequest("/api/experiment/process-time/" + this.experimentID, "GET");

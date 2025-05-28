@@ -581,7 +581,7 @@
                                     <tbody>
                                         <tr v-for="day in hoursOfOperationData">
                                             <td>
-                                                {{ days[parseInt(day.hours_of_operation.day_num)][0].toUpperCase() + days[parseInt(day.hours_of_operation.day_num)].splice(1) }}
+                                                {{ days[parseInt(day.hours_of_operation.day_num)][0].toUpperCase() + days[parseInt(day.hours_of_operation.day_num)].slice(1) }}
                                             </td>
                                             <td v-if="day.hours_of_operation.start_time">{{
                                                 day.hours_of_operation.start_time }}</td>

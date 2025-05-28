@@ -28,15 +28,19 @@
                             </label>
                         </td>
                     </tr>
+                    <div v-if="this.closingData.monday.opens">
+                        <tr>
+                            <th><label for="mon-start">Start:</label></th>
+                            <td><input name="mon-start" id="mon-start" type="time" value="00:00" step="3600" /></td>
+                        </tr>
+                    </div>
+                    <div v-if="this.closingData.monday.closes">
+                        <tr>
+                            <th><label for="mon-start">End:</label></th>
+                            <td><input name="mon-start" id="mon-start" type="time" value=":00" step="3600" /></td>
+                        </tr>
+                    </div>
                 </table>
-                <div v-if="this.closingData.monday.opens">
-                    <label for="mon-start">Start:</label>
-                    <input name="mon-start" id="mon-start" type="time" value="00:00" step="3600" />
-                </div>
-                <div v-if="this.closingData.monday.closes">
-                    <label for="mon-start">End:</label>
-                    <input name="mon-start" id="mon-start" type="time" value=":00" step="3600" />
-                </div>
             </div>
         </div>
     </div>

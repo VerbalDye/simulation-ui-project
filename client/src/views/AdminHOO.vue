@@ -42,6 +42,7 @@
                     </tr>
                 </table>
             </div>
+            <button @click="saveChanges">Save Changes</button>
         </div>
     </div>
 </template>
@@ -83,7 +84,7 @@ export default {
     title: 'Hours of Operation Management',
     methods: {
         async getHoursOfOperation() {
-            let data = await dataRequest("/api//hours-of-operation/default", "GET");
+            let data = await dataRequest("/api/hours-of-operation/default", "GET");
             console.log(data);
             this.hourOfOperationData = data;
             for (let i = 0; i < 7; i++) {
@@ -107,15 +108,24 @@ export default {
         timeChange(e, day, type) {
             e.target.value = e.target.value.split(":")[0] + ":00:00"
             this.closingData[day][type] = e.target.value;
-            console.log("wop")
             if (type == 'ends') {
-                console.log("pop")
                 if (parseInt(this.closingData[day].starts.split(":")[0]) > parseInt(this.closingData[day].ends.split(":")[0])) {
-                    console.log("hop")
                     e.target.value = this.closingData[day].starts;
                     this.closingData[day].ends = this.closingData[day].starts;
                 }
             }
+        },
+        async saveChanges() {
+            let body = []
+            for (let i = 0; i < 7; i++) {
+                body.push({
+                    hours_of_operation_id: this.hourOfOperationData.find(e => e.day_num == i).hours_of_operation_id,
+                    start_time: this.closingData[days[i]].starts.split(":")[0] + ":00:00",
+                    end_time: this.closingData[days[i]].ends.split(":")[0] + ":00:00",
+                    total_hours: parseInt(this.closingData[days[i]].ends.split(":")[0]) - parseInt(this.closingData[days[i]].starts.split(":")[0])
+                })
+            }
+            await dataRequest("/api/hours-of-operation/update-default", "POST", body);
         },
     },
     mounted() {

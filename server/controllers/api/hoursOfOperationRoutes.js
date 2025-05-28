@@ -37,4 +37,21 @@ router.get('/:id', (req, res) => {
         });
 });
 
+router.post('/update-defaults', async (req, res) => {
+    let operations = []
+    req.body.forEach(entry => {
+        operations.push(HoursOfOperation.update(entry, {
+            where: {
+                hours_of_operation_id: entry.hours_of_operation_id
+            }
+        }))
+    })
+    try {
+        let response = await Promise.allSettled(operations)
+        res.json(response);
+    } catch (err) {
+        res.status(400).json(err);
+    }
+})
+
 module.exports = router;

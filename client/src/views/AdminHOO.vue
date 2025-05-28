@@ -10,7 +10,7 @@
                     <tr>
                         <th>Monday</th>
                         <td>
-                            <input type="time" value="00:00" step="60" />
+                            <input type="time" value="00:00" step="3600" />
                         </td>
                     </tr>
                     <tr>

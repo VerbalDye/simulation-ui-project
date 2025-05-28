@@ -10,7 +10,20 @@
                     <tr>
                         <th>Monday</th>
                         <td>
-                            <input type="time" value="00:00" step="3600" />
+                            <label class="switch">
+                                <input name="mon-closes" id="mon-closes" type="checkbox"/>
+                                <span class="slider round"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="mon-start">Start:</label>
+                            <input name="mon-start" id="mon-start" type="time" value="00:00" step="3600" />
+                        </td>
+                        <td>
+                            <label for="mon-start">End:</label>
+                            <input name="mon-start" id="mon-start" type="time" value=":00" step="3600" />
                         </td>
                     </tr>
                     <tr>
@@ -41,17 +54,23 @@ import dataRequest from '@/utils/dataRequest';
 export default {
     data() {
         return {
-            links: null
+            links: null,
+            hourOfOperationData: {}
         }
     },
     components: { AdminSidebar, Header, Sidebar, SmartTable },
     mixins: [titleMixin],
     title: 'Hours of Operation Management',
     methods: {
-
+        async getHoursOfOperation() {
+            let data = await dataRequest("/api//hours-of-operation", "GET");
+            console.log(data);
+            this.hourOfOperationData = data;
+        },
     },
     mounted() {
         this.locationSearch = window.location.search;
+        this.getHoursOfOperation();
     }
 }
 </script>

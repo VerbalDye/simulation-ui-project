@@ -16,6 +16,7 @@ const {
     ExperimentRouting,
     ExperimentSite,
     ExperimentTaskSequence,
+    ExperimentTimeDistribution,
     JobList,
     Log,
     OperationToLocation,
@@ -348,6 +349,11 @@ router.post('/from/:id', (req, res) => {
                     model: ExperimentTaskSequence,
                     foreignKey: { experiment_id: req.params.id },
                     attributes: ['iteration_number', 'task_sequence_id']
+                },
+                {
+                    model: ExperimentTimeDistribution,
+                    foreignKey: { experiment_id: req.params.id },
+                    attributes: ['iteration_number', 'process_time_distribution_id']
                 },
                 {
                     model: JobList,

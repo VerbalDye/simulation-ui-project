@@ -370,9 +370,9 @@
                                                         </VueMultiselect>
                                                         <table class="grid-less">
                                                             <tr>
-                                                                <th><i class="bi bi-hash"></i>Distribution Type *</th>
+                                                                <th><i class="bi bi-bar-chart-line-fill"></i> Distribution Type*</th>
                                                                 <td>
-                                                                    <select name="distribution-type-apply-all-advanced" id="distribution-type-apply-all-advanced">
+                                                                    <select name="distribution-type-apply-all-advanced" id="distribution-type-apply-all-advanced" @change="e => this.processTimeSettings.distributionType = e.target.value">
                                                                         <option value="lognormal">Lognormal</option>
                                                                         <option value="normal">Normal</option>
                                                                         <option value="beta">Beta</option>
@@ -383,17 +383,15 @@
                                                                 </td>
                                                             </tr>
                                                             <tr>
-                                                                <th><i class="bi bi-clock-fill"></i> Enter Processing
-                                                                    Times
-                                                                    (minutes)*</th>
+                                                                <th><i class="bi bi-dash-lg"></i> Min (minutes)*</th>
                                                                 <td>
-                                                                    <div class="flex-left">
-                                                                        <input
-                                                                            v-for="(value, key) in this.processTimeSettings.elements[selectedAssets[0].asset_id].values"
-                                                                            class="small-number-input" type="number"
-                                                                            :value="value" :name="'times-' + key"
-                                                                            @input="handleProcessTimeDataChange(key, $event)">
-                                                                    </div>
+                                                                    <input type="number" value="0"/>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th><i class="bi bi-plus-lg"></i> Max (minutes)*</th>
+                                                                <td>
+                                                                    <input type="number" value="15"/>
                                                                 </td>
                                                             </tr>
                                                         </table>
@@ -404,27 +402,28 @@
                                                         <p v-for="asset in selectedAssets">{{ asset.display_name }}</p>
                                                         <table class="grid-less">
                                                             <tr>
-                                                                <th><i class="bi bi-hash"></i> Number of Samples*</th>
+                                                                <th><i class="bi bi-bar-chart-line-fill"></i> Distribution Type*</th>
                                                                 <td>
-                                                                    <input type="number"
-                                                                        :value="Object.keys(processTimeSettings.elements[selectedAssets[0].asset_id].values).length"
-                                                                        class="small-number-input"
-                                                                        :name="'samples-' + selectedAssets[0].asset_id"
-                                                                        @input="handleNumberOfSamplesChange(selectedAssets[0].asset_id, processTimeSettings.selectedModels[selectedAssets[0].asset_id][0], $event)">
+                                                                    <select name="distribution-type-apply-all-advanced" id="distribution-type-apply-all-advanced" @change="e => this.processTimeSettings.distributionType = e.target.value">
+                                                                        <option value="lognormal">Lognormal</option>
+                                                                        <option value="normal">Normal</option>
+                                                                        <option value="beta">Beta</option>
+                                                                        <option value="triangular">Triangular</option>
+                                                                        <option value="uniform">Uniform</option>
+                                                                        <option value="exponential">Exponential</option>
+                                                                    </select>
                                                                 </td>
                                                             </tr>
                                                             <tr>
-                                                                <th><i class="bi bi-clock-fill"></i> Enter Processing
-                                                                    Times
-                                                                    (minutes)*</th>
+                                                                <th><i class="bi bi-dash-lg"></i> Min (minutes)*</th>
                                                                 <td>
-                                                                    <div class="flex-left">
-                                                                        <input
-                                                                            v-for="(value, key) in this.processTimeSettings.elements[selectedAssets[0].asset_id].values"
-                                                                            class="small-number-input" type="number"
-                                                                            :value="value" :name="'times-' + key"
-                                                                            @input="handleProcessTimeDataChange(key, $event)">
-                                                                    </div>
+                                                                    <input type="number" value="0"/>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th><i class="bi bi-plus-lg"></i> Max (minutes)*</th>
+                                                                <td>
+                                                                    <input type="number" value="15"/>
                                                                 </td>
                                                             </tr>
                                                         </table>
@@ -450,26 +449,28 @@
                                                         </VueMultiselect>
                                                         <table class="grid-less">
                                                             <tr>
-                                                                <th><i class="bi bi-hash"></i> Number of Samples*</th>
+                                                                <th><i class="bi bi-bar-chart-line-fill"></i> Distribution Type*</th>
                                                                 <td>
-                                                                    <input type="number"
-                                                                        :value="Object.keys(element.values).length"
-                                                                        class="small-number-input"
-                                                                        :name="'samples-' + asset_id"
-                                                                        @input="handleNumberOfSamplesChange(asset_id, this.processTimeSettings.selectedModels[asset_id], $event)">
+                                                                    <select name="distribution-type-apply-all-advanced" id="distribution-type-apply-all-advanced" @change="e => this.processTimeSettings.distributionType = e.target.value">
+                                                                        <option value="lognormal">Lognormal</option>
+                                                                        <option value="normal">Normal</option>
+                                                                        <option value="beta">Beta</option>
+                                                                        <option value="triangular">Triangular</option>
+                                                                        <option value="uniform">Uniform</option>
+                                                                        <option value="exponential">Exponential</option>
+                                                                    </select>
                                                                 </td>
                                                             </tr>
                                                             <tr>
-                                                                <th><i class="bi bi-clock-fill"></i> Enter Processing
-                                                                    Times
-                                                                    (minutes)*</th>
+                                                                <th><i class="bi bi-dash-lg"></i> Min (minutes)*</th>
                                                                 <td>
-                                                                    <div class="flex-left">
-                                                                        <input v-for="(value, key) in element.values"
-                                                                            class="small-number-input" type="number"
-                                                                            :value="value" :name="'times-' + key"
-                                                                            @input="handleProcessTimeDataChange(key, $event)">
-                                                                    </div>
+                                                                    <input type="number" value="0"/>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th><i class="bi bi-plus-lg"></i> Max (minutes)*</th>
+                                                                <td>
+                                                                    <input type="number" value="15"/>
                                                                 </td>
                                                             </tr>
                                                         </table>
@@ -480,26 +481,28 @@
                                                         <p>{{ element.name }}</p>
                                                         <table class="grid-less">
                                                             <tr>
-                                                                <th><i class="bi bi-hash"></i> Number of Samples*</th>
+                                                                <th><i class="bi bi-bar-chart-line-fill"></i> Distribution Type*</th>
                                                                 <td>
-                                                                    <input type="number"
-                                                                        :value="Object.keys(element.values).length"
-                                                                        class="small-number-input"
-                                                                        :name="'samples-' + asset_id"
-                                                                        @input="handleNumberOfSamplesChange(asset_id, this.processTimeSettings.selectedModels[asset_id], $event)">
+                                                                    <select name="distribution-type-apply-all-advanced" id="distribution-type-apply-all-advanced" @change="e => this.processTimeSettings.distributionType = e.target.value">
+                                                                        <option value="lognormal">Lognormal</option>
+                                                                        <option value="normal">Normal</option>
+                                                                        <option value="beta">Beta</option>
+                                                                        <option value="triangular">Triangular</option>
+                                                                        <option value="uniform">Uniform</option>
+                                                                        <option value="exponential">Exponential</option>
+                                                                    </select>
                                                                 </td>
                                                             </tr>
                                                             <tr>
-                                                                <th><i class="bi bi-clock-fill"></i> Enter Processing
-                                                                    Times
-                                                                    (minutes)*</th>
+                                                                <th><i class="bi bi-dash-lg"></i> Min (minutes)*</th>
                                                                 <td>
-                                                                    <div class="flex-left">
-                                                                        <input v-for="(value, key) in element.values"
-                                                                            class="small-number-input" type="number"
-                                                                            :value="value" :name="'times-' + key"
-                                                                            @input="handleProcessTimeDataChange(key, $event)">
-                                                                    </div>
+                                                                    <input type="number" value="0"/>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th><i class="bi bi-plus-lg"></i> Max (minutes)*</th>
+                                                                <td>
+                                                                    <input type="number" value="15"/>
                                                                 </td>
                                                             </tr>
                                                         </table>
@@ -1008,7 +1011,8 @@ export default {
                 assets: {},
                 elements: {},
                 modelData: [],
-                selectedModels: {}
+                selectedModels: {},
+                distributionType: ""
             },
             demandSettings: {
                 default: true,

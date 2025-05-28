@@ -142,6 +142,7 @@ export default {
                 })
             }
             console.log(body);
+            body = JSON.stringify(body);
             await dataRequest("/api/hours-of-operation/update-defaults", "POST", body);
         },
     },

@@ -544,7 +544,7 @@
                     :reset="collapsableStatus['resources']">
                     <Collapsable @toggle-collapse="collapsableToggleChange" title="Buildings" name="buildings"
                         next="equipment-machines" back="locations-processing-times" :heading="3"
-                        :reset="collapsableStatus['buildings']" tbd="true">
+                        :reset="collapsableStatus['buildings']" tbd="false">
                         <div class="flex-between">
                             <div class="flex-between">
                                 <i class="bi bi-building-fill-gear large-icon"></i>
@@ -580,10 +580,9 @@
                                     </thead>
                                     <tbody>
                                         <tr v-for="day in hoursOfOperationData">
-                                            <td v-if="day.hours_of_operation.day_num">{{ days[parseInt(day.hours_of_operation.day_num)]
-                                            }}
+                                            <td>
+                                                {{ days[parseInt(day.hours_of_operation.day_num)][0].toUpperCase() + days[parseInt(day.hours_of_operation.day_num)].splice(1) }}
                                             </td>
-                                            <td v-else>-</td>
                                             <td v-if="day.hours_of_operation.start_time">{{
                                                 day.hours_of_operation.start_time }}</td>
                                             <td v-else>-</td>

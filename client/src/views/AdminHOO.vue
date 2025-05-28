@@ -118,11 +118,27 @@ export default {
         async saveChanges() {
             let body = []
             for (let i = 0; i < 7; i++) {
+                let start_time;
+                let end_time;
+                let total_hours;
+                if (!this.closingData[this.days[i]].opens) {
+                    start_time = null;
+                    end_time = null;
+                    total_hours = 0;
+                } else if (!this.closingData[this.days[i]].closes) {
+                    start_time = this.closingData[this.days[i]].starts.split(":")[0] + ":00:00";
+                    end_time = null;
+                    total_hours = 24 - parseInt(this.closingData[this.days[i]].starts.split(":")[0]);
+                } else {
+                    start_time = this.closingData[this.days[i]].starts.split(":")[0] + ":00:00";
+                    end_time = this.closingData[this.days[i]].ends.split(":")[0] + ":00:00";
+                    total_hours = parseInt(this.closingData[this.days[i]].ends.split(":")[0]) - parseInt(this.closingData[this.days[i]].starts.split(":")[0])
+                }
                 body.push({
                     hours_of_operation_id: this.hourOfOperationData.find(e => e.day_num == i).hours_of_operation_id,
-                    start_time: this.closingData[this.days[i]].starts.split(":")[0] + ":00:00",
-                    end_time: this.closingData[this.days[i]].ends.split(":")[0] + ":00:00",
-                    total_hours: parseInt(this.closingData[this.days[i]].ends.split(":")[0]) - parseInt(this.closingData[this.days[i]].starts.split(":")[0])
+                    start_time: start_time,
+                    end_time: end_time,
+                    total_hours: total_hours
                 })
             }
             await dataRequest("/api/hours-of-operation/update-default", "POST", body);

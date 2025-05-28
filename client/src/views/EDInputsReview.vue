@@ -565,7 +565,7 @@
                                         <th>Use Default?*</th>
                                         <td>
                                             <label class="switch">
-                                                <input type="checkbox" name="hoo-default-input">
+                                                <input type="checkbox" name="hoo-default-input" checked @change="e => this.defaultHOO = e.target.checked">
                                                 <span class="slider round"></span>
                                             </label>
                                         </td>
@@ -580,7 +580,7 @@
                                     </thead>
                                     <tbody>
                                         <tr v-for="day in hoursOfOperationData">
-                                            <td v-if="day.hours_of_operation.day_num">{{ days[day.hours_of_operation.day_num]
+                                            <td v-if="day.hours_of_operation.day_num">{{ days[parseInt(day.hours_of_operation.day_num)]
                                             }}
                                             </td>
                                             <td v-else>-</td>
@@ -598,7 +598,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div v-for="day in this.days">
+                            <div v-for="day in this.days" v-if="!this.defaultHOO">
                                 <h2>{{ day[0].toUpperCase() + day.slice(1) }}</h2>
                                 <table class="grid-less">
                                     <tr>
@@ -1117,6 +1117,7 @@ export default {
                 saturday: { opens: true, closes: false, starts: "00:00", ends: null },
                 sunday: { opens: true, closes: false, starts: "00:00", ends: null },
             },
+            defaultHOO: true,
         }
     },
     mixins: [titleMixin],

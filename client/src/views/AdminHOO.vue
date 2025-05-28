@@ -12,7 +12,7 @@
                         <th>Opens Monday?</th>
                         <td>
                             <label class="switch">
-                                <input name="mon-closes" id="mon-closes" type="checkbox"
+                                <input name="mon-closes" id="mon-closes" type="checkbox" :checked="this.closingData.monday.opens"
                                     @change="e => this.closingData.monday.opens = e.target.checked" />
                                 <span class="slider round"></span>
                             </label>
@@ -22,7 +22,7 @@
                         <th>Closes Monday?</th>
                         <td>
                             <label class="switch">
-                                <input name="mon-closes" id="mon-closes" type="checkbox"
+                                <input name="mon-closes" id="mon-closes" type="checkbox" :checked="this.closingData.monday.opens"
                                     @change="e => this.closingData.monday.closes = e.target.checked" />
                                 <span class="slider round"></span>
                             </label>
@@ -30,11 +30,11 @@
                     </tr>
                     <tr v-if="this.closingData.monday.opens">
                         <th><label for="mon-start">Start:</label></th>
-                        <td><input name="mon-start" id="mon-start" type="time" value="00:00" step="3600" /></td>
+                        <td><input name="mon-start" id="mon-start" type="time" :value="this.closingData.monday.starts" step="3600" @change="timeChange($event, 'monday', 'start')"/></td>
                     </tr>
                     <tr v-if="this.closingData.monday.opens && this.closingData.monday.closes">
                         <th><label for="mon-start">End:</label></th>
-                        <td><input name="mon-start" id="mon-start" type="time" value=":00" step="3600" /></td>
+                        <td><input name="mon-start" id="mon-start" type="time" :value="this.closingData.monday.ends" step="3600" @change="timeChange($event, 'monday', 'end')"/></td>
                     </tr>
                 </table>
             </div>
@@ -55,13 +55,13 @@ export default {
             links: null,
             hourOfOperationData: {},
             closingData: {
-                monday: { opens: true, closes: false },
-                tuesday: { opens: true, closes: false },
-                wednesday: { opens: true, closes: false },
-                thursday: { opens: true, closes: false },
-                friday: { opens: true, closes: false },
-                saturday: { opens: true, closes: false },
-                sunday: { opens: true, closes: false },
+                monday: { opens: true, closes: false, starts: "00:00", ends: null },
+                tuesday: { opens: true, closes: false, starts: "00:00", ends: null },
+                wednesday: { opens: true, closes: false, starts: "00:00", ends: null },
+                thursday: { opens: true, closes: false, starts: "00:00", ends: null },
+                friday: { opens: true, closes: false, starts: "00:00", ends: null },
+                saturday: { opens: true, closes: false, starts: "00:00", ends: null },
+                sunday: { opens: true, closes: false, starts: "00:00", ends: null },
             }
         }
     },
@@ -70,87 +70,101 @@ export default {
     title: 'Hours of Operation Management',
     methods: {
         async getHoursOfOperation() {
-            let data = await dataRequest("/api//hours-of-operation", "GET");
+            let data = await dataRequest("/api//hours-of-operation/default", "GET");
             console.log(data);
             this.hourOfOperationData = data;
             // monday
-            if (data.find(e => e.day_num == 0).start_time !== null) {
-                this.closingData.monday.opens == true;
+            let mondayEntry = data.find(e => e.day_num == 0);
+            if (mondayEntry.start_time !== null) {
+                this.closingData.monday.opens = true;
+                this.closingData.monday.starts = mondayEntry.start_time
             } else {
-                this.closingData.monday.opens == false;
+                this.closingData.monday.opens = false;
+                this.closingData.monday.starts = null;
             }
-            if (data.find(e => e.day_num == 0).end_time !== null) {
-                this.closingData.monday.closes == true;
+            if (mondayEntry.end_time !== null) {
+                this.closingData.monday.closes = true;
+                this.closingData.monday.ends = mondayEntry.end_time;
             } else {
-                this.closingData.monday.closes == false;
+                this.closingData.monday.closes = false;
+                this.closingData.monday.ends = null;
             }
             // tuesday
-            if (data.find(e => e.day_num == 1).start_time !== null) {
-                this.closingData.tuesday.opens == true;
+            let tuesdayEntry = data.find(e => e.day_num == 1);
+            if (tuesdayEntry.start_time !== null) {
+                this.closingData.tuesday.opens = true;
+                this.closingData.tuesday.starts = tuesdayEntry.start_time;
             } else {
-                this.closingData.tuesday.opens == false;
+                this.closingData.tuesday.opens = false;
+                this.closingData.tuesday.starts = null;
             }
-            if (data.find(e => e.day_num == 1).end_time !== null) {
-                this.closingData.tuesday.closes == true;
+            if (tuesdayEntry.end_time !== null) {
+                this.closingData.tuesday.closes = true;
+                this.closingData.tuesday.ends = tuesdayEntry.end_time;
             } else {
-                this.closingData.tuesday.closes == false;
+                this.closingData.tuesday.closes = false;
+                this.closingData.tuesday.ends = null;
             }
             // wednesday
             if (data.find(e => e.day_num == 2).start_time !== null) {
-                this.closingData.wednesday.opens == true;
+                this.closingData.wednesday.opens = true;
             } else {
-                this.closingData.wednesday.opens == false;
+                this.closingData.wednesday.opens = false;
             }
             if (data.find(e => e.day_num == 2).end_time !== null) {
-                this.closingData.wednesday.closes == true;
+                this.closingData.wednesday.closes = true;
             } else {
-                this.closingData.wednesday.closes == false;
+                this.closingData.wednesday.closes = false;
             }
             // thursday
             if (data.find(e => e.day_num == 3).start_time !== null) {
-                this.closingData.thursday.opens == true;
+                this.closingData.thursday.opens = true;
             } else {
-                this.closingData.thursday.opens == false;
+                this.closingData.thursday.opens = false;
             }
             if (data.find(e => e.day_num == 3).end_time !== null) {
-                this.closingData.thursday.closes == true;
+                this.closingData.thursday.closes = true;
             } else {
-                this.closingData.thursday.closes == false;
+                this.closingData.thursday.closes = false;
             }
             //friday
             if (data.find(e => e.day_num == 4).start_time !== null) {
-                this.closingData.friday.opens == true;
+                this.closingData.friday.opens = true;
             } else {
-                this.closingData.friday.opens == false;
+                this.closingData.friday.opens = false;
             }
             if (data.find(e => e.day_num == 4).end_time !== null) {
-                this.closingData.friday.closes == true;
+                this.closingData.friday.closes = true;
             } else {
-                this.closingData.friday.closes == false;
+                this.closingData.friday.closes = false;
             }
             //saturday
             if (data.find(e => e.day_num == 5).start_time !== null) {
-                this.closingData.saturday.opens == true;
+                this.closingData.saturday.opens = true;
             } else {
-                this.closingData.saturday.opens == false;
+                this.closingData.saturday.opens = false;
             }
             if (data.find(e => e.day_num == 5).end_time !== null) {
-                this.closingData.saturday.closes == true;
+                this.closingData.saturday.closes = true;
             } else {
-                this.closingData.saturday.closes == false;
+                this.closingData.saturday.closes = false;
             }
             //sunday
             if (data.find(e => e.day_num == 6).start_time !== null) {
-                this.closingData.sunday.opens == true;
+                this.closingData.sunday.opens = true;
             } else {
-                this.closingData.sunday.opens == false;
+                this.closingData.sunday.opens = false;
             }
             if (data.find(e => e.day_num == 6).end_time !== null) {
-                this.closingData.sunday.closes == true;
+                this.closingData.sunday.closes = true;
             } else {
-                this.closingData.sunday.closes == false;
+                this.closingData.sunday.closes = false;
             }
             console.log(this.closingData);
+        },
+        timeChange(e, day, type) {
+            e.target.value = e.target.value.split(":")[0] + ":00:00"
+
         },
     },
     mounted() {

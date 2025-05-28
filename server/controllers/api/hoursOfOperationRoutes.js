@@ -11,6 +11,19 @@ router.get('/', (req, res) => {
         });
 });
 
+router.get('/default', (req, res) => {
+    HoursOfOperation.findAll({
+        where: {
+            is_default: 1
+        }
+    })
+        .then(dbHoursOfOperationData => res.json(dbHoursOfOperationData))
+        .catch(err => {
+            console.log(err);
+            res.status(400).json(err);
+        });
+});
+
 router.get('/:id', (req, res) => {
     HoursOfOperation.findAll({
         where: {

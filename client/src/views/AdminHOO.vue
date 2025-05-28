@@ -6,10 +6,10 @@
         <div class="content">
             <h1>Hours of Operation Management</h1>
             <div v-for="day in this.days">
-                <h2>{{ day[0].toUpperCase() + day.shift() }}</h2>
+                <h2>{{ day[0].toUpperCase() + day.slice(1) }}</h2>
                 <table class="grid-less">
                     <tr>
-                        <th>Opens {{ day[0].toUpperCase() + day.shift() }}?</th>
+                        <th>Opens {{ day[0].toUpperCase() + day.slice(1) }}?</th>
                         <td>
                             <label class="switch">
                                 <input :name="day+'-closes'" :id="day+'-closes'" type="checkbox"
@@ -20,7 +20,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <th>Closes {{ day[0].toUpperCase() + day.shift() }}?</th>
+                        <th>Closes {{ day[0].toUpperCase() + day.slice(1) }}?</th>
                         <td>
                             <label class="switch">
                                 <input :name="day+'-closes'" :id="day+'-closes'" type="checkbox"

@@ -39,7 +39,6 @@ router.get('/:id', (req, res) => {
 
 router.post('/update-defaults', async (req, res) => {
     let operations = [];
-    console.log(req.body)
     req.body.forEach(entry => {
         operations.push(HoursOfOperation.update(entry, {
             where: {

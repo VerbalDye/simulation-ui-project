@@ -124,19 +124,19 @@
                                             <th>Phase:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.phase.display_name
-                                                }}</td>
+                                            }}</td>
                                         </tr>
                                         <tr>
                                             <th>Cell:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.cell.display_name
-                                                }}</td>
+                                            }}</td>
                                         </tr>
                                         <tr>
                                             <th>Operation:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.operation.display_name
-                                                }}</td>
+                                            }}</td>
                                         </tr>
                                     </table>
                                     <p>Location(s):</p>
@@ -370,9 +370,12 @@
                                                         </VueMultiselect>
                                                         <table class="grid-less">
                                                             <tr>
-                                                                <th><i class="bi bi-bar-chart-line-fill"></i> Distribution Type*</th>
+                                                                <th><i class="bi bi-bar-chart-line-fill"></i>
+                                                                    Distribution Type*</th>
                                                                 <td>
-                                                                    <select name="distribution-type-apply-all-advanced" id="distribution-type-apply-all-advanced" @change="e => this.processTimeSettings.distributionType = e.target.value">
+                                                                    <select name="distribution-type-apply-all-advanced"
+                                                                        id="distribution-type-apply-all-advanced"
+                                                                        @change="e => this.processTimeSettings.distributionType = e.target.value">
                                                                         <option value="lognormal">Lognormal</option>
                                                                         <option value="normal">Normal</option>
                                                                         <option value="beta">Beta</option>
@@ -385,13 +388,15 @@
                                                             <tr>
                                                                 <th><i class="bi bi-dash-lg"></i> Min (minutes)*</th>
                                                                 <td>
-                                                                    <input type="number" value="0" class="small-number-input"/>
+                                                                    <input type="number" value="0"
+                                                                        class="small-number-input" />
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <th><i class="bi bi-plus-lg"></i> Max (minutes)*</th>
                                                                 <td>
-                                                                    <input type="number" value="15" class="small-number-input"/>
+                                                                    <input type="number" value="15"
+                                                                        class="small-number-input" />
                                                                 </td>
                                                             </tr>
                                                         </table>
@@ -402,9 +407,12 @@
                                                         <p v-for="asset in selectedAssets">{{ asset.display_name }}</p>
                                                         <table class="grid-less">
                                                             <tr>
-                                                                <th><i class="bi bi-bar-chart-line-fill"></i> Distribution Type*</th>
+                                                                <th><i class="bi bi-bar-chart-line-fill"></i>
+                                                                    Distribution Type*</th>
                                                                 <td>
-                                                                    <select name="distribution-type-apply-all-advanced" id="distribution-type-apply-all-advanced" @change="e => this.processTimeSettings.distributionType = e.target.value">
+                                                                    <select name="distribution-type-apply-all-advanced"
+                                                                        id="distribution-type-apply-all-advanced"
+                                                                        @change="e => this.processTimeSettings.distributionType = e.target.value">
                                                                         <option value="lognormal">Lognormal</option>
                                                                         <option value="normal">Normal</option>
                                                                         <option value="beta">Beta</option>
@@ -417,13 +425,15 @@
                                                             <tr>
                                                                 <th><i class="bi bi-dash-lg"></i> Min (minutes)*</th>
                                                                 <td>
-                                                                    <input type="number" value="0" class="small-number-input"/>
+                                                                    <input type="number" value="0"
+                                                                        class="small-number-input" />
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <th><i class="bi bi-plus-lg"></i> Max (minutes)*</th>
                                                                 <td>
-                                                                    <input type="number" value="15" class="small-number-input"/>
+                                                                    <input type="number" value="15"
+                                                                        class="small-number-input" />
                                                                 </td>
                                                             </tr>
                                                         </table>
@@ -449,9 +459,12 @@
                                                         </VueMultiselect>
                                                         <table class="grid-less">
                                                             <tr>
-                                                                <th><i class="bi bi-bar-chart-line-fill"></i> Distribution Type*</th>
+                                                                <th><i class="bi bi-bar-chart-line-fill"></i>
+                                                                    Distribution Type*</th>
                                                                 <td>
-                                                                    <select name="distribution-type-apply-all-advanced" id="distribution-type-apply-all-advanced" @change="e => this.processTimeSettings.distributionType = e.target.value">
+                                                                    <select name="distribution-type-apply-all-advanced"
+                                                                        id="distribution-type-apply-all-advanced"
+                                                                        @change="e => this.processTimeSettings.distributionType = e.target.value">
                                                                         <option value="lognormal">Lognormal</option>
                                                                         <option value="normal">Normal</option>
                                                                         <option value="beta">Beta</option>
@@ -464,13 +477,15 @@
                                                             <tr>
                                                                 <th><i class="bi bi-dash-lg"></i> Min (minutes)*</th>
                                                                 <td>
-                                                                    <input type="number" value="0" class="small-number-input"/>
+                                                                    <input type="number" value="0"
+                                                                        class="small-number-input" />
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <th><i class="bi bi-plus-lg"></i> Max (minutes)*</th>
                                                                 <td>
-                                                                    <input type="number" value="15" class="small-number-input"/>
+                                                                    <input type="number" value="15"
+                                                                        class="small-number-input" />
                                                                 </td>
                                                             </tr>
                                                         </table>
@@ -481,9 +496,12 @@
                                                         <p>{{ element.name }}</p>
                                                         <table class="grid-less">
                                                             <tr>
-                                                                <th><i class="bi bi-bar-chart-line-fill"></i> Distribution Type*</th>
+                                                                <th><i class="bi bi-bar-chart-line-fill"></i>
+                                                                    Distribution Type*</th>
                                                                 <td>
-                                                                    <select name="distribution-type-apply-all-advanced" id="distribution-type-apply-all-advanced" @change="e => this.processTimeSettings.distributionType = e.target.value">
+                                                                    <select name="distribution-type-apply-all-advanced"
+                                                                        id="distribution-type-apply-all-advanced"
+                                                                        @change="e => this.processTimeSettings.distributionType = e.target.value">
                                                                         <option value="lognormal">Lognormal</option>
                                                                         <option value="normal">Normal</option>
                                                                         <option value="beta">Beta</option>
@@ -496,13 +514,15 @@
                                                             <tr>
                                                                 <th><i class="bi bi-dash-lg"></i> Min (minutes)*</th>
                                                                 <td>
-                                                                    <input type="number" value="0" class="small-number-input"/>
+                                                                    <input type="number" value="0"
+                                                                        class="small-number-input" />
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <th><i class="bi bi-plus-lg"></i> Max (minutes)*</th>
                                                                 <td>
-                                                                    <input type="number" value="15" class="small-number-input"/>
+                                                                    <input type="number" value="15"
+                                                                        class="small-number-input" />
                                                                 </td>
                                                             </tr>
                                                         </table>
@@ -561,7 +581,7 @@
                                     <tbody>
                                         <tr v-for="day in hoursOfOperationData">
                                             <td v-if="day.hours_of_operation.day_num">{{ day.hours_of_operation.day_num
-                                            }}
+                                                }}
                                             </td>
                                             <td v-else>-</td>
                                             <td v-if="day.hours_of_operation.start_time">{{
@@ -577,6 +597,45 @@
                                         </tr>
                                     </tbody>
                                 </table>
+                                <div v-for="day in this.days">
+                                    <h2>{{ day[0].toUpperCase() + day.slice(1) }}</h2>
+                                    <table class="grid-less">
+                                        <tr>
+                                            <th>Opens {{ day[0].toUpperCase() + day.slice(1) }}?</th>
+                                            <td>
+                                                <label class="switch">
+                                                    <input :name="day + '-closes'" :id="day + '-closes'" type="checkbox"
+                                                        :checked="this.closingData[day].opens"
+                                                        @change="e => this.closingData[day].opens = e.target.checked" />
+                                                    <span class="slider round"></span>
+                                                </label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Closes {{ day[0].toUpperCase() + day.slice(1) }}?</th>
+                                            <td>
+                                                <label class="switch">
+                                                    <input :name="day + '-closes'" :id="day + '-closes'" type="checkbox"
+                                                        :checked="this.closingData[day].closes"
+                                                        @change="e => this.closingData[day].closes = e.target.checked" />
+                                                    <span class="slider round"></span>
+                                                </label>
+                                            </td>
+                                        </tr>
+                                        <tr v-if="this.closingData[day].opens">
+                                            <th><label :for="day + '-start'">Start:</label></th>
+                                            <td><input :name="day + '-start'" :id="day + '-start'" type="time"
+                                                    :value="this.closingData[day].starts" step="3600"
+                                                    @change="timeChange($event, day, 'starts')" /></td>
+                                        </tr>
+                                        <tr v-if="this.closingData[day].opens && this.closingData[day].closes">
+                                            <th><label :for="day + '-end'">End:</label></th>
+                                            <td><input :name="day + '-end'" :id="day + '-end'" type="time"
+                                                    :value="this.closingData[day].ends" step="3600"
+                                                    @change="timeChange($event, day, 'ends')" /></td>
+                                        </tr>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </Collapsable>
@@ -1040,6 +1099,24 @@ export default {
             selectedAssetInclusion: null,
             coreUsage: [],
             collapsableStatus: {},
+            days: [
+                "monday",
+                "tuesday",
+                "wednesday",
+                "thursday",
+                "friday",
+                "saturday",
+                "sunday"
+            ],
+            closingData: {
+                monday: { opens: true, closes: false, starts: "00:00", ends: null },
+                tuesday: { opens: true, closes: false, starts: "00:00", ends: null },
+                wednesday: { opens: true, closes: false, starts: "00:00", ends: null },
+                thursday: { opens: true, closes: false, starts: "00:00", ends: null },
+                friday: { opens: true, closes: false, starts: "00:00", ends: null },
+                saturday: { opens: true, closes: false, starts: "00:00", ends: null },
+                sunday: { opens: true, closes: false, starts: "00:00", ends: null },
+            },
         }
     },
     mixins: [titleMixin],
@@ -1094,7 +1171,24 @@ export default {
         },
         async getHoursOfOperationData() {
             let data = await dataRequest("/api/experiment/hours-of-operation/" + this.experimentID, "GET");
+            console.log(data);
             this.hoursOfOperationData = data;
+            // for (let i = 0; i < 7; i++) {
+            //     if (data.find(e => e.day_num == i).start_time !== null) {
+            //         this.closingData[this.days[i]].opens = true;
+            //         this.closingData[this.days[i]].starts = data.find(e => e.day_num == i).start_time
+            //     } else {
+            //         this.closingData[this.days[i]].opens = false;
+            //         this.closingData[this.days[i]].starts = null;
+            //     }
+            //     if (data.find(e => e.day_num == i).end_time !== null) {
+            //         this.closingData[this.days[i]].closes = true;
+            //         this.closingData[this.days[i]].ends = data.find(e => e.day_num == i).end_time;
+            //     } else {
+            //         this.closingData[this.days[i]].closes = false;
+            //         this.closingData[this.days[i]].ends = null;
+            //     }
+            // }
         },
         async getProcessTimeData() {
             let data = await dataRequest("/api/experiment/process-time/" + this.experimentID, "GET");
@@ -1818,7 +1912,17 @@ export default {
                     asset_id: asset.asset.asset_id
                 })
             }
-        }
+        },
+        timeChange(e, day, type) {
+            e.target.value = e.target.value.split(":")[0] + ":00:00"
+            this.closingData[day][type] = e.target.value;
+            if (type == 'ends') {
+                if (parseInt(this.closingData[day].starts.split(":")[0]) > parseInt(this.closingData[day].ends.split(":")[0])) {
+                    e.target.value = this.closingData[day].starts;
+                    this.closingData[day].ends = this.closingData[day].starts;
+                }
+            }
+        },
     },
     mounted() {
         this.createCollapsableObject();

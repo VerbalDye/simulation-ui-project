@@ -120,9 +120,9 @@ export default {
             for (let i = 0; i < 7; i++) {
                 body.push({
                     hours_of_operation_id: this.hourOfOperationData.find(e => e.day_num == i).hours_of_operation_id,
-                    start_time: this.closingData[days[i]].starts.split(":")[0] + ":00:00",
-                    end_time: this.closingData[days[i]].ends.split(":")[0] + ":00:00",
-                    total_hours: parseInt(this.closingData[days[i]].ends.split(":")[0]) - parseInt(this.closingData[days[i]].starts.split(":")[0])
+                    start_time: this.closingData[this.days[i]].starts.split(":")[0] + ":00:00",
+                    end_time: this.closingData[this.days[i]].ends.split(":")[0] + ":00:00",
+                    total_hours: parseInt(this.closingData[this.days[i]].ends.split(":")[0]) - parseInt(this.closingData[this.days[i]].starts.split(":")[0])
                 })
             }
             await dataRequest("/api/hours-of-operation/update-default", "POST", body);

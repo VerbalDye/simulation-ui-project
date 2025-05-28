@@ -141,6 +141,7 @@ export default {
                     total_hours: total_hours
                 })
             }
+            console.log(body);
             await dataRequest("/api/hours-of-operation/update-defaults", "POST", body);
         },
     },

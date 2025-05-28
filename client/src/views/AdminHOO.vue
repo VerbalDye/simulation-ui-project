@@ -150,6 +150,7 @@ export default {
             } else {
                 this.closingData.sunday.closes == false;
             }
+            console.log(this.closingData);
         },
     },
     mounted() {

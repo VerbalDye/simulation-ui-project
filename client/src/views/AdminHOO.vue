@@ -55,13 +55,13 @@ export default {
             links: null,
             hourOfOperationData: {},
             closingData: {
-                monday: {},
-                tuesday: {},
-                wednesday: {},
-                thursday: {},
-                friday: {},
-                saturday: {},
-                sunday: {},
+                monday: { opens: true, closes: false },
+                tuesday: { opens: true, closes: false },
+                wednesday: { opens: true, closes: false },
+                thursday: { opens: true, closes: false },
+                friday: { opens: true, closes: false },
+                saturday: { opens: true, closes: false },
+                sunday: { opens: true, closes: false },
             }
         }
     },

@@ -22,7 +22,7 @@
                         <th>Closes Monday?</th>
                         <td>
                             <label class="switch">
-                                <input name="mon-closes" id="mon-closes" type="checkbox" :checked="this.closingData.monday.opens"
+                                <input name="mon-closes" id="mon-closes" type="checkbox" :checked="this.closingData.monday.closes"
                                     @change="e => this.closingData.monday.closes = e.target.checked" />
                                 <span class="slider round"></span>
                             </label>

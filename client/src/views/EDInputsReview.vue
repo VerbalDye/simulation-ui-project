@@ -544,7 +544,7 @@
                     :reset="collapsableStatus['resources']">
                     <Collapsable @toggle-collapse="collapsableToggleChange" title="Buildings" name="buildings"
                         next="equipment-machines" back="locations-processing-times" :heading="3"
-                        :reset="collapsableStatus['buildings']" tbd="false">
+                        :reset="collapsableStatus['buildings']">
                         <div class="flex-between">
                             <div class="flex-between">
                                 <i class="bi bi-building-fill-gear large-icon"></i>

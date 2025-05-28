@@ -141,7 +141,7 @@ export default {
                     total_hours: total_hours
                 })
             }
-            await dataRequest("/api/hours-of-operation/update-default", "POST", body);
+            await dataRequest("/api/hours-of-operation/update-defaults", "POST", body);
         },
     },
     mounted() {

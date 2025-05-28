@@ -18,8 +18,7 @@
                         <th>Advanced Mode?*</th>
                         <td>
                             <label class="switch">
-                                <input type="checkbox" name="advanced-mode-toggle"
-                                    @input="handleAdvanceModeChange">
+                                <input type="checkbox" name="advanced-mode-toggle" @input="handleAdvanceModeChange">
                                 <span class="slider round"></span>
                             </label>
                         </td>
@@ -125,19 +124,19 @@
                                             <th>Phase:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.phase.display_name
-                                            }}</td>
+                                                }}</td>
                                         </tr>
                                         <tr>
                                             <th>Cell:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.cell.display_name
-                                            }}</td>
+                                                }}</td>
                                         </tr>
                                         <tr>
                                             <th>Operation:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.operation.display_name
-                                            }}</td>
+                                                }}</td>
                                         </tr>
                                     </table>
                                     <p>Location(s):</p>
@@ -350,8 +349,164 @@
 
                                             </div>
                                         </div>
+                                        <!-- Continuous Mode Start -->
                                         <div v-else>
-                                            TBD
+                                            <div v-if="processTimeSettings.applyToAll">
+                                                <div v-if="advancedMode">
+                                                    <div>
+                                                        <p v-for="asset in selectedAssets">{{ asset.display_name }}</p>
+                                                        <VueMultiselect
+                                                            v-model="this.processTimeSettings.selectedModels[selectedAssets[0].asset_id]"
+                                                            :options="this.processTimeSettings.modelData"
+                                                            :multiple="true" :close-on-select="false"
+                                                            placeholder="Select at least one model"
+                                                            @update:model-value="handleModelSelectChange(selectedAssets[0].asset_id)"
+                                                            :preselect-first="true">
+                                                            <template slot="selection"
+                                                                slot-scope="{ values, search, isOpen }"><span
+                                                                    class="multiselect__single" v-show="!isOpen">
+                                                                    options
+                                                                    selected</span></template>
+                                                        </VueMultiselect>
+                                                        <table class="grid-less">
+                                                            <tr>
+                                                                <th><i class="bi bi-hash"></i>Distribution Type *</th>
+                                                                <td>
+                                                                    <select name="distribution-type-apply-all-advanced" id="distribution-type-apply-all-advanced">
+                                                                        <option value="lognormal">Lognormal</option>
+                                                                        <option value="normal">Normal</option>
+                                                                        <option value="beta">Beta</option>
+                                                                        <option value="triangular">Triangular</option>
+                                                                        <option value="uniform">Uniform</option>
+                                                                        <option value="exponential">Exponential</option>
+                                                                    </select>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th><i class="bi bi-clock-fill"></i> Enter Processing
+                                                                    Times
+                                                                    (minutes)*</th>
+                                                                <td>
+                                                                    <div class="flex-left">
+                                                                        <input
+                                                                            v-for="(value, key) in this.processTimeSettings.elements[selectedAssets[0].asset_id].values"
+                                                                            class="small-number-input" type="number"
+                                                                            :value="value" :name="'times-' + key"
+                                                                            @input="handleProcessTimeDataChange(key, $event)">
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div v-else>
+                                                    <div>
+                                                        <p v-for="asset in selectedAssets">{{ asset.display_name }}</p>
+                                                        <table class="grid-less">
+                                                            <tr>
+                                                                <th><i class="bi bi-hash"></i> Number of Samples*</th>
+                                                                <td>
+                                                                    <input type="number"
+                                                                        :value="Object.keys(processTimeSettings.elements[selectedAssets[0].asset_id].values).length"
+                                                                        class="small-number-input"
+                                                                        :name="'samples-' + selectedAssets[0].asset_id"
+                                                                        @input="handleNumberOfSamplesChange(selectedAssets[0].asset_id, processTimeSettings.selectedModels[selectedAssets[0].asset_id][0], $event)">
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th><i class="bi bi-clock-fill"></i> Enter Processing
+                                                                    Times
+                                                                    (minutes)*</th>
+                                                                <td>
+                                                                    <div class="flex-left">
+                                                                        <input
+                                                                            v-for="(value, key) in this.processTimeSettings.elements[selectedAssets[0].asset_id].values"
+                                                                            class="small-number-input" type="number"
+                                                                            :value="value" :name="'times-' + key"
+                                                                            @input="handleProcessTimeDataChange(key, $event)">
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div v-else>
+                                                <div v-if="advancedMode">
+                                                    <div v-for="(element, asset_id) in processTimeSettings.elements">
+                                                        <p>{{ element.name }}</p>
+                                                        <VueMultiselect
+                                                            v-model="this.processTimeSettings.selectedModels[asset_id]"
+                                                            :options="this.processTimeSettings.modelData"
+                                                            :multiple="true" :close-on-select="false"
+                                                            placeholder="Select at least one model"
+                                                            @update:model-value="handleModelSelectChange(asset_id)"
+                                                            :preselect-first="true">
+                                                            <template slot="selection"
+                                                                slot-scope="{ values, search, isOpen }"><span
+                                                                    class="multiselect__single" v-show="!isOpen">
+                                                                    options
+                                                                    selected</span></template>
+                                                        </VueMultiselect>
+                                                        <table class="grid-less">
+                                                            <tr>
+                                                                <th><i class="bi bi-hash"></i> Number of Samples*</th>
+                                                                <td>
+                                                                    <input type="number"
+                                                                        :value="Object.keys(element.values).length"
+                                                                        class="small-number-input"
+                                                                        :name="'samples-' + asset_id"
+                                                                        @input="handleNumberOfSamplesChange(asset_id, this.processTimeSettings.selectedModels[asset_id], $event)">
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th><i class="bi bi-clock-fill"></i> Enter Processing
+                                                                    Times
+                                                                    (minutes)*</th>
+                                                                <td>
+                                                                    <div class="flex-left">
+                                                                        <input v-for="(value, key) in element.values"
+                                                                            class="small-number-input" type="number"
+                                                                            :value="value" :name="'times-' + key"
+                                                                            @input="handleProcessTimeDataChange(key, $event)">
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div v-else>
+                                                    <div v-for="(element, asset_id) in processTimeSettings.elements">
+                                                        <p>{{ element.name }}</p>
+                                                        <table class="grid-less">
+                                                            <tr>
+                                                                <th><i class="bi bi-hash"></i> Number of Samples*</th>
+                                                                <td>
+                                                                    <input type="number"
+                                                                        :value="Object.keys(element.values).length"
+                                                                        class="small-number-input"
+                                                                        :name="'samples-' + asset_id"
+                                                                        @input="handleNumberOfSamplesChange(asset_id, this.processTimeSettings.selectedModels[asset_id], $event)">
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th><i class="bi bi-clock-fill"></i> Enter Processing
+                                                                    Times
+                                                                    (minutes)*</th>
+                                                                <td>
+                                                                    <div class="flex-left">
+                                                                        <input v-for="(value, key) in element.values"
+                                                                            class="small-number-input" type="number"
+                                                                            :value="value" :name="'times-' + key"
+                                                                            @input="handleProcessTimeDataChange(key, $event)">
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </div>
+
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -371,13 +526,13 @@
                             <div class="flex-between">
                                 <i class="bi bi-building-fill-gear large-icon"></i>
                                 <div v-if="this.siteData && this.experimentData">
-                                    <h4 class="uppercase">{{ this.siteData.find(e => e.site_id ===
-                                        this.selectedSite).site_name }}</h4>
-                                    <p>{{ this.siteData.find(e => e.site_id === this.selectedSite).address }}</p>
-                                    <p>{{ this.siteData.find(e => e.site_id === this.selectedSite).city + ", " +
+                                    <h4 class="uppercase">{{this.siteData.find(e => e.site_id ===
+                                        this.selectedSite).site_name}}</h4>
+                                    <p>{{this.siteData.find(e => e.site_id === this.selectedSite).address}}</p>
+                                    <p>{{this.siteData.find(e => e.site_id === this.selectedSite).city + ", " +
                                         siteData.find(e => e.site_id === this.selectedSite).state + " " +
                                         siteData.find(e =>
-                                            e.site_id === this.selectedSite).zip }}</p>
+                                            e.site_id === this.selectedSite).zip}}</p>
                                 </div>
                             </div>
                             <div class="card-with-title">
@@ -403,7 +558,7 @@
                                     <tbody>
                                         <tr v-for="day in hoursOfOperationData">
                                             <td v-if="day.hours_of_operation.day_num">{{ day.hours_of_operation.day_num
-                                                }}
+                                            }}
                                             </td>
                                             <td v-else>-</td>
                                             <td v-if="day.hours_of_operation.start_time">{{
@@ -430,8 +585,8 @@
                                 :value="asset.asset.asset_id">{{ asset.asset.display_name }}</option>
                         </select>
                         <div>
-                            <h3 class="space">{{ assetData.find(e => e.asset.asset_id ==
-                                this.downtimeSettings.selectedEquipment).asset.display_name }}</h3>
+                            <h3 class="space">{{assetData.find(e => e.asset.asset_id ==
+                                this.downtimeSettings.selectedEquipment).asset.display_name}}</h3>
                             <div v-if="advancedMode == false">
                                 <label for="equipment-downtime-hours">Total Hour Equipment Will Be Down:</label>
                                 <input type="number" name="equipment-downtime-hours" id="equipment-downtime-hours"

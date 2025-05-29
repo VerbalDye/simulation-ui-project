@@ -1174,7 +1174,7 @@ export default {
             console.log(data);
             this.hoursOfOperationData = data;
             for (let i = 0; i < 7; i++) {
-                console.log(e.hours_of_operation.day_num)
+                console.log(data.find(e => e.hours_of_operation.day_num == i));
                 if (data.find(e => e.hours_of_operation.day_num == i).start_time !== null) {
                     this.closingData[this.days[i]].opens = true;
                     this.closingData[this.days[i]].starts = data.find(e => e.hours_of_operation.day_num == i).start_time

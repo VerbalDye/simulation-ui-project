@@ -1456,31 +1456,31 @@ export default {
             let coreData = this.coreModelData.map(({ experiment_core_id, available, ...rest }) => { return { experiment_core_id, available } })
             console.log(coreData);
             let hooData = [];
-            this.closingData.forEach((entry, index) => {
+            for (let i = 0; i < 7; i++) {
                 let start_time;
                 let end_time;
                 let total_hours;
-                if (!this.closingData[this.days[index]].opens) {
+                if (!this.closingData[this.days[i]].opens) {
                     start_time = null;
                     end_time = null;
                     total_hours = 0;
-                } else if (!this.closingData[this.days[index]].closes) {
-                    start_time = this.closingData[this.days[index]].starts.split(":")[0] + ":00:00";
+                } else if (!this.closingData[this.days[i]].closes) {
+                    start_time = this.closingData[this.days[i]].starts.split(":")[0] + ":00:00";
                     end_time = null;
-                    total_hours = 24 - parseInt(this.closingData[this.days[index]].starts.split(":")[0]);
+                    total_hours = 24 - parseInt(this.closingData[this.days[i]].starts.split(":")[0]);
                 } else {
-                    start_time = this.closingData[this.days[index]].starts.split(":")[0] + ":00:00";
-                    end_time = this.closingData[this.days[index]].ends.split(":")[0] + ":00:00";
-                    total_hours = parseInt(this.closingData[this.days[index]].ends.split(":")[0]) - parseInt(this.closingData[this.days[index]].starts.split(":")[0])
+                    start_time = this.closingData[this.days[i]].starts.split(":")[0] + ":00:00";
+                    end_time = this.closingData[this.days[i]].ends.split(":")[0] + ":00:00";
+                    total_hours = parseInt(this.closingData[this.days[i]].ends.split(":")[0]) - parseInt(this.closingData[this.days[i]].starts.split(":")[0])
                 }
                 hooData.push({
                     site_id: 1,
-                    day_num: index,
+                    day_num: i,
                     start_time: start_time,
                     end_time: end_time,
                     total_hours: total_hours
                 })
-            })
+            }
             await Promise.allSettled([
                 dataRequest("/api/experiment/site/" + this.experimentID, "PUT", JSON.stringify({ site_id: this.selectedSite })),
                 dataRequest("/api/experiment/core/bulk/" + this.experimentID, "PUT", JSON.stringify({ data: coreData })),

@@ -61,7 +61,7 @@ router.put('/update/:id', async (req, res) => {
                 }))
             })
             let response = await Promise.all(promises);
-            res.json(response);
+            res.status(200).json(response);
         } else {
             let promises = [];
             req.body.forEach((entry, index) => {
@@ -72,7 +72,7 @@ router.put('/update/:id', async (req, res) => {
                 }))
             })
             let response = await Promise.all(promises);
-            res.json(response);
+            res.status(200).json(response);
         }
     } catch (err) {
         console.log(err);

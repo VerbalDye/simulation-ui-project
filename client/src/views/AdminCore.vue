@@ -28,10 +28,11 @@
                         <td><button>Delete</button></td>
                     </tr>
                 </table>
-                <button><i class="bi bi-chevron-double-left"></i></button>
-                <button><i class="bi bi-chevron-left"></i></button>
-                <button><i class="bi bi-chevron-right"></i></button>
-                <button><i class="bi bi-chevron-double-right"></i></button>
+                Showing {{ page + 1 }} - {{ page + pageCount }} of {{ tableData.length }}
+                <button @click="this.page = 0"><i class="bi bi-chevron-double-left"></i></button>
+                <button @click="this.page = this.page - this.pageCount"><i class="bi bi-chevron-left"></i></button>
+                <button @click="this.page = this.page + this.pageCount"><i class="bi bi-chevron-right"></i></button>
+                <button @click="this.page = Math.floor(tableData.length/pageCount) * pageCount"><i class="bi bi-chevron-double-right"></i></button>
             </div>
         </div>
     </div>

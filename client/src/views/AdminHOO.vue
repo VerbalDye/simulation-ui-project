@@ -12,7 +12,7 @@
                         <th>Opens {{ day[0].toUpperCase() + day.slice(1) }}?</th>
                         <td>
                             <label class="switch">
-                                <input :name="day+'-closes'" :id="day+'-closes'" type="checkbox"
+                                <input :name="day + '-closes'" :id="day + '-closes'" type="checkbox"
                                     :checked="this.closingData[day].opens"
                                     @change="e => this.closingData[day].opens = e.target.checked" />
                                 <span class="slider round"></span>
@@ -23,7 +23,7 @@
                         <th>Closes {{ day[0].toUpperCase() + day.slice(1) }}?</th>
                         <td>
                             <label class="switch">
-                                <input :name="day+'-closes'" :id="day+'-closes'" type="checkbox"
+                                <input :name="day + '-closes'" :id="day + '-closes'" type="checkbox"
                                     :checked="this.closingData[day].closes"
                                     @change="e => this.closingData[day].closes = e.target.checked" />
                                 <span class="slider round"></span>
@@ -31,13 +31,14 @@
                         </td>
                     </tr>
                     <tr v-if="this.closingData[day].opens">
-                        <th><label :for="day+'-start'">Start:</label></th>
-                        <td><input :name="day+'-start'" :id="day+'-start'" type="time" :value="this.closingData[day].starts"
-                                step="3600" @change="timeChange($event, day, 'starts')" /></td>
+                        <th><label :for="day + '-start'">Start:</label></th>
+                        <td><input :name="day + '-start'" :id="day + '-start'" type="time"
+                                :value="this.closingData[day].starts" step="3600"
+                                @change="timeChange($event, day, 'starts')" /></td>
                     </tr>
                     <tr v-if="this.closingData[day].opens && this.closingData[day].closes">
-                        <th><label :for="day+'-end'">End:</label></th>
-                        <td><input :name="day+'-end'" :id="day+'-end'" type="time" :value="this.closingData[day].ends"
+                        <th><label :for="day + '-end'">End:</label></th>
+                        <td><input :name="day + '-end'" :id="day + '-end'" type="time" :value="this.closingData[day].ends"
                                 step="3600" @change="timeChange($event, day, 'ends')" /></td>
                     </tr>
                 </table>
@@ -142,7 +143,12 @@ export default {
                 })
             }
             body = JSON.stringify(body);
-            await dataRequest("/api/hours-of-operation/update-defaults", "POST", body);
+            let response = await dataRequest("/api/hours-of-operation/update-defaults", "POST", body);
+            if (response.status == 200) {
+                window.alert("Hours of operation updated.");
+            } else {
+                window.alert("Something went wrong while saving.")
+            }
         },
     },
     mounted() {

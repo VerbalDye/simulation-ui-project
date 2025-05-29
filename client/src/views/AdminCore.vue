@@ -22,8 +22,8 @@
                         <td>{{ entry.model_number }}</td>
                         <td>{{ entry.core_oven_drawer_position }}</td>
                         <td>{{ entry.core_oven_number }}</td>
-                        <td>{{ entry.soak_temperature_f }}</td>
-                        <td>{{ entry.time_minutes }}</td>
+                        <td><input type="number" :value="entry.soak_temperature_f"/></td>
+                        <td><input type="number" :value="entry.time_minutes"/></td>
                     </tr>
                 </table>
             </div>

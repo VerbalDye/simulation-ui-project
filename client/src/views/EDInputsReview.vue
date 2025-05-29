@@ -1175,16 +1175,16 @@ export default {
             this.hoursOfOperationData = data;
             for (let i = 0; i < 7; i++) {
                 console.log(data.find(e => e.hours_of_operation.day_num == i));
-                if (data.find(e => e.hours_of_operation.day_num == i).start_time !== null) {
+                if (data.find(e => e.hours_of_operation.day_num == i).hours_of_operation.start_time !== null) {
                     this.closingData[this.days[i]].opens = true;
-                    this.closingData[this.days[i]].starts = data.find(e => e.hours_of_operation.day_num == i).start_time
+                    this.closingData[this.days[i]].starts = data.find(e => e.hours_of_operation.day_num == i).hours_of_operation.start_time
                 } else {
                     this.closingData[this.days[i]].opens = false;
                     this.closingData[this.days[i]].starts = null;
                 }
-                if (data.find(e => e.hours_of_operation.day_num == i).end_time !== null) {
+                if (data.find(e => e.hours_of_operation.day_num == i).hours_of_operation.end_time !== null) {
                     this.closingData[this.days[i]].closes = true;
-                    this.closingData[this.days[i]].ends = data.find(e => e.hours_of_operation.day_num == i).end_time;
+                    this.closingData[this.days[i]].ends = data.find(e => e.hours_of_operation.day_num == i).hours_of_operation.end_time;
                 } else {
                     this.closingData[this.days[i]].closes = false;
                     this.closingData[this.days[i]].ends = null;

@@ -26,7 +26,7 @@ export default {
         return {
             links: null,
             coreModelData: {},
-            tableData: {}
+            tableData: []
         }
     },
     components: { AdminSidebar, Header, Sidebar, SmartTable },

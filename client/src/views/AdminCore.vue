@@ -40,10 +40,10 @@ export default {
                 this.tableData.push({
                     core_number: entry.core_number,
                     model_number: entry.model_number,
-                    core_oven_drawer_position: entry.core.core_soak_times.core_oven_drawer_position,
-                    core_oven_number: entry.core.core_soak_times.core_oven_number,
-                    soak_temperature_f: entry.core.core_soak_times.soak_temperature_f,
-                    time_minutes: entry.core.core_soak_times.time_minutes,
+                    core_oven_drawer_position: entry.core.core_soak_times[0].core_oven_drawer_position,
+                    core_oven_number: entry.core.core_soak_times[0].core_oven_number,
+                    soak_temperature_f: entry.core.core_soak_times[0].soak_temperature_f,
+                    time_minutes: entry.core.core_soak_times[0].time_minutes,
                 })
             })
             console.log(this.tableData);

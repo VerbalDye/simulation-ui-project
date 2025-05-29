@@ -5,6 +5,11 @@
         <AdminSidebar />
         <div class="content">
             <h1>Core Management</h1>
+            <div>
+                <label for="core-search">Search: </label>
+                <input name="core-search" id="core-search" type="text" @change="coreSearchChange($event)"/>
+                <SmartTable :jsonData="tableData"></SmartTable>
+            </div>
         </div>
     </div>
 </template>
@@ -20,7 +25,8 @@ export default {
     data() {
         return {
             links: null,
-            coreModelDate: {},
+            coreModelData: {},
+            tableData: {}
         }
     },
     components: { AdminSidebar, Header, Sidebar, SmartTable },
@@ -30,8 +36,21 @@ export default {
         async getCoreModelData() {
             let data = await dataRequest("/api/core-model/soak-time", "GET")
             console.log(data);
-            this.coreModelDate = data;
-        }
+            data.forEach(entry => {
+                this.tableData.push({
+                    core_number: entry.core_number,
+                    model_number: entry.model_number,
+                    core_oven_drawer_position: entry.core.core_soak_times.core_oven_drawer_position,
+                    core_oven_number: entry.core.core_soak_times.core_oven_number,
+                    soak_temperature_f: entry.core.core_soak_times.soak_temperature_f,
+                    time_minutes: entry.core.core_soak_times.time_minutes,
+                })
+            })
+            this.coreModelData = data;
+        },
+        coreSearchChange(e) {
+
+        },
     },
     mounted() {
         this.locationSearch = window.location.search;

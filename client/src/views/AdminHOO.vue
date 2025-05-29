@@ -144,6 +144,7 @@ export default {
             }
             body = JSON.stringify(body);
             let response = await dataRequest("/api/hours-of-operation/update-defaults", "POST", body);
+            console.log(response);
             if (response.status == 200) {
                 window.alert("Hours of operation updated.");
             } else {

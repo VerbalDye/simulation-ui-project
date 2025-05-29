@@ -8,7 +8,7 @@
             <div>
                 <label for="core-search">Search: </label>
                 <input name="core-search" id="core-search" type="text" @change="coreSearchChange($event)"/>
-                <table>
+                <table class="full-table">
                     <tr>
                         <th>Core Number</th>
                         <th>Model Number</th>
@@ -23,7 +23,7 @@
                         <td>{{ entry.core_oven_drawer_position }}</td>
                         <td>{{ entry.core_oven_number }}</td>
                         <td>{{ entry.soak_temperature_f }}</td>
-                        <td>{{ entry.core_soak_times }}</td>
+                        <td>{{ entry.time_minutes }}</td>
                     </tr>
                 </table>
             </div>

@@ -16,8 +16,10 @@ router.get('/soak-time', (req, res) => {
     CoreModel.findAll({
         include: [
             { model: ModelObject },
-            { model: Core },
-            { model: CoreSoakTime },
+            { 
+                model: Core,
+                include: [{ model: CoreSoakTime }]
+            }
         ]
     })
         .then(dbCoreModelData => res.json(dbCoreModelData))

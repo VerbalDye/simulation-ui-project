@@ -87,7 +87,7 @@ export default {
             } else if (type == "skip-forward") {
                 this.page = Math.floor(tableData.length/pageCount) * pageCount
             }
-            this.shownTableData = this.tableData.slice(page, page + this.pageCount - 1);
+            this.shownTableData = this.tableData.slice(this.page, this.page + this.pageCount - 1);
         },
         coreSearchChange(e) {
 

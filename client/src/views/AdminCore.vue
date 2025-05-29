@@ -28,7 +28,7 @@ export default {
     title: 'Core Management',
     methods: {
         async getCoreModelData() {
-            let data = await dataRequest("/api/core-model/", "GET")
+            let data = await dataRequest("/api/core-model/soak-time", "GET")
             console.log(data);
             this.coreModelDate = data;
         }

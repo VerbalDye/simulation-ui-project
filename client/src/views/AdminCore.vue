@@ -29,10 +29,10 @@
                     </tr>
                 </table>
                 Showing {{ page + 1 }} - {{ page + pageCount }} of {{ tableData.length }}
-                <button @click="this.page = 0"><i class="bi bi-chevron-double-left"></i></button>
-                <button @click="this.page = this.page - this.pageCount"><i class="bi bi-chevron-left"></i></button>
-                <button @click="this.page = this.page + this.pageCount"><i class="bi bi-chevron-right"></i></button>
-                <button @click="this.page = Math.floor(tableData.length/pageCount) * pageCount"><i class="bi bi-chevron-double-right"></i></button>
+                <button @click="changePage('skip-back')"><i class="bi bi-chevron-double-left"></i></button>
+                <button @click="changePage('back')"><i class="bi bi-chevron-left"></i></button>
+                <button @click="changePage('forward')"><i class="bi bi-chevron-right"></i></button>
+                <button @click="changePage('skip-forward')"><i class="bi bi-chevron-double-right"></i></button>
             </div>
         </div>
     </div>
@@ -76,6 +76,18 @@ export default {
             console.log(this.tableData);
             this.shownTableData = this.tableData.slice(0, this.pageCount - 1);
             this.coreModelData = data;
+        },
+        changePage(type){
+            if (type == "skip-back") {
+                this.page = 0
+            } else if (type == "back") {
+                this.page = this.page - this.pageCount
+            } else if (type == "forward") {
+                this.page = this.page + this.pageCount
+            } else if (type == "skip-forward") {
+                this.page = Math.floor(tableData.length/pageCount) * pageCount
+            }
+            this.shownTableData = this.tableData.slice(page, page + this.pageCount - 1);
         },
         coreSearchChange(e) {
 

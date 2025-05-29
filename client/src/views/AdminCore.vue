@@ -19,17 +19,23 @@ import dataRequest from '@/utils/dataRequest';
 export default {
     data() {
         return {
-            links: null
+            links: null,
+            coreModelDate: {},
         }
     },
     components: { AdminSidebar, Header, Sidebar, SmartTable },
     mixins: [titleMixin],
     title: 'Core Management',
     methods: {
-
+        async getCoreModelData() {
+            let data = await dataRequest("/api/core-model/", "GET")
+            console.log(data);
+            this.coreModelDate = data;
+        }
     },
     mounted() {
         this.locationSearch = window.location.search;
+        this.getCoreModelData();
     }
 }
 </script>

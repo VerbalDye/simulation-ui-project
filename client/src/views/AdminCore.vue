@@ -16,6 +16,7 @@
                         <th>Oven Number</th>
                         <th>Oven Temperature (f)</th>
                         <th>Soak Time (minutes)</th>
+                        <th>Delete?</th>
                     </tr>
                     <tr v-for="entry in shownTableData">
                         <td>{{ entry.core_number }}</td>
@@ -24,6 +25,7 @@
                         <td>{{ entry.core_oven_number }}</td>
                         <td><input type="number" :value="entry.soak_temperature_f"/></td>
                         <td><input type="number" :value="entry.time_minutes"/></td>
+                        <td><button>Delete</button></td>
                     </tr>
                 </table>
             </div>

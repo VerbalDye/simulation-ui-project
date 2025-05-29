@@ -28,6 +28,10 @@
                         <td><button>Delete</button></td>
                     </tr>
                 </table>
+                <button><i class="bi bi-chevron-double-left"></i></button>
+                <button><i class="bi bi-chevron-left"></i></button>
+                <button><i class="bi bi-chevron-right"></i></button>
+                <button><i class="bi bi-chevron-double-right"></i></button>
             </div>
         </div>
     </div>
@@ -69,7 +73,7 @@ export default {
                 })
             })
             console.log(this.tableData);
-            this.shownTableData = this.tableData.slice(0, this.pageCount);
+            this.shownTableData = this.tableData.slice(0, this.pageCount - 1);
             this.coreModelData = data;
         },
         coreSearchChange(e) {

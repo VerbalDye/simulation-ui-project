@@ -8,7 +8,24 @@
             <div>
                 <label for="core-search">Search: </label>
                 <input name="core-search" id="core-search" type="text" @change="coreSearchChange($event)"/>
-                <SmartTable :jsonData="tableData"></SmartTable>
+                <table>
+                    <tr>
+                        <th>Core Number</th>
+                        <th>Model Number</th>
+                        <th>Oven Drawer Position</th>
+                        <th>Oven Number</th>
+                        <th>Oven Temperature (f)</th>
+                        <th>Soak Time (minutes)</th>
+                    </tr>
+                    <tr v-for="entry in shownTableData">
+                        <td>{{ entry.core_number }}</td>
+                        <td>{{ entry.model_number }}</td>
+                        <td>{{ entry.core_oven_drawer_position }}</td>
+                        <td>{{ entry.core_oven_number }}</td>
+                        <td>{{ entry.soak_temperature_f }}</td>
+                        <td>{{ entry.core_soak_times }}</td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>
@@ -26,7 +43,10 @@ export default {
         return {
             links: null,
             coreModelData: {},
-            tableData: []
+            tableData: [],
+            shownTableData: [],
+            page: 0,
+            pageCount: 50,
         }
     },
     components: { AdminSidebar, Header, Sidebar, SmartTable },
@@ -47,6 +67,7 @@ export default {
                 })
             })
             console.log(this.tableData);
+            this.shownTableData = this.tableData.slice(0, this.pageCount);
             this.coreModelData = data;
         },
         coreSearchChange(e) {

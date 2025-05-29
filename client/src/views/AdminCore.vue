@@ -28,7 +28,9 @@
                         <td><button>Delete</button></td>
                     </tr>
                 </table>
-                Showing {{ page + 1 }} - {{ page + pageCount > tableData.length ? tableData.length : page + pageCount }} of {{ tableData.length }}
+                <div>
+                    Showing {{ page + 1 }} - {{ page + pageCount > tableData.length ? tableData.length : page + pageCount }} of {{ tableData.length }}
+                </div>
                 <button @click="changePage('skip-back')"><i class="bi bi-chevron-double-left"></i></button>
                 <button @click="changePage('back')"><i class="bi bi-chevron-left"></i></button>
                 <button @click="changePage('forward')"><i class="bi bi-chevron-right"></i></button>

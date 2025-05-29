@@ -21,7 +21,10 @@
                     <tr v-for="entry in shownTableData">
                         <td>{{ entry.core_number }}</td>
                         <td>{{ entry.model_number }}</td>
-                        <td>{{ entry.core_oven_drawer_position }}</td>
+                        <td><select>
+                            <option value="1F" :selected="entry.core_oven_drawer_position == '1F'">1F</option>
+                            <option value="2F" :selected="entry.core_oven_drawer_position == '2F'">2F</option>
+                        </select></td>
                         <td>{{ entry.core_oven_number }}</td>
                         <td><input type="number" :value="entry.soak_temperature_f"/></td>
                         <td><input type="number" :value="entry.time_minutes"/></td>

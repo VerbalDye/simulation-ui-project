@@ -51,12 +51,12 @@ router.put('/update/:id', async (req, res) => {
             }]
         })
         if (dbExperimentHooData[0].hours_of_operation.is_default == 1) {
-            let promises = []
+            let promises = [];
             let hooEntries = await HoursOfOperation.bulkCreate(req.body);
             hooEntries.forEach((entry, index) => {
                 promises.push(ExperimentHoo.update({ hours_of_operation_id: entry.hours_of_operation_id }, {
                     where: {
-                        experiment_hoo_id: dbExperimentHooData[index]
+                        experiment_hoo_id: dbExperimentHooData[index].experiment_hoo_id
                     }
                 }))
             })

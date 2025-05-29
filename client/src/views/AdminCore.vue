@@ -46,6 +46,7 @@ export default {
                     time_minutes: entry.core.core_soak_times.time_minutes,
                 })
             })
+            console.log(this.tableData);
             this.coreModelData = data;
         },
         coreSearchChange(e) {

@@ -28,7 +28,7 @@
                         <td><button>Delete</button></td>
                     </tr>
                 </table>
-                Showing {{ page + 1 }} - {{ page + pageCount }} of {{ tableData.length }}
+                Showing {{ page + 1 }} - {{ page + pageCount > tableData.length ? tableData.length : page + pageCount }} of {{ tableData.length }}
                 <button @click="changePage('skip-back')"><i class="bi bi-chevron-double-left"></i></button>
                 <button @click="changePage('back')"><i class="bi bi-chevron-left"></i></button>
                 <button @click="changePage('forward')"><i class="bi bi-chevron-right"></i></button>
@@ -81,11 +81,15 @@ export default {
             if (type == "skip-back") {
                 this.page = 0
             } else if (type == "back") {
+                if (this.page - this.pageCount >= 0) {
                 this.page = this.page - this.pageCount
+                }
             } else if (type == "forward") {
+                if (this.page + this.pageCount <= this.tableData.length) {
                 this.page = this.page + this.pageCount
+                }
             } else if (type == "skip-forward") {
-                this.page = Math.floor(tableData.length/pageCount) * pageCount
+                this.page = Math.floor(this.tableData.length / this.pageCount) * this.pageCount
             }
             this.shownTableData = this.tableData.slice(this.page, this.page + this.pageCount - 1);
         },

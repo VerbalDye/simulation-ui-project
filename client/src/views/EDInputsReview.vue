@@ -399,6 +399,25 @@
                                                                         class="small-number-input" />
                                                                 </td>
                                                             </tr>
+                                                            <tr v-if="this.processTimeSettings.distributionType !== 'uniform'">
+                                                                <th>{{ this.processTimeSettings.distributionType == 'lognormal' || 'normal' ? "Mu" : "" }}
+                                                                    {{ this.processTimeSettings.distributionType == 'beta' ? "p" : "" }}
+                                                                    {{ this.processTimeSettings.distributionType == 'triangular' ? "Median" : "" }}
+                                                                    {{ this.processTimeSettings.distributionType == 'exponential' ? "Lambda" : "" }}
+                                                                </th>
+                                                                <td>
+                                                                    <input type="number" class="small-number-input" value="0">
+                                                                </td>
+                                                            </tr>
+                                                            <tr v-if="this.processTimeSettings.distributionType == 'lognormal' || 'normal' || 'beta'">
+                                                                <th>
+                                                                    {{ this.processTimeSettings.distributionType == 'lognormal' || 'normal' ? "Sigma" : "" }}
+                                                                    {{ this.processTimeSettings.distributionType == 'beta' ? "q" : "" }}
+                                                                </th>
+                                                                <td>
+                                                                    <input type="number" class="small-number-input" value="0">
+                                                                </td>
+                                                            </tr>
                                                         </table>
                                                     </div>
                                                 </div>

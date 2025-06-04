@@ -1790,6 +1790,8 @@ export default {
                         param2: exampleModel.process_time_distribution.param2
                     }
                 }
+                console.log(this.processTimeSettings.selectedModels[asset.asset_id][0]);
+                console.log(this.continuousProcessTimeData.find(e => e.process_time_distribution.asset_id == asset.asset_id && e.process_time_distribution.model_number == this.processTimeSettings.selectedModels[asset.asset_id][0]))
                 console.log(this.processTimeSettings.continuousElements);
             })
         },

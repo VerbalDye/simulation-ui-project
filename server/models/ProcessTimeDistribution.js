@@ -74,7 +74,7 @@ ProcessTimeDistribution.init(
         sequelize,
         freezeTableName: true,
         underscored: true,
-        modelName: 'process_time',
+        modelName: 'process_time_distribution',
         timestamps: false
     }
 )

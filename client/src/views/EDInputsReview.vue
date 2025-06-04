@@ -1769,6 +1769,7 @@ export default {
         },
         processTimeElementChange() {
             this.processTimeSettings.elements = {};
+            this.processTimeSettings.continuousElements = {};
             this.selectedAssets.forEach(asset => {
                 let processTimes = this.processTimeData.filter(e => e.process_time.asset_id == asset.asset_id && e.process_time.model_number == this.processTimeSettings.selectedModels[asset.asset_id][0]);
                 this.processTimeSettings.elements[asset.asset_id] = {

@@ -181,14 +181,14 @@
                                         <label for="discrete-select" class="radio-container">
                                             <input id="discrete-select" type="radio" name="discrete-continuous"
                                                 class="checkbox" :checked="this.processTimeSettings.discrete"
-                                                @input="e => this.processTimeSettings.discrete = true">
+                                                @input="changeDistributionType(true)">
                                             <span class="radio-checkmark"></span>
                                             Discrete
                                         </label>
                                         <label for="continuous-select" class="radio-container">
                                             <input id="continuous-select" type="radio" name="discrete-continuous"
                                                 class="checkbox" :checked="!this.processTimeSettings.discrete"
-                                                @input="e => this.processTimeSettings.discrete = false">
+                                                @input="changeDistributionType(false)">
                                             <span class="radio-checkmark"></span>
                                             Continuous
                                         </label>
@@ -1089,6 +1089,7 @@ export default {
             hoursOfOperationData: null,
             continuousProcessTimeData: null,
             processTimeTypeData: null,
+            backupProcessTimeTypeData: null,
             backlogData: null,
             warning: false,
             loading: false,
@@ -1253,6 +1254,7 @@ export default {
         async getProcessTimeTypeData() {
             let data = await dataRequest("/api/experiment/process-time-type/" + this.experimentID, "GET");
             console.log(data);
+            this.backupProcessTimeTypeData = data;
             this.processTimeTypeData = data;
         },
         async getRoutingData() {
@@ -2011,6 +2013,15 @@ export default {
                     e.target.value = this.closingData[day].starts;
                     this.closingData[day].ends = this.closingData[day].starts;
                 }
+            }
+        },
+        changeDistributionType(discrete) {
+            this.processTimeSettings.discrete = discrete
+            let assets = this.processTimeTypeData.filter(e => e.operation_id == this.taskSequenceData[this.selectedOperation].task_sequence.operation_id);
+            if (discrete) {
+                assets.forEach(e => e.discrete = 1);
+            } else {
+                assets.forEach(e => e.discrete = 0);
             }
         },
     },

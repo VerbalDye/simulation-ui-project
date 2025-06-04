@@ -23,6 +23,7 @@ const ExperimentRouting = require('./ExperimentRouting');
 const ExperimentSite = require('./ExperimentSite');
 const ExperimentTaskSequence = require('./ExperimentTaskSequence');
 const ExperimentTimeDistribution = require('./ExperimentTimeDistribution');
+const ExperimentTimeType = require('./ExperimentTimeType');
 const HoursOfOperation = require('./HoursOfOperation');
 const JobCore = require('./JobCore');
 const JobList = require('./JobList');
@@ -551,6 +552,29 @@ Throughput.belongsTo(Experiment, {
     onDelete: 'CASCADE'
 });
 
+// Experiment-Time Type
+Experiment.hasMany(ExperimentTimeType, {
+    foreignKey: 'experiment_id'
+});
+ExperimentTimeType.belongsTo(Experiment, {
+    foreignKey: 'experiment_id',
+    onDelete: 'CASCADE'
+});
+Asset.hasMany(ExperimentTimeType, {
+    foreignKey: 'asset_id'
+});
+ExperimentTimeType.belongsTo(Asset, {
+    foreignKey: 'asset_id',
+    onDelete: 'CASCADE'
+});
+Operation.hasMany(ExperimentTimeType, {
+    foreignKey: 'operation_id'
+});
+ExperimentTimeType.belongsTo(Operation, {
+    foreignKey: 'operation_id',
+    onDelete: 'CASCADE'
+});
+
 module.exports = { 
     Arrival,
     Asset,
@@ -577,6 +601,7 @@ module.exports = {
     ExperimentSite,
     ExperimentTaskSequence,
     ExperimentTimeDistribution,
+    ExperimentTimeType,
     HoursOfOperation,
     JobCore,
     JobList,

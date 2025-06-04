@@ -1087,6 +1087,8 @@ export default {
             selectedAssets: null,
             jobDropdownData: null,
             hoursOfOperationData: null,
+            continuousProcessTimeData: null,
+            processTimeTypeData: null,
             backlogData: null,
             warning: false,
             loading: false,
@@ -1209,10 +1211,10 @@ export default {
         },
         async getHoursOfOperationData() {
             let data = await dataRequest("/api/experiment/hours-of-operation/" + this.experimentID, "GET");
-            console.log(data);
+            // console.log(data);
             this.hoursOfOperationData = data;
             for (let i = 0; i < 7; i++) {
-                console.log(data.find(e => e.hours_of_operation.day_num == i));
+                // console.log(data.find(e => e.hours_of_operation.day_num == i));
                 if (data.find(e => e.hours_of_operation.day_num == i).hours_of_operation.start_time !== null) {
                     this.closingData[this.days[i]].opens = true;
                     this.closingData[this.days[i]].starts = data.find(e => e.hours_of_operation.day_num == i).hours_of_operation.start_time
@@ -1228,7 +1230,7 @@ export default {
                     this.closingData[this.days[i]].ends = null;
                 }
             }
-            console.log(this.closingData);
+            // console.log(this.closingData);
         },
         async getProcessTimeData() {
             let data = await dataRequest("/api/experiment/process-time/" + this.experimentID, "GET");
@@ -1242,6 +1244,16 @@ export default {
                 this.backupProcessTimeData = JSON.parse(JSON.stringify(data));
                 this.processTimeData = data;
             }
+        },
+        async getContinuousProcessTimeData() {
+            let data = await dataRequest("/api/experiment/continuous-process-time/" + this.experimentID, "GET");
+            console.log(data);
+            this.continuousProcessTimeData = data;
+        },
+        async getProcessTimeTypeData() {
+            let data = await dataRequest("/api/experiment/process-time-type/" + this.experimentID, "GET");
+            console.log(data);
+            this.processTimeTypeData = data;
         },
         async getRoutingData() {
             let data = await dataRequest("/api/experiment/routing/" + this.experimentID, "GET");

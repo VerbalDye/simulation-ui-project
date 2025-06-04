@@ -361,7 +361,6 @@ router.post('/from/:id', (req, res) => {
                     foreignKey: { experiment_id: req.params.id },
                     attributes: [
                         'iteration_number',
-                        'experiment_time_type_id',
                         'asset_id',
                         'operation_id',
                         'discrete'

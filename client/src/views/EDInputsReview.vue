@@ -180,14 +180,14 @@
                                     <div v-if="!processTimeSettings.default">
                                         <label for="discrete-select" class="radio-container">
                                             <input id="discrete-select" type="radio" name="discrete-continuous"
-                                                class="checkbox" checked
+                                                class="checkbox" :checked="this.processTimeSettings.discrete"
                                                 @input="e => this.processTimeSettings.discrete = true">
                                             <span class="radio-checkmark"></span>
                                             Discrete
                                         </label>
                                         <label for="continuous-select" class="radio-container">
                                             <input id="continuous-select" type="radio" name="discrete-continuous"
-                                                class="checkbox"
+                                                class="checkbox" :checked="!this.processTimeSettings.discrete"
                                                 @input="e => this.processTimeSettings.discrete = false">
                                             <span class="radio-checkmark"></span>
                                             Continuous

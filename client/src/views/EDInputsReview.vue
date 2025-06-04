@@ -375,7 +375,7 @@
                                                                 <td>
                                                                     <select name="distribution-type-apply-all-advanced"
                                                                         id="distribution-type-apply-all-advanced"
-                                                                        @change="e => this.processTimeSettings.distributionType = e.target.value">
+                                                                        @change="changeDistributionType($event)">
                                                                         <option value="lognormal" selected>Lognormal</option>
                                                                         <option value="normal">Normal</option>
                                                                         <option value="beta">Beta</option>
@@ -385,7 +385,7 @@
                                                                     </select>
                                                                 </td>
                                                             </tr>
-                                                            <tr v-if="this.processTimeSettings.distributionType == 'lognormal' || 'beta' || 'triangular' || 'uniform' || 'exponential'">
+                                                            <tr v-if="this.processTimeSettings.distributionType !== 'normal'">
                                                                 <th><i class="bi bi-dash-lg"></i> Min (minutes)*</th>
                                                                 <td>
                                                                     <input type="number" value="0"
@@ -1970,6 +1970,10 @@ export default {
                     this.closingData[day].ends = this.closingData[day].starts;
                 }
             }
+        },
+        changeDistributionType(e) {
+            this.processTimeSettings.distributionType = e.target.value;
+            console.log(this.processTimeSettings.distributionType);
         },
     },
     mounted() {

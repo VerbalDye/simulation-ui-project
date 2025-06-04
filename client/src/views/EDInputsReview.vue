@@ -1726,6 +1726,7 @@ export default {
                 this.selectedOperation = index;
             }
             this.selectedOperationChange();
+            console.log(this.taskSequenceData[this.selectedOperation])
         },
         clickPreviousOperation() {
             let index = this.findPreviousOperation(this.selectedOperation);
@@ -1838,6 +1839,9 @@ export default {
             } else {
                 throw new Error('Incorrect Inputs Provided: ' + operation_id + " " + asset_id + " " + experiment_process_time_id + " " + process_time);
             }
+        },
+        continuousProcessTimeDataChange() {
+
         },
         handleNumberOfSamplesChange(asset_id, model_number, { target }) {
             console.log(this.processTimeSettings.elements);

@@ -1753,9 +1753,9 @@ export default {
                 this.selectedAssets = [{ Status: "No Associated Assets" }];
             }
             if (this.processTimeTypeData.find(e => e.operation_id == this.taskSequenceData[this.selectedOperation].task_sequence.operation_id).discrete == 1) {
-                this.processTimeSettings.discrete == true;
+                this.processTimeSettings.discrete = true;
             } else {
-                this.processTimeSettings.discrete == false;
+                this.processTimeSettings.discrete = false;
             }
             console.log(this.taskSequenceData[this.selectedOperation])
             this.processTimeElementChange();

@@ -376,7 +376,7 @@
                                                                     <select name="distribution-type-apply-all-advanced"
                                                                         id="distribution-type-apply-all-advanced"
                                                                         @change="e => this.processTimeSettings.distributionType = e.target.value">
-                                                                        <option value="lognormal">Lognormal</option>
+                                                                        <option value="lognormal" selected>Lognormal</option>
                                                                         <option value="normal">Normal</option>
                                                                         <option value="beta">Beta</option>
                                                                         <option value="triangular">Triangular</option>
@@ -385,14 +385,14 @@
                                                                     </select>
                                                                 </td>
                                                             </tr>
-                                                            <tr>
+                                                            <tr v-if="this.processTimeSettings.distributionType == 'lognormal' || 'beta' || 'triangular' || 'uniform' || 'exponential'">
                                                                 <th><i class="bi bi-dash-lg"></i> Min (minutes)*</th>
                                                                 <td>
                                                                     <input type="number" value="0"
                                                                         class="small-number-input" />
                                                                 </td>
                                                             </tr>
-                                                            <tr>
+                                                            <tr v-if="this.processTimeSettings.distributionType == 'beta' || 'triangular' || 'uniform'">
                                                                 <th><i class="bi bi-plus-lg"></i> Max (minutes)*</th>
                                                                 <td>
                                                                     <input type="number" value="15"
@@ -1070,7 +1070,7 @@ export default {
                 elements: {},
                 modelData: [],
                 selectedModels: {},
-                distributionType: ""
+                distributionType: "lognormal"
             },
             demandSettings: {
                 default: true,

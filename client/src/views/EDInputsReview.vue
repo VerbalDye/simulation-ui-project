@@ -124,19 +124,19 @@
                                             <th>Phase:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.phase.display_name
-                                                }}</td>
+                                            }}</td>
                                         </tr>
                                         <tr>
                                             <th>Cell:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.cell.display_name
-                                                }}</td>
+                                            }}</td>
                                         </tr>
                                         <tr>
                                             <th>Operation:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.operation.display_name
-                                                }}</td>
+                                            }}</td>
                                         </tr>
                                     </table>
                                     <p>Location(s):</p>
@@ -375,8 +375,9 @@
                                                                 <td>
                                                                     <select name="distribution-type-apply-all-advanced"
                                                                         id="distribution-type-apply-all-advanced"
-                                                                        @change="changeDistributionType($event)">
-                                                                        <option value="lognormal" selected>Lognormal</option>
+                                                                        @change="e => this.processTimeSettings.distributionType = e.target.value">
+                                                                        <option value="lognormal" selected>Lognormal
+                                                                        </option>
                                                                         <option value="normal">Normal</option>
                                                                         <option value="beta">Beta</option>
                                                                         <option value="triangular">Triangular</option>
@@ -385,37 +386,53 @@
                                                                     </select>
                                                                 </td>
                                                             </tr>
-                                                            <tr v-if="this.processTimeSettings.distributionType !== 'normal'">
+                                                            <tr
+                                                                v-if="this.processTimeSettings.distributionType !== 'normal'">
                                                                 <th><i class="bi bi-dash-lg"></i> Min (minutes)*</th>
                                                                 <td>
                                                                     <input type="number" value="0"
                                                                         class="small-number-input" />
                                                                 </td>
                                                             </tr>
-                                                            <tr v-if="this.processTimeSettings.distributionType == 'beta' || 'triangular' || 'uniform'">
+                                                            <tr
+                                                                v-if="this.processTimeSettings.distributionType == 'beta' || this.processTimeSettings.distributionType == 'triangular' || this.processTimeSettings.distributionType == 'uniform'">
                                                                 <th><i class="bi bi-plus-lg"></i> Max (minutes)*</th>
                                                                 <td>
                                                                     <input type="number" value="15"
                                                                         class="small-number-input" />
                                                                 </td>
                                                             </tr>
-                                                            <tr v-if="this.processTimeSettings.distributionType !== 'uniform'">
-                                                                <th>{{ this.processTimeSettings.distributionType === 'lognormal' || 'normal' ? "Mu" : "" }}
-                                                                    {{ this.processTimeSettings.distributionType === 'beta' ? "p" : "" }}
-                                                                    {{ this.processTimeSettings.distributionType === 'triangular' ? "Median" : "" }}
-                                                                    {{ this.processTimeSettings.distributionType === 'exponential' ? "Lambda" : "" }}
+                                                            <tr
+                                                                v-if="this.processTimeSettings.distributionType !== 'uniform'">
+                                                                <th>{{ this.processTimeSettings.distributionType ===
+                                                                    'lognormal' ||
+                                                                    this.processTimeSettings.distributionType ==
+                                                                    'normal' ? "Mu" : "" }}
+                                                                    {{ this.processTimeSettings.distributionType ===
+                                                                    'beta' ? "p" : "" }}
+                                                                    {{ this.processTimeSettings.distributionType ===
+                                                                    'triangular' ? "Median" : "" }}
+                                                                    {{ this.processTimeSettings.distributionType ===
+                                                                    'exponential' ? "Lambda" : "" }}
                                                                 </th>
                                                                 <td>
-                                                                    <input type="number" class="small-number-input" value="0">
+                                                                    <input type="number" class="small-number-input"
+                                                                        value="0">
                                                                 </td>
                                                             </tr>
-                                                            <tr v-if="this.processTimeSettings.distributionType === 'lognormal' || 'normal' || 'beta'">
+                                                            <tr
+                                                                v-if="this.processTimeSettings.distributionType === 'lognormal' || this.processTimeSettings.distributionType == 'normal' || this.processTimeSettings.distributionType == 'beta'">
                                                                 <th>
-                                                                    {{ this.processTimeSettings.distributionType === 'lognormal' || 'normal' ? "Sigma" : "" }}
-                                                                    {{ this.processTimeSettings.distributionType === 'beta' ? "q" : "" }}
+                                                                    {{ this.processTimeSettings.distributionType ===
+                                                                        'lognormal' ||
+                                                                    this.processTimeSettings.distributionType ==
+                                                                    'normal' ? "Sigma" : "" }}
+                                                                    {{ this.processTimeSettings.distributionType ===
+                                                                    'beta' ? "q" : "" }}
                                                                 </th>
                                                                 <td>
-                                                                    <input type="number" class="small-number-input" value="0">
+                                                                    <input type="number" class="small-number-input"
+                                                                        value="0">
                                                                 </td>
                                                             </tr>
                                                         </table>
@@ -584,7 +601,8 @@
                                         <th>Use Default?*</th>
                                         <td>
                                             <label class="switch">
-                                                <input type="checkbox" name="hoo-default-input" checked @change="e => this.defaultHOO = e.target.checked">
+                                                <input type="checkbox" name="hoo-default-input" checked
+                                                    @change="e => this.defaultHOO = e.target.checked">
                                                 <span class="slider round"></span>
                                             </label>
                                         </td>
@@ -600,7 +618,8 @@
                                     <tbody>
                                         <tr v-for="day in hoursOfOperationData">
                                             <td>
-                                                {{ days[parseInt(day.hours_of_operation.day_num)][0].toUpperCase() + days[parseInt(day.hours_of_operation.day_num)].slice(1) }}
+                                                {{ days[parseInt(day.hours_of_operation.day_num)][0].toUpperCase() +
+                                                    days[parseInt(day.hours_of_operation.day_num)].slice(1) }}
                                             </td>
                                             <td v-if="day.hours_of_operation.start_time">{{
                                                 day.hours_of_operation.start_time }}</td>
@@ -1970,10 +1989,6 @@ export default {
                     this.closingData[day].ends = this.closingData[day].starts;
                 }
             }
-        },
-        changeDistributionType(e) {
-            this.processTimeSettings.distributionType = e.target.value;
-            console.log(this.processTimeSettings.distributionType);
         },
     },
     mounted() {

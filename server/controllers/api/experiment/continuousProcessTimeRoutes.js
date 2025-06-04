@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const sequelize = require('../../../config/connection');
-const { ExperimentTimeDistribution } = require('../../../models');
+const { ExperimentTimeDistribution, ProcessTimeDistribution } = require('../../../models');
 
 router.get('/', (req, res) => {
     ExperimentTimeDistribution.findAll()
@@ -15,7 +15,8 @@ router.get('/:id', (req, res) => {
     ExperimentTimeDistribution.findAll({
         where: {
             experiment_id: req.params.id
-        }
+        },
+        include: [{ model: ProcessTimeDistribution }]
     })
         .then(dbExperimentTimeDistributionData => res.json(dbExperimentTimeDistributionData))
         .catch(err => {

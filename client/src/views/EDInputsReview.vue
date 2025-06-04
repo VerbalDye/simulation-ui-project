@@ -376,13 +376,13 @@
                                                                     <select name="distribution-type-apply-all-advanced"
                                                                         id="distribution-type-apply-all-advanced"
                                                                         @change="e => this.processTimeSettings.distributionType = e.target.value">
-                                                                        <option value="lognormal" selected>Lognormal
+                                                                        <option value="lognormal" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].type == 'lognormal'">Lognormal
                                                                         </option>
-                                                                        <option value="normal">Normal</option>
-                                                                        <option value="beta">Beta</option>
-                                                                        <option value="triangular">Triangular</option>
-                                                                        <option value="uniform">Uniform</option>
-                                                                        <option value="exponential">Exponential</option>
+                                                                        <option value="normal" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].type == 'normal'">Normal</option>
+                                                                        <option value="beta" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].type == 'beta'">Beta</option>
+                                                                        <option value="triangular" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].type == 'triangular'">Triangular</option>
+                                                                        <option value="uniform" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].type == 'uniform'">Uniform</option>
+                                                                        <option value="exponential" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].type == 'exponential'">Exponential</option>
                                                                     </select>
                                                                 </td>
                                                             </tr>
@@ -1109,6 +1109,7 @@ export default {
                 discrete: true,
                 assets: {},
                 elements: {},
+                continuousElements: {},
                 modelData: [],
                 selectedModels: {},
                 distributionType: "lognormal"
@@ -1777,6 +1778,18 @@ export default {
                 processTimes.forEach(e => {
                     this.processTimeSettings.elements[asset.asset_id].values[e.experiment_process_time_id] = e.process_time.process_time;
                 })
+                let exampleModel = this.continuousProcessTimeData.find(e => e.process_time_distribution.asset_id == asset.asset_id && e.process_time_distribution.model_number == this.processTimeSettings.selectedModels[asset.asset_id][0])
+                this.processTimeSettings.continuousElements[asset.asset_id] = {
+                    name: asset.display_name,
+                    values: {
+                        distribution: exampleModel.process_time_distribution.distribution,
+                        min: exampleModel.process_time_distribution.min,
+                        max: exampleModel.process_time_distribution.max,
+                        param1: exampleModel.process_time_distribution.param1,
+                        param2: exampleModel.process_time_distribution.param2
+                    }
+                }
+
             })
         },
         handleAdvanceModeChange(e) {

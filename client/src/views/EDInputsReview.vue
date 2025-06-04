@@ -1386,6 +1386,8 @@ export default {
                 this.getAssetData(),
                 this.getTaskSequenceData(),
                 this.getProcessTimeData(),
+                this.getContinuousProcessTimeData(),
+                this.getProcessTimeTypeData(),
                 this.getExperimentData(),
                 this.getSiteData(),
                 this.getCurrentlyRunning(),

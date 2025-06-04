@@ -1789,7 +1789,7 @@ export default {
                         param2: exampleModel.process_time_distribution.param2
                     }
                 }
-
+                console.log(this.processTimeSettings.continuousElements);
             })
         },
         handleAdvanceModeChange(e) {

@@ -174,16 +174,16 @@ export default {
             let sources = this.assetData.filter(item => item.asset.operation_to_locations[0].operation_id == this.selectedOperation.task_sequence.operation_id);
             sources.forEach(source => {
                 let destinations = this.routingData.filter(e => e.routing.origin == source.asset_id);
-                console.log(destinations.map(e => {
-                    let obj = {};
-                    obj.experiment_id = e.experiment_id;
-                    obj.iteration_number = e.iteration_number;
-                    obj.travel_allowed = e.routing.travel_allowed;
-                    obj.origin = e.routing.origin;
-                    obj.destination = e.routing.destination;
-                    obj.experiment_routing_id = e.experiment_routing_id;
-                    return obj;
-                }));
+                // console.log(destinations.map(e => {
+                //     let obj = {};
+                //     obj.experiment_id = e.experiment_id;
+                //     obj.iteration_number = e.iteration_number;
+                //     obj.travel_allowed = e.routing.travel_allowed;
+                //     obj.origin = e.routing.origin;
+                //     obj.destination = e.routing.destination;
+                //     obj.experiment_routing_id = e.experiment_routing_id;
+                //     return obj;
+                // }));
                 destinations.forEach(destination => {
                     this.destinationIDs[destination.routing.destination] = source.asset_id;
                     let secondaryDestinations = this.routingData.filter(e => e.routing.origin == destination.routing.destination);
@@ -192,8 +192,8 @@ export default {
                     })
                 })
             });
-            console.log("Destination IDs", this.destinationIDs);
-            console.log("Secondary Destination IDs", this.secondaryDestinationIDs);
+            // console.log("Destination IDs", this.destinationIDs);
+            // console.log("Secondary Destination IDs", this.secondaryDestinationIDs);
         },
         translateAssetDimensions(asset) {
             let resizedItem = {};

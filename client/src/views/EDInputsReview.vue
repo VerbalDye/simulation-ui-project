@@ -376,13 +376,13 @@
                                                                     <select name="distribution-type-apply-all-advanced"
                                                                         id="distribution-type-apply-all-advanced"
                                                                         @change="e => this.processTimeSettings.distributionType = e.target.value">
-                                                                        <option value="lognormal" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].type == 'lognormal'">Lognormal
+                                                                        <option value="lognormal" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.type == 'lognormal'">Lognormal
                                                                         </option>
-                                                                        <option value="normal" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].type == 'normal'">Normal</option>
-                                                                        <option value="beta" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].type == 'beta'">Beta</option>
-                                                                        <option value="triangular" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].type == 'triangular'">Triangular</option>
-                                                                        <option value="uniform" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].type == 'uniform'">Uniform</option>
-                                                                        <option value="exponential" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].type == 'exponential'">Exponential</option>
+                                                                        <option value="normal" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.type == 'normal'">Normal</option>
+                                                                        <option value="beta" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.type == 'beta'">Beta</option>
+                                                                        <option value="triangular" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.type == 'triangular'">Triangular</option>
+                                                                        <option value="uniform" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.type == 'uniform'">Uniform</option>
+                                                                        <option value="exponential" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.type == 'exponential'">Exponential</option>
                                                                     </select>
                                                                 </td>
                                                             </tr>

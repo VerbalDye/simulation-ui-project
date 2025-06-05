@@ -48,13 +48,13 @@ router.put('/:id', async (req, res) => {
                     max: entry.process_time_distribution.max,
                     is_default: entry.process_time_distribution.is_default
                 })
-                let response = await ExperimentTimeDistribution.create({
+                await ExperimentTimeDistribution.create({
                     experiment_id: req.params.id,
                     iteration_number: 1,
                     process_time_distribution_id: processEntry.process_time_distribution_id
                 })
             } else {
-                ProcessTimeDistribution.update(entry, {
+                await ProcessTimeDistribution.update(entry, {
                     where: {
                         process_time_distribution_id: entry.process_time_distribution_id
                     }

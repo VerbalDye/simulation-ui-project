@@ -2040,7 +2040,7 @@ export default {
             this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values[type] = e.target.value;
             let processTimes;
             console.log("help")
-            if (!this.processTimeSettings.advancedMode) {
+            if (!this.advancedMode) {
                 processTimes = this.continuousProcessTimeData.filter(f => this.selectedAssets.includes(f.process_time_distribution.asset_id));
             } else if (this.processTimeSettings.applyToAll) {
                 console.log(this.processTimeSettings.selectedModels[this.selectedAssets[0].asset_id]);

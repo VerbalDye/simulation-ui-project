@@ -31,11 +31,11 @@ router.put('/:id', async (req, res) => {
             let promises = []
             for (let i = 0; i < req.body.length; i++) {
                 let entry = req.body[i];
-                promises.push(ProcessTimeDistribution.update(entry.process_time_distribution), {
+                promises.push(ProcessTimeDistribution.update(entry.process_time_distribution, {
                     where: {
                         process_time_distribution_id: entry.process_time_distribution_id
                     }
-                })
+                }));
             }
             let response = await Promise.all(promises);
             res.json(response);

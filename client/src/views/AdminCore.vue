@@ -20,7 +20,9 @@
                         </tr>
                         <tr>
                             <td><input type="number" /></td>
-                            <td><input type="number" /></td>
+                            <td><select>
+                                <option v-for="model in modelData" :value="model.model_number">{{ model.model_number }}</option>
+                            </select></td>
                             <td><select>
                                     <option value="1F" selected>1F</option>
                                     <option value="2F">2F</option>
@@ -59,7 +61,9 @@
                         </tr>
                         <tr v-for="entry in shownTableData">
                             <td>{{ entry.core_number }}</td>
-                            <td>{{ entry.model_number }}</td>
+                            <td><select>
+                                <option v-for="model in modelData" :value="model.model_number" :selected="model.model_number == entry.model_number">{{ model.model_number }}</option>
+                            </select></td>
                             <td><select>
                                     <option value="1F" :selected="entry.core_oven_drawer_position == '1F'">1F</option>
                                     <option value="2F" :selected="entry.core_oven_drawer_position == '2F'">2F</option>

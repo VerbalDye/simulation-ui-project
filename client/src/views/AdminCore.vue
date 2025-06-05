@@ -115,6 +115,7 @@ export default {
             shownTableData: [],
             page: 0,
             pageCount: 50,
+            modelData: []
         }
     },
     components: { AdminSidebar, Header, Sidebar, SmartTable },
@@ -139,6 +140,11 @@ export default {
             this.filteredTableData = JSON.parse(JSON.stringify(this.tableData));
             this.shownTableData = this.filteredTableData.slice(0, this.pageCount - 1);
             this.coreModelData = data;
+        },
+        async getModelData() {
+            let data = await dataRequest("/api/model", "GET");
+            console.log(data);
+            this.modelData = data;
         },
         changePage(type) {
             if (type == "skip-back") {
@@ -179,6 +185,7 @@ export default {
     mounted() {
         this.locationSearch = window.location.search;
         this.getCoreModelData();
+        this.getModelData();
     }
 }
 </script>

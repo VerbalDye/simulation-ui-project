@@ -32,12 +32,14 @@
                     </tr>
                 </table>
                 <div>
-                    Showing {{ page + 1 }} - {{ page + pageCount > tableData.length ? tableData.length : page + pageCount }} of {{ tableData.length }}
+                    Showing {{ page + 1 }} - {{ page + pageCount > filteredTableData.length ? filteredTableData.length : page + pageCount }} of {{ filteredTableData.length }}
                 </div>
                 <button @click="changePage('skip-back')"><i class="bi bi-chevron-double-left"></i></button>
                 <button @click="changePage('back')"><i class="bi bi-chevron-left"></i></button>
                 <button @click="changePage('forward')"><i class="bi bi-chevron-right"></i></button>
                 <button @click="changePage('skip-forward')"><i class="bi bi-chevron-double-right"></i></button>
+                <br/>
+                <button @click="saveChanges">Save</button>
             </div>
         </div>
     </div>
@@ -55,6 +57,7 @@ export default {
         return {
             links: null,
             coreModelData: {},
+            filteredTableData: [],
             tableData: [],
             shownTableData: [],
             page: 0,
@@ -79,7 +82,8 @@ export default {
                 })
             })
             console.log(this.tableData);
-            this.shownTableData = this.tableData.slice(0, this.pageCount - 1);
+            this.filteredTableData = JSON.parse(JSON.stringify(this.tableData));
+            this.shownTableData = this.filteredTableData.slice(0, this.pageCount - 1);
             this.coreModelData = data;
         },
         changePage(type){
@@ -90,17 +94,20 @@ export default {
                 this.page = this.page - this.pageCount
                 }
             } else if (type == "forward") {
-                if (this.page + this.pageCount <= this.tableData.length) {
+                if (this.page + this.pageCount <= this.filteredTableData.length) {
                 this.page = this.page + this.pageCount
                 }
             } else if (type == "skip-forward") {
-                this.page = Math.floor(this.tableData.length / this.pageCount) * this.pageCount
+                this.page = Math.floor(this.filteredTableData.length / this.pageCount) * this.pageCount
             }
-            this.shownTableData = this.tableData.slice(this.page, this.page + this.pageCount - 1);
+            this.shownTableData = this.filteredTableData.slice(this.page, this.page + this.pageCount - 1);
         },
         coreSearchChange(e) {
-
+            this.filteredTableData = JSON.parse(JSON.stringify(this.tableData.filter(f => f.core_number.contains(e.target.value) || f.model_number.contains(e.target.value) || f.core_oven_drawer_position.contains(e.target.value) || f.core_oven_number.contains(e.target.value) || f.soak_temperature_f.contains(e.target.value) || f.time_minutes.contains(e.target.value))));
         },
+        saveChanges() {
+
+        }
     },
     mounted() {
         this.locationSearch = window.location.search;

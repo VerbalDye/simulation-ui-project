@@ -203,8 +203,8 @@ export default {
         },
         updatedRow(e, type, core_number) {
             let entry = this.updateCoreData.find(f => f.core_number == core_number);
-            let index = this.tableData.findIndex(f = f.core_number == core_number);
-            let indexFiltered = this.filteredTableData.findIndex(f = f.core_number == core_number);
+            let index = this.tableData.findIndex(f => f.core_number == core_number);
+            let indexFiltered = this.filteredTableData.findIndex(f => f.core_number == core_number);
             if (entry) {
                 entry[type] = e.target.value;
             } else {

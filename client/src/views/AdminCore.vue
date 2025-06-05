@@ -64,20 +64,20 @@
                         </tr>
                         <tr v-for="entry in shownTableData">
                             <td>{{ entry.core_number }}</td>
-                            <td><select>
+                            <td><select @change="updatedRow($event, 'model_number', entry.core_number)">
                                 <option v-for="model in modelData" :value="model.model_number" :selected="model.model_number == entry.model_number">{{ model.model_number }}</option>
                             </select></td>
-                            <td><select>
+                            <td><select  @change="updatedRow($event, 'core_oven_drawer_position', entry.core_number)">
                                     <option value="1F" :selected="entry.core_oven_drawer_position == '1F'">1F</option>
                                     <option value="2F" :selected="entry.core_oven_drawer_position == '2F'">2F</option>
                                 </select></td>
-                            <td><select>
+                            <td><select  @change="updatedRow($event, 'core_oven_number', entry.core_number)">
                                     <option value="1" :selected="entry.core_oven_number == '1'">1</option>
                                     <option value="2" :selected="entry.core_oven_number == '2'">2</option>
                                 </select></td>
-                            <td><input class="small-number-input" type="number" :value="entry.soak_temperature_f" /></td>
-                            <td><input class="small-number-input" type="number" :value="entry.time_minutes" /></td>
-                            <td><select>
+                            <td><input class="small-number-input" type="number" :value="entry.soak_temperature_f" @change="updatedRow($event, 'soak_temperature_f', entry.core_number)"/></td>
+                            <td><input class="small-number-input" type="number" :value="entry.time_minutes" @change="updatedRow($event, 'time_minutes', entry.core_number)"/></td>
+                            <td><select @change="updatedRow($event, 'status', entry.core_number)">
                                     <option value="R&D" :selected="entry.status == 'R&D'">R&D</option>
                                     <option value="APPROVED" :selected="entry.status == 'APPROVED'">APPROVED</option>
                                     <option value="SCRAP" :selected="entry.status == 'SCRAP'">SCRAP</option>
@@ -115,6 +115,7 @@ import SmartTable from '@/components/SmartTable.vue';
 import AdminSidebar from '@/components/AdminSidebar.vue';
 import titleMixin from '../mixins/titleMixin';
 import dataRequest from '@/utils/dataRequest';
+import { indexOf } from 'core-js/core/array';
 export default {
     data() {
         return {
@@ -134,7 +135,9 @@ export default {
                 soak_temperature_f: 0,
                 time_minutes: 0,
                 status: 'R&D'
-            }
+            },
+            deleteCoreData: [],
+            updateCoreData: []
         }
     },
     components: { AdminSidebar, Header, Sidebar, SmartTable },
@@ -196,7 +199,21 @@ export default {
         deleteRow(core_number) {
             this.tableData = this.tableData.filter(e => e.core_number !== core_number);
             this.filteredTableData = this.filteredTableData.filter(e => e.core_number !== core_number);
+            this.deleteCoreData.push(core_number);
             this.changePage('reload');
+        },
+        updatedRow(e, type, core_number) {
+            let entry = this.updateCoreData.find(f => f.core_number == core_number);
+            let index = this.tableData.findIndex(f = f.core_number == core_number);
+            let indexFiltered = this.filteredTableData.findIndex(f = f.core_number == core_number);
+            if (entry) {
+                entry[type] = e.target.value;
+            } else {
+                this.updateCoreData.push(this.tableData[index]);
+                this.updateCoreData[this.updateCoreData.length -1][type] = e.target.value;
+            }
+            this.tableData[index][type] = e.target.value;
+            this.filteredTableData[indexFiltered][type] = e.target.value;
         },
         async addCore() {
             if (this.addCoreData.core_number === null || this.addCoreData.model_number === null || this.addCoreData.core_oven_drawer_position === null || this.addCoreData.core_oven_number === null || this.addCoreData.soak_temperature_f === null || this.addCoreData.time_minutes === null || this.addCoreData.status === null) {
@@ -206,8 +223,9 @@ export default {
                 window.location.reload()
             }
         },
-        saveChanges() {
-
+        async saveChanges() {
+            let deleteResponse = await dataRequest('/api/core-model/', 'DELETE', this.deleteCoreData);
+            let updateResponse = await dataRequest('/api/core-model/', 'PUT', this.updateCoreData);
         }
     },
     mounted() {

@@ -51,6 +51,66 @@ router.post('/', async (req, res) => {
         console.log(err);
         res.status(400).json(err);
     }
+});
+
+router.delete('/', async (req, res) => {
+    try {
+        let promises = []
+        req.body.forEach(entry => {
+            promises.push(
+                Core.destroy({
+                    where: {
+                        core_number: entry.core_number
+                    }
+                })
+            )
+        })
+        let response = await Promise.all(promises)
+        res.json(response)
+    } catch (err) {
+        console.log(err);
+        res.status(400).json(err);
+    }
+});
+
+router.put('/', async (req, res) => {
+    try {
+        let promises = [];
+        req.body.forEach(entry => {
+            promises.push(
+                CoreModel.update({
+                    status: entry.status,
+                    model_number: entry.model_number
+                },
+                    {
+                        where: {
+                            core_number: entry.core_number
+                        }
+                    }))
+            promises.push(
+                CoreSoakTime.update({
+                    core_number: entry.core_number,
+                    model_number: entry.model_number,
+                    soak_temperature_f: entry.soak_temperature_f,
+                    time_minutes: entry.time_minutes,
+                    core_oven_number: entry.core_oven_number,
+                    core_oven_drawer_position: entry.core_oven_drawer_position,
+                    is_default: 1
+                },
+                {
+                    where: {
+                        core_number: entry.core_number
+                    }
+                }
+                )
+            )
+        })
+        let response = await Promise.all(promises)
+        res.json(response);
+    } catch (err) {
+        console.log(err);
+        res.status(400).json(err);
+    }
 })
 
 module.exports = router;

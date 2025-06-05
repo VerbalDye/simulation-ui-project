@@ -27,9 +27,6 @@ router.get('/:id', (req, res) => {
 router.put('/:id', async (req, res) => {
     let promises = []
     try {
-        console.log("hey");
-        console.log(req.body[0]);
-        console.log("look");
         if (req.body[0].iteration_number == 1) {
             req.body.forEach(entry => {
                 promises.push(ExperimentTimeType.update(entry, {
@@ -41,9 +38,10 @@ router.put('/:id', async (req, res) => {
             let response = await Promise.all(promises);
             res.json(response);
         } else {
-            req.body.forEach(e => e.iteration_number = 1)
-            req.body.forEach(e => delete e.experiment_time_type_id);
-            console.log(req.body)
+            req.body.forEach(e => {
+                e.iteration_number = 1;
+                delete e.experiment_time_type_id
+            });
             let response = await ExperimentTimeType.bulkCreate(req.body);
             res.json(response);
         }

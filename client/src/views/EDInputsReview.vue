@@ -1789,7 +1789,7 @@ export default {
                 dataRequest("/api/experiment/core/bulk/" + this.experimentID, "PUT", JSON.stringify({ data: coreData })),
                 dataRequest("/api/experiment/inputs/" + this.experimentID, "POST", JSON.stringify({ iteration: 1, targetIteration: this.iteration, data })),
                 dataRequest("/api/experiment/hours-of-operation/update/" + this.experimentID, "PUT", JSON.stringify(hooData)),
-                dataRequest("/api/experiment/process-time-type/", "PUT", JSON.stringify(this.processTimeTypeData)),
+                dataRequest("/api/experiment/process-time-type/" + this.experimentID, "PUT", JSON.stringify(this.processTimeTypeData)),
                 dataRequest("/api/experiment/continuous-process-time/" + this.experimentID, "PUT", JSON.stringify(this.continuousProcessTimeData)),
                 this.saveJobChanges()
             ])

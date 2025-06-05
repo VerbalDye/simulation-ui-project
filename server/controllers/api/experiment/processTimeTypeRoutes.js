@@ -24,7 +24,7 @@ router.get('/:id', (req, res) => {
         });
 });
 
-router.put('/', async (req, res) => {
+router.put('/:id', async (req, res) => {
     let promises = []
     try {
         console.log("hey");

@@ -115,7 +115,6 @@ import SmartTable from '@/components/SmartTable.vue';
 import AdminSidebar from '@/components/AdminSidebar.vue';
 import titleMixin from '../mixins/titleMixin';
 import dataRequest from '@/utils/dataRequest';
-import { indexOf } from 'core-js/core/array';
 export default {
     data() {
         return {

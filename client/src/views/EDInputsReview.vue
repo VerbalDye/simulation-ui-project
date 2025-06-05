@@ -390,7 +390,7 @@
                                                                 v-if="this.processTimeSettings.distributionType !== 'Normal'">
                                                                 <th><i class="bi bi-dash-lg"></i> Min (minutes)*</th>
                                                                 <td>
-                                                                    <input type="number" value="0"
+                                                                    <input type="number" :value="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].value.min"
                                                                         class="small-number-input" />
                                                                 </td>
                                                             </tr>
@@ -398,7 +398,7 @@
                                                                 v-if="this.processTimeSettings.distributionType == 'Beta' || this.processTimeSettings.distributionType == 'Triangular' || this.processTimeSettings.distributionType == 'Uniform'">
                                                                 <th><i class="bi bi-plus-lg"></i> Max (minutes)*</th>
                                                                 <td>
-                                                                    <input type="number" value="15"
+                                                                    <input type="number" :value="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].value.max"
                                                                         class="small-number-input" />
                                                                 </td>
                                                             </tr>
@@ -417,7 +417,7 @@
                                                                 </th>
                                                                 <td>
                                                                     <input type="number" class="small-number-input"
-                                                                        value="0">
+                                                                        :value="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].value.param1">
                                                                 </td>
                                                             </tr>
                                                             <tr
@@ -432,7 +432,7 @@
                                                                 </th>
                                                                 <td>
                                                                     <input type="number" class="small-number-input"
-                                                                        value="0">
+                                                                        :value="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].value.param2">
                                                                 </td>
                                                             </tr>
                                                         </table>

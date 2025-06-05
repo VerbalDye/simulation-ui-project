@@ -19,33 +19,33 @@
                             <th>Status</th>
                         </tr>
                         <tr>
-                            <td><input class="small-number-input" type="number" /></td>
-                            <td><select>
-                                <option v-for="model in modelData" :value="model.model_number">{{ model.model_number }}</option>
+                            <td><input type="number" @change="e => this.addCoreData.core_number = e.target.value"/></td>
+                            <td><select @change="e => this.addCoreData.model_number = e.target.value">
+                                <option v-for="model in modelData" :value="model.model_number" :selected="model.model_number == this.addCoreData.model_number">{{ model.model_number }}</option>
                             </select></td>
-                            <td><select>
-                                    <option value="1F" selected>1F</option>
-                                    <option value="2F">2F</option>
+                            <td><select @change="e => this.addCoreData.core_oven_drawer_position = e.target.value">
+                                    <option value="1F" :selected="this.addCoreData.core_oven_drawer_position == '1F'">1F</option>
+                                    <option value="2F" :selected="this.addCoreData.core_oven_drawer_position == '2F'">2F</option>
                                 </select></td>
-                            <td><select>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
+                            <td><select @change="e => this.addCoreData.core_oven_number = e.target.value">
+                                    <option value="1" :selected="this.addCoreData.core_oven_number == 1">1</option>
+                                    <option value="2" :selected="this.addCoreData.core_oven_number == 2">2</option>
                                 </select></td>
-                            <td><input class="small-number-input" type="number" /></td>
-                            <td><input class="small-number-input" type="number" /></td>
-                            <td><select>
-                                    <option value="R&D" selected>R&D</option>
-                                    <option value="APPROVED">APPROVED</option>
-                                    <option value="SCRAP">SCRAP</option>
-                                    <option value="QUARANTINE">QUARANTINE</option>
-                                    <option value="REPAIR">REPAIR</option>
-                                    <option value="CANCELLED">CANCELLED</option>
-                                    <option value="DEVELOP">DEVELOP</option>
-                                    <option value="SOLD">SOLD</option>
+                            <td><input class="small-number-input" type="number" :value="this.addCoreData.soak_temperature_f" @change="e => this.addCoreData.soak_temperature_f = e.target.value"/></td>
+                            <td><input class="small-number-input" type="number" :value="this.addCoreData.time_minutes" @change="e => this.addCoreData.time_minutes = e.target.value"/></td>
+                            <td><select @change="e => this.addCoreData.status = e.target.value">
+                                    <option value="R&D" :selected="this.addCoreData.status == 'R&D'">R&D</option>
+                                    <option value="APPROVED" :selected="this.addCoreData.status == 'APPROVED'">APPROVED</option>
+                                    <option value="SCRAP" :selected="this.addCoreData.status == 'SCRAP'">SCRAP</option>
+                                    <option value="QUARANTINE" :selected="this.addCoreData.status == 'QUARANTINE'">QUARANTINE</option>
+                                    <option value="REPAIR" :selected="this.addCoreData.status == 'REPAIR'">REPAIR</option>
+                                    <option value="CANCELLED" :selected="this.addCoreData.status == 'CANCELLED'">CANCELLED</option>
+                                    <option value="DEVELOP" :selected="this.addCoreData.status == 'DEVELOP'">DEVELOP</option>
+                                    <option value="SOLD" :selected="this.addCoreData.status == 'SOLD'">SOLD</option>
                                 </select></td>
                         </tr>
                     </table>
-                    <button class="space">Add Core</button>
+                    <button class="space" @click="addCore">Add Core</button>
                 </div>
                 <div>
                     <h2>Edit Cores</h2>
@@ -125,7 +125,16 @@ export default {
             shownTableData: [],
             page: 0,
             pageCount: 50,
-            modelData: []
+            modelData: [],
+            addCoreData: {
+                core_number: null,
+                model_number: null,
+                core_oven_drawer_position: '1F',
+                core_oven_number: 1,
+                soak_temperature_f: 0,
+                time_minutes: 0,
+                status: 'R&D'
+            }
         }
     },
     components: { AdminSidebar, Header, Sidebar, SmartTable },
@@ -155,6 +164,7 @@ export default {
             let data = await dataRequest("/api/model", "GET");
             console.log(data);
             this.modelData = data;
+            this.addCoreData.model_number = data[0].model_number;
         },
         changePage(type) {
             if (type == "skip-back") {
@@ -187,6 +197,13 @@ export default {
             this.tableData = this.tableData.filter(e => e.core_number !== core_number);
             this.filteredTableData = this.filteredTableData.filter(e => e.core_number !== core_number);
             this.changePage('reload');
+        },
+        addCore() {
+            if (this.addCoreData.core_number === null || this.addCoreData.model_number === null || this.addCoreData.core_oven_drawer_position === null || this.addCoreData.core_oven_number === null || this.addCoreData.soak_temperature_f === null || this.addCoreData.time_minutes === null || this.addCoreData.status === null) {
+                window.alert("Please make sure all fields are filled in.");
+            } else {
+                let response = dataRequest('/api/core', "POST", this.addCoreData)
+            }
         },
         saveChanges() {
 

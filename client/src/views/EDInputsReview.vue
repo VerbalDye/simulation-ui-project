@@ -1408,7 +1408,7 @@ export default {
             siteSelectionEl.checked = true;
             await this.getJobData();
             this.downtimeData.forEach(downtime => {
-                console.log(downtime);
+                // console.log(downtime);
                 let d = downtime.asset_downtime;
                 let startTime = dayjs().set('hour', d.start_time.split(':')[0]).set('minute', d.start_time.split(':')[1]).set('second', d.start_time.split(':')[2]);
                 let endTime = dayjs().set('hour', d.end_time.split(':')[0]).set('minute', d.end_time.split(':')[1]).set('second', d.end_time.split(':')[2]);
@@ -1507,9 +1507,9 @@ export default {
                 }),
                 downtime: downtime
             }
-            console.log(this.coreModelData)
+            // console.log(this.coreModelData)
             let coreData = this.coreModelData.map(({ experiment_core_id, available, ...rest }) => { return { experiment_core_id, available } })
-            console.log(coreData);
+            // console.log(coreData);
             let hooData = [];
             for (let i = 0; i < 7; i++) {
                 let start_time;
@@ -1755,13 +1755,11 @@ export default {
             } else {
                 this.selectedAssets = [{ Status: "No Associated Assets" }];
             }
-            console.log(this.processTimeTypeData.find(e => e.operation_id == this.taskSequenceData[this.selectedOperation].task_sequence.operation_id));
             if (this.processTimeTypeData.find(e => e.operation_id == this.taskSequenceData[this.selectedOperation].task_sequence.operation_id).discrete == 1) {
                 this.processTimeSettings.discrete = true;
             } else {
                 this.processTimeSettings.discrete = false;
             }
-            console.log(this.taskSequenceData[this.selectedOperation])
             this.processTimeElementChange();
         },
         applyToAllChange(e) {
@@ -1791,9 +1789,6 @@ export default {
                         param2: exampleModel.process_time_distribution.param2
                     }
                 }
-                console.log(this.processTimeSettings.selectedModels[asset.asset_id][0]);
-                console.log(this.continuousProcessTimeData.find(e => e.process_time_distribution.asset_id == asset.asset_id && e.process_time_distribution.model_number == this.processTimeSettings.selectedModels[asset.asset_id][0]))
-                console.log(this.processTimeSettings.continuousElements);
             })
         },
         handleAdvanceModeChange(e) {
@@ -1868,7 +1863,7 @@ export default {
 
         },
         handleNumberOfSamplesChange(asset_id, model_number, { target }) {
-            console.log(this.processTimeSettings.elements);
+            // console.log(this.processTimeSettings.elements);
             let selectedOperation = this.taskSequenceData[this.selectedOperation];
             let samples = parseInt(target.value);
             let keys = Object.keys(this.processTimeSettings.elements[asset_id].values);
@@ -2043,7 +2038,8 @@ export default {
         },
         continuousProcessTimeChange(e, type) {
             this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values[type] = e.target.value;
-            let processTimes
+            let processTimes;
+            console.log("help")
             if (!this.processTimeSettings.advancedMode) {
                 processTimes = this.continuousProcessTimeData.filter(f => this.selectedAssets.includes(f.process_time_distribution.asset_id));
             } else if (this.processTimeSettings.applyToAll) {

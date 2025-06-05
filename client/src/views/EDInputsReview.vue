@@ -375,7 +375,7 @@
                                                                 <td>
                                                                     <select name="distribution-type-apply-all-advanced"
                                                                         id="distribution-type-apply-all-advanced"
-                                                                        @change="e => this.processTimeSettings.distributionType = e.target.value">
+                                                                        @change="e => this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution = e.target.value">
                                                                         <option value="Lognormal" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Lognormal'">Lognormal
                                                                         </option>
                                                                         <option value="Normal" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Normal'">Normal</option>
@@ -387,7 +387,7 @@
                                                                 </td>
                                                             </tr>
                                                             <tr
-                                                                v-if="this.processTimeSettings.distributionType !== 'Normal'">
+                                                                v-if="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution !== 'Normal'">
                                                                 <th><i class="bi bi-dash-lg"></i> Min (minutes)*</th>
                                                                 <td>
                                                                     <input type="number" :value="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.min"
@@ -395,7 +395,7 @@
                                                                 </td>
                                                             </tr>
                                                             <tr
-                                                                v-if="this.processTimeSettings.distributionType == 'Beta' || this.processTimeSettings.distributionType == 'Triangular' || this.processTimeSettings.distributionType == 'Uniform'">
+                                                                v-if="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Beta' || this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Triangular' || this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Uniform'">
                                                                 <th><i class="bi bi-plus-lg"></i> Max (minutes)*</th>
                                                                 <td>
                                                                     <input type="number" :value="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.max"
@@ -403,16 +403,16 @@
                                                                 </td>
                                                             </tr>
                                                             <tr
-                                                                v-if="this.processTimeSettings.distributionType !== 'Uniform'">
-                                                                <th>{{ this.processTimeSettings.distributionType ===
+                                                                v-if="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution !== 'Uniform'">
+                                                                <th>{{ this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution ===
                                                                     'Lognormal' ||
-                                                                    this.processTimeSettings.distributionType ==
+                                                                    this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution ==
                                                                     'Normal' ? "Mu" : "" }}
-                                                                    {{ this.processTimeSettings.distributionType ===
+                                                                    {{ this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution ===
                                                                     'Beta' ? "p" : "" }}
-                                                                    {{ this.processTimeSettings.distributionType ===
+                                                                    {{ this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution ===
                                                                     'Triangular' ? "Median" : "" }}
-                                                                    {{ this.processTimeSettings.distributionType ===
+                                                                    {{ this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution ===
                                                                     'Exponential' ? "Lambda" : "" }}
                                                                 </th>
                                                                 <td>
@@ -421,13 +421,13 @@
                                                                 </td>
                                                             </tr>
                                                             <tr
-                                                                v-if="this.processTimeSettings.distributionType === 'Lognormal' || this.processTimeSettings.distributionType == 'Normal' || this.processTimeSettings.distributionType == 'Beta'">
+                                                                v-if="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution === 'Lognormal' || this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Normal' || this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Beta'">
                                                                 <th>
-                                                                    {{ this.processTimeSettings.distributionType ===
+                                                                    {{ this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution ===
                                                                         'Lognormal' ||
-                                                                    this.processTimeSettings.distributionType ==
+                                                                    this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution ==
                                                                     'Normal' ? "Sigma" : "" }}
-                                                                    {{ this.processTimeSettings.distributionType ===
+                                                                    {{ this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution ===
                                                                     'Beta' ? "q" : "" }}
                                                                 </th>
                                                                 <td>
@@ -448,7 +448,7 @@
                                                                 <td>
                                                                     <select name="distribution-type-apply-all-advanced"
                                                                         id="distribution-type-apply-all-advanced"
-                                                                        @change="e => this.processTimeSettings.distributionType = e.target.value">
+                                                                        @change="e => this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution = e.target.value">
                                                                         <option value="Lognormal">Lognormal</option>
                                                                         <option value="Normal">Normal</option>
                                                                         <option value="Beta">Beta</option>
@@ -500,7 +500,7 @@
                                                                 <td>
                                                                     <select name="distribution-type-apply-all-advanced"
                                                                         id="distribution-type-apply-all-advanced"
-                                                                        @change="e => this.processTimeSettings.distributionType = e.target.value">
+                                                                        @change="e => this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution = e.target.value">
                                                                         <option value="Lognormal">Lognormal</option>
                                                                         <option value="Normal">Normal</option>
                                                                         <option value="Beta">Beta</option>
@@ -537,7 +537,7 @@
                                                                 <td>
                                                                     <select name="distribution-type-apply-all-advanced"
                                                                         id="distribution-type-apply-all-advanced"
-                                                                        @change="e => this.processTimeSettings.distributionType = e.target.value">
+                                                                        @change="e => this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution = e.target.value">
                                                                         <option value="Lognormal">Lognormal</option>
                                                                         <option value="Normal">Normal</option>
                                                                         <option value="Beta">Beta</option>

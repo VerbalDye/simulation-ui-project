@@ -103,7 +103,7 @@ export default {
             this.shownTableData = this.filteredTableData.slice(this.page, this.page + this.pageCount - 1);
         },
         coreSearchChange(e) {
-            this.filteredTableData = JSON.parse(JSON.stringify(this.tableData.filter(f => f.core_number.toString().contains(e.target.value) || f.model_number.toString().contains(e.target.value) || f.core_oven_drawer_position.toString().contains(e.target.value) || f.core_oven_number.toString().contains(e.target.value) || f.soak_temperature_f.toString().contains(e.target.value) || f.time_minutes.toString().contains(e.target.value))));
+            this.filteredTableData = JSON.parse(JSON.stringify(this.tableData.filter(f => f.core_number.toString().includes(e.target.value) || f.model_number.toString().includes(e.target.value) || f.core_oven_drawer_position.toString().includes(e.target.value) || f.core_oven_number.toString().includes(e.target.value) || f.soak_temperature_f.toString().includes(e.target.value) || f.time_minutes.toString().includes(e.target.value))));
         },
         saveChanges() {
 

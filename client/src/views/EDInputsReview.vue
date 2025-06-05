@@ -376,18 +376,18 @@
                                                                     <select name="distribution-type-apply-all-advanced"
                                                                         id="distribution-type-apply-all-advanced"
                                                                         @change="e => this.processTimeSettings.distributionType = e.target.value">
-                                                                        <option value="lognormal" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.type == 'lognormal'">Lognormal
+                                                                        <option value="Lognormal" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.type == 'Lognormal'">Lognormal
                                                                         </option>
-                                                                        <option value="normal" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.type == 'normal'">Normal</option>
-                                                                        <option value="beta" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.type == 'beta'">Beta</option>
-                                                                        <option value="triangular" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.type == 'triangular'">Triangular</option>
-                                                                        <option value="uniform" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.type == 'uniform'">Uniform</option>
-                                                                        <option value="exponential" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.type == 'exponential'">Exponential</option>
+                                                                        <option value="Normal" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.type == 'Normal'">Normal</option>
+                                                                        <option value="Beta" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.type == 'Beta'">Beta</option>
+                                                                        <option value="Triangular" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.type == 'Triangular'">Triangular</option>
+                                                                        <option value="Uniform" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.type == 'Uniform'">Uniform</option>
+                                                                        <option value="Exponential" :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.type == 'Exponential'">Exponential</option>
                                                                     </select>
                                                                 </td>
                                                             </tr>
                                                             <tr
-                                                                v-if="this.processTimeSettings.distributionType !== 'normal'">
+                                                                v-if="this.processTimeSettings.distributionType !== 'Normal'">
                                                                 <th><i class="bi bi-dash-lg"></i> Min (minutes)*</th>
                                                                 <td>
                                                                     <input type="number" value="0"
@@ -395,7 +395,7 @@
                                                                 </td>
                                                             </tr>
                                                             <tr
-                                                                v-if="this.processTimeSettings.distributionType == 'beta' || this.processTimeSettings.distributionType == 'triangular' || this.processTimeSettings.distributionType == 'uniform'">
+                                                                v-if="this.processTimeSettings.distributionType == 'Beta' || this.processTimeSettings.distributionType == 'Triangular' || this.processTimeSettings.distributionType == 'Uniform'">
                                                                 <th><i class="bi bi-plus-lg"></i> Max (minutes)*</th>
                                                                 <td>
                                                                     <input type="number" value="15"
@@ -403,17 +403,17 @@
                                                                 </td>
                                                             </tr>
                                                             <tr
-                                                                v-if="this.processTimeSettings.distributionType !== 'uniform'">
+                                                                v-if="this.processTimeSettings.distributionType !== 'Uniform'">
                                                                 <th>{{ this.processTimeSettings.distributionType ===
-                                                                    'lognormal' ||
+                                                                    'Lognormal' ||
                                                                     this.processTimeSettings.distributionType ==
-                                                                    'normal' ? "Mu" : "" }}
+                                                                    'Normal' ? "Mu" : "" }}
                                                                     {{ this.processTimeSettings.distributionType ===
-                                                                    'beta' ? "p" : "" }}
+                                                                    'Beta' ? "p" : "" }}
                                                                     {{ this.processTimeSettings.distributionType ===
-                                                                    'triangular' ? "Median" : "" }}
+                                                                    'Triangular' ? "Median" : "" }}
                                                                     {{ this.processTimeSettings.distributionType ===
-                                                                    'exponential' ? "Lambda" : "" }}
+                                                                    'Exponential' ? "Lambda" : "" }}
                                                                 </th>
                                                                 <td>
                                                                     <input type="number" class="small-number-input"
@@ -421,14 +421,14 @@
                                                                 </td>
                                                             </tr>
                                                             <tr
-                                                                v-if="this.processTimeSettings.distributionType === 'lognormal' || this.processTimeSettings.distributionType == 'normal' || this.processTimeSettings.distributionType == 'beta'">
+                                                                v-if="this.processTimeSettings.distributionType === 'Lognormal' || this.processTimeSettings.distributionType == 'Normal' || this.processTimeSettings.distributionType == 'Beta'">
                                                                 <th>
                                                                     {{ this.processTimeSettings.distributionType ===
-                                                                        'lognormal' ||
+                                                                        'Lognormal' ||
                                                                     this.processTimeSettings.distributionType ==
-                                                                    'normal' ? "Sigma" : "" }}
+                                                                    'Normal' ? "Sigma" : "" }}
                                                                     {{ this.processTimeSettings.distributionType ===
-                                                                    'beta' ? "q" : "" }}
+                                                                    'Beta' ? "q" : "" }}
                                                                 </th>
                                                                 <td>
                                                                     <input type="number" class="small-number-input"
@@ -449,12 +449,12 @@
                                                                     <select name="distribution-type-apply-all-advanced"
                                                                         id="distribution-type-apply-all-advanced"
                                                                         @change="e => this.processTimeSettings.distributionType = e.target.value">
-                                                                        <option value="lognormal">Lognormal</option>
-                                                                        <option value="normal">Normal</option>
-                                                                        <option value="beta">Beta</option>
-                                                                        <option value="triangular">Triangular</option>
-                                                                        <option value="uniform">Uniform</option>
-                                                                        <option value="exponential">Exponential</option>
+                                                                        <option value="Lognormal">Lognormal</option>
+                                                                        <option value="Normal">Normal</option>
+                                                                        <option value="Beta">Beta</option>
+                                                                        <option value="Triangular">Triangular</option>
+                                                                        <option value="Uniform">Uniform</option>
+                                                                        <option value="Exponential">Exponential</option>
                                                                     </select>
                                                                 </td>
                                                             </tr>
@@ -501,12 +501,12 @@
                                                                     <select name="distribution-type-apply-all-advanced"
                                                                         id="distribution-type-apply-all-advanced"
                                                                         @change="e => this.processTimeSettings.distributionType = e.target.value">
-                                                                        <option value="lognormal">Lognormal</option>
-                                                                        <option value="normal">Normal</option>
-                                                                        <option value="beta">Beta</option>
-                                                                        <option value="triangular">Triangular</option>
-                                                                        <option value="uniform">Uniform</option>
-                                                                        <option value="exponential">Exponential</option>
+                                                                        <option value="Lognormal">Lognormal</option>
+                                                                        <option value="Normal">Normal</option>
+                                                                        <option value="Beta">Beta</option>
+                                                                        <option value="Triangular">Triangular</option>
+                                                                        <option value="Uniform">Uniform</option>
+                                                                        <option value="Exponential">Exponential</option>
                                                                     </select>
                                                                 </td>
                                                             </tr>
@@ -538,12 +538,12 @@
                                                                     <select name="distribution-type-apply-all-advanced"
                                                                         id="distribution-type-apply-all-advanced"
                                                                         @change="e => this.processTimeSettings.distributionType = e.target.value">
-                                                                        <option value="lognormal">Lognormal</option>
-                                                                        <option value="normal">Normal</option>
-                                                                        <option value="beta">Beta</option>
-                                                                        <option value="triangular">Triangular</option>
-                                                                        <option value="uniform">Uniform</option>
-                                                                        <option value="exponential">Exponential</option>
+                                                                        <option value="Lognormal">Lognormal</option>
+                                                                        <option value="Normal">Normal</option>
+                                                                        <option value="Beta">Beta</option>
+                                                                        <option value="Triangular">Triangular</option>
+                                                                        <option value="Uniform">Uniform</option>
+                                                                        <option value="Exponential">Exponential</option>
                                                                     </select>
                                                                 </td>
                                                             </tr>
@@ -1112,7 +1112,7 @@ export default {
                 continuousElements: {},
                 modelData: [],
                 selectedModels: {},
-                distributionType: "lognormal"
+                distributionType: "Lognormal"
             },
             demandSettings: {
                 default: true,

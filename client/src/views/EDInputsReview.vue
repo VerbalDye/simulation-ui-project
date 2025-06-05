@@ -600,7 +600,7 @@
                                                                 <td>
                                                                     <select name="distribution-type-apply-all-advanced"
                                                                         id="distribution-type-apply-all-advanced"
-                                                                        @change="continuousProcessTimeChange($event, 'distribution')">
+                                                                        @change="continuousProcessTimeChange($event, 'distribution', asset_id)">
                                                                         <option value="Lognormal"
                                                                             :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Lognormal'">
                                                                             Lognormal
@@ -630,7 +630,7 @@
                                                                     <input type="number"
                                                                         :value="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.min"
                                                                         class="small-number-input"
-                                                                        @change="continuousProcessTimeChange($event, 'min')" />
+                                                                        @change="continuousProcessTimeChange($event, 'min', asset_id)" />
                                                                 </td>
                                                             </tr>
                                                             <tr
@@ -640,7 +640,7 @@
                                                                     <input type="number"
                                                                         :value="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.max"
                                                                         class="small-number-input"
-                                                                        @change="continuousProcessTimeChange($event, 'max')" />
+                                                                        @change="continuousProcessTimeChange($event, 'max', asset_id)" />
                                                                 </td>
                                                             </tr>
                                                             <tr
@@ -667,7 +667,7 @@
                                                                 </th>
                                                                 <td>
                                                                     <input type="number" class="small-number-input"
-                                                                        @change="continuousProcessTimeChange($event, 'param1')"
+                                                                        @change="continuousProcessTimeChange($event, 'param1', asset_id)"
                                                                         :value="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.param1">
                                                                 </td>
                                                             </tr>
@@ -688,7 +688,7 @@
                                                                 </th>
                                                                 <td>
                                                                     <input type="number" class="small-number-input"
-                                                                        @change="continuousProcessTimeChange($event, 'param2')"
+                                                                        @change="continuousProcessTimeChange($event, 'param2', asset_id)"
                                                                         :value="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.param2">
                                                                 </td>
                                                             </tr>
@@ -705,7 +705,7 @@
                                                                 <td>
                                                                     <select name="distribution-type-apply-all-advanced"
                                                                         id="distribution-type-apply-all-advanced"
-                                                                        @change="continuousProcessTimeChange($event, 'distribution')">
+                                                                        @change="continuousProcessTimeChange($event, 'distribution', asset_id)">
                                                                         <option value="Lognormal"
                                                                             :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Lognormal'">
                                                                             Lognormal
@@ -735,7 +735,7 @@
                                                                     <input type="number"
                                                                         :value="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.min"
                                                                         class="small-number-input"
-                                                                        @change="continuousProcessTimeChange($event, 'min')" />
+                                                                        @change="continuousProcessTimeChange($event, 'min', asset_id)" />
                                                                 </td>
                                                             </tr>
                                                             <tr
@@ -745,7 +745,7 @@
                                                                     <input type="number"
                                                                         :value="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.max"
                                                                         class="small-number-input"
-                                                                        @change="continuousProcessTimeChange($event, 'max')" />
+                                                                        @change="continuousProcessTimeChange($event, 'max', asset_id)" />
                                                                 </td>
                                                             </tr>
                                                             <tr
@@ -772,7 +772,7 @@
                                                                 </th>
                                                                 <td>
                                                                     <input type="number" class="small-number-input"
-                                                                        @change="continuousProcessTimeChange($event, 'param1')"
+                                                                        @change="continuousProcessTimeChange($event, 'param1', asset_id)"
                                                                         :value="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.param1">
                                                                 </td>
                                                             </tr>
@@ -793,7 +793,7 @@
                                                                 </th>
                                                                 <td>
                                                                     <input type="number" class="small-number-input"
-                                                                        @change="continuousProcessTimeChange($event, 'param2')"
+                                                                        @change="continuousProcessTimeChange($event, 'param2', asset_id)"
                                                                         :value="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.param2">
                                                                 </td>
                                                             </tr>
@@ -2292,20 +2292,33 @@ export default {
             this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values[type] = e.target.value;
             let processTimes;
             if (!this.advancedMode) {
-                processTimes = this.continuousProcessTimeData.filter(f => {
-                    let assetIDS = []
-                    this.selectedAssets.forEach(g => assetIDS.push(g.asset_id))
-                    if (assetIDS.includes(f.process_time_distribution.asset_id)) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-            });
-            } else if (this.processTimeSettings.applyToAll) {
-                console.log(this.processTimeSettings.selectedModels[this.selectedAssets[0].asset_id]);
-                processTimes = this.continuousProcessTimeData.filter(f => this.selectedAssets.includes(f.process_time_distribution.asset_id) && this.processTimeSettings.selectedModels[this.selectedAssets[0].asset_id].includes(f.process_time_distribution.model_number))
+                if (this.processTimeSettings.applyToAll) {
+                    processTimes = this.continuousProcessTimeData.filter(f => {
+                        let assetIDS = []
+                        this.selectedAssets.forEach(g => assetIDS.push(g.asset_id))
+                        if (assetIDS.includes(f.process_time_distribution.asset_id)) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    });
+                } else {
+                    processTimes = this.continuousProcessTimeData.filter(f => f.process_time_distribution.asset_id == asset_id);
+                }
             } else {
-                processTimes = this.continuousProcessTimeData.filter(f => f.process_time_distribution.asset_id == asset_id && this.processTimeSettings.selectedModels[asset_id].includes(f.process_time_distribution.model_number))
+                if (this.processTimeSettings.applyToAll) {
+                    processTimes = this.continuousProcessTimeData.filter(f => {
+                        let assetIDS = []
+                        this.selectedAssets.forEach(g => assetIDS.push(g.asset_id))
+                        if (assetIDS.includes(f.process_time_distribution.asset_id) && this.processTimeSettings.selectedModels[this.selectedAssets[0].asset_id].includes(f.process_time_distribution.model_number)) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    });
+                } else {
+                    processTimes = this.continuousProcessTimeData.filter(f => f.process_time_distribution.asset_id == asset_id && this.processTimeSettings.selectedModels[asset_id].includes(f.process_time_distribution.model_number));
+                }
             }
             console.log(processTimes);
             console.log(e.target.value);

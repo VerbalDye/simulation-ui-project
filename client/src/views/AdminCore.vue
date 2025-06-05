@@ -27,7 +27,10 @@
                                     <option value="1F" selected>1F</option>
                                     <option value="2F">2F</option>
                                 </select></td>
-                            <td><input type="number" /></td>
+                            <td><select>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                </select></td>
                             <td><input type="number" /></td>
                             <td><input type="number" /></td>
                             <td><select>
@@ -68,7 +71,10 @@
                                     <option value="1F" :selected="entry.core_oven_drawer_position == '1F'">1F</option>
                                     <option value="2F" :selected="entry.core_oven_drawer_position == '2F'">2F</option>
                                 </select></td>
-                            <td>{{ entry.core_oven_number }}</td>
+                            <td><select>
+                                    <option value="1" :selected="entry.core_oven_number == '1'">1</option>
+                                    <option value="2" :selected="entry.core_oven_number == '2'">2</option>
+                                </select></td>
                             <td><input type="number" :value="entry.soak_temperature_f" /></td>
                             <td><input type="number" :value="entry.time_minutes" /></td>
                             <td><select>

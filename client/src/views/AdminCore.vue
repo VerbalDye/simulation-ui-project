@@ -19,7 +19,7 @@
                             <th>Status</th>
                         </tr>
                         <tr>
-                            <td><input type="number" /></td>
+                            <td><input class="small-number-input" type="number" /></td>
                             <td><select>
                                 <option v-for="model in modelData" :value="model.model_number">{{ model.model_number }}</option>
                             </select></td>
@@ -31,8 +31,8 @@
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                 </select></td>
-                            <td><input type="number" /></td>
-                            <td><input type="number" /></td>
+                            <td><input class="small-number-input" type="number" /></td>
+                            <td><input class="small-number-input" type="number" /></td>
                             <td><select>
                                     <option value="R&D" selected>R&D</option>
                                     <option value="APPROVED">APPROVED</option>
@@ -75,8 +75,8 @@
                                     <option value="1" :selected="entry.core_oven_number == '1'">1</option>
                                     <option value="2" :selected="entry.core_oven_number == '2'">2</option>
                                 </select></td>
-                            <td><input type="number" :value="entry.soak_temperature_f" /></td>
-                            <td><input type="number" :value="entry.time_minutes" /></td>
+                            <td><input class="small-number-input" type="number" :value="entry.soak_temperature_f" /></td>
+                            <td><input class="small-number-input" type="number" :value="entry.time_minutes" /></td>
                             <td><select>
                                     <option value="R&D" :selected="entry.status == 'R&D'">R&D</option>
                                     <option value="APPROVED" :selected="entry.status == 'APPROVED'">APPROVED</option>
@@ -199,3 +199,11 @@ export default {
     }
 }
 </script>
+
+<style>
+.small-number-input {
+    border: none;
+    margin: 4px;
+    width: 50px;
+}
+</style>

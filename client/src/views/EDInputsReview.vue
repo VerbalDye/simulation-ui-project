@@ -2299,9 +2299,9 @@ export default {
             } else {
                 processTimes = this.continuousProcessTimeData.filter(f => f.process_time_distribution.asset_id == asset_id && this.processTimeSettings.selectedModels[asset_id].includes(f.process_time_distribution.model_number))
             }
-            processTimes.forEach(f => {
-                f.process_time_distribution[type] = e.target.value;
-            });
+            for (let i = 0; i < processTimes.length; i++) {
+                processTimes[i].process_time_distribution[type] = e.target.value;
+            }
         }
     },
     mounted() {

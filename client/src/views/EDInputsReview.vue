@@ -124,19 +124,19 @@
                                             <th>Phase:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.phase.display_name
-                                                }}</td>
+                                            }}</td>
                                         </tr>
                                         <tr>
                                             <th>Cell:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.cell.display_name
-                                                }}</td>
+                                            }}</td>
                                         </tr>
                                         <tr>
                                             <th>Operation:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.operation.display_name
-                                                }}</td>
+                                            }}</td>
                                         </tr>
                                     </table>
                                     <p>Location(s):</p>
@@ -425,20 +425,20 @@
                                                                         ===
                                                                         'Lognormal' ||
                                                                         this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution
-                                                                    ==
-                                                                    'Normal' ? "Mu" : "" }}
+                                                                        ==
+                                                                        'Normal' ? "Mu" : "" }}
                                                                     {{
                                                                         this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution
-                                                                    ===
-                                                                    'Beta' ? "p" : "" }}
+                                                                            ===
+                                                                            'Beta' ? "p" : "" }}
                                                                     {{
                                                                         this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution
-                                                                    ===
-                                                                    'Triangular' ? "Median" : "" }}
+                                                                            ===
+                                                                            'Triangular' ? "Median" : "" }}
                                                                     {{
                                                                         this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution
-                                                                    ===
-                                                                    'Exponential' ? "Lambda" : "" }}
+                                                                            ===
+                                                                            'Exponential' ? "Lambda" : "" }}
                                                                 </th>
                                                                 <td>
                                                                     <input type="number" class="small-number-input"
@@ -454,12 +454,12 @@
                                                                             ===
                                                                             'Lognormal' ||
                                                                             this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution
-                                                                    ==
-                                                                    'Normal' ? "Sigma" : "" }}
+                                                                            ==
+                                                                            'Normal' ? "Sigma" : "" }}
                                                                     {{
                                                                         this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution
-                                                                    ===
-                                                                    'Beta' ? "q" : "" }}
+                                                                            ===
+                                                                            'Beta' ? "q" : "" }}
                                                                 </th>
                                                                 <td>
                                                                     <input type="number" class="small-number-input"
@@ -480,28 +480,96 @@
                                                                 <td>
                                                                     <select name="distribution-type-apply-all-advanced"
                                                                         id="distribution-type-apply-all-advanced"
-                                                                        @change="e => this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution = e.target.value">
-                                                                        <option value="Lognormal">Lognormal</option>
-                                                                        <option value="Normal">Normal</option>
-                                                                        <option value="Beta">Beta</option>
-                                                                        <option value="Triangular">Triangular</option>
-                                                                        <option value="Uniform">Uniform</option>
-                                                                        <option value="Exponential">Exponential</option>
+                                                                        @change="continuousProcessTimeChange($event, 'distribution')">
+                                                                        <option value="Lognormal"
+                                                                            :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Lognormal'">
+                                                                            Lognormal
+                                                                        </option>
+                                                                        <option value="Normal"
+                                                                            :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Normal'">
+                                                                            Normal</option>
+                                                                        <option value="Beta"
+                                                                            :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Beta'">
+                                                                            Beta</option>
+                                                                        <option value="Triangular"
+                                                                            :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Triangular'">
+                                                                            Triangular</option>
+                                                                        <option value="Uniform"
+                                                                            :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Uniform'">
+                                                                            Uniform</option>
+                                                                        <option value="Exponential"
+                                                                            :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Exponential'">
+                                                                            Exponential</option>
                                                                     </select>
                                                                 </td>
                                                             </tr>
-                                                            <tr>
+                                                            <tr
+                                                                v-if="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution !== 'Normal'">
                                                                 <th><i class="bi bi-dash-lg"></i> Min (minutes)*</th>
                                                                 <td>
-                                                                    <input type="number" value="0"
-                                                                        class="small-number-input" />
+                                                                    <input type="number"
+                                                                        :value="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.min"
+                                                                        class="small-number-input"
+                                                                        @change="continuousProcessTimeChange($event, 'min')" />
                                                                 </td>
                                                             </tr>
-                                                            <tr>
+                                                            <tr
+                                                                v-if="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Beta' || this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Triangular' || this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Uniform'">
                                                                 <th><i class="bi bi-plus-lg"></i> Max (minutes)*</th>
                                                                 <td>
-                                                                    <input type="number" value="15"
-                                                                        class="small-number-input" />
+                                                                    <input type="number"
+                                                                        :value="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.max"
+                                                                        class="small-number-input"
+                                                                        @change="continuousProcessTimeChange($event, 'max')" />
+                                                                </td>
+                                                            </tr>
+                                                            <tr
+                                                                v-if="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution !== 'Uniform'">
+                                                                <th>{{
+                                                                    this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution
+                                                                        ===
+                                                                        'Lognormal' ||
+                                                                        this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution
+                                                                        ==
+                                                                        'Normal' ? "Mu" : "" }}
+                                                                    {{
+                                                                        this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution
+                                                                            ===
+                                                                            'Beta' ? "p" : "" }}
+                                                                    {{
+                                                                        this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution
+                                                                            ===
+                                                                            'Triangular' ? "Median" : "" }}
+                                                                    {{
+                                                                        this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution
+                                                                            ===
+                                                                            'Exponential' ? "Lambda" : "" }}
+                                                                </th>
+                                                                <td>
+                                                                    <input type="number" class="small-number-input"
+                                                                        @change="continuousProcessTimeChange($event, 'param1')"
+                                                                        :value="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.param1">
+                                                                </td>
+                                                            </tr>
+                                                            <tr
+                                                                v-if="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution === 'Lognormal' || this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Normal' || this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Beta'">
+                                                                <th>
+                                                                    {{
+                                                                        this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution
+                                                                            ===
+                                                                            'Lognormal' ||
+                                                                            this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution
+                                                                            ==
+                                                                            'Normal' ? "Sigma" : "" }}
+                                                                    {{
+                                                                        this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution
+                                                                            ===
+                                                                            'Beta' ? "q" : "" }}
+                                                                </th>
+                                                                <td>
+                                                                    <input type="number" class="small-number-input"
+                                                                        @change="continuousProcessTimeChange($event, 'param2')"
+                                                                        :value="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.param2">
                                                                 </td>
                                                             </tr>
                                                         </table>
@@ -532,28 +600,96 @@
                                                                 <td>
                                                                     <select name="distribution-type-apply-all-advanced"
                                                                         id="distribution-type-apply-all-advanced"
-                                                                        @change="e => this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution = e.target.value">
-                                                                        <option value="Lognormal">Lognormal</option>
-                                                                        <option value="Normal">Normal</option>
-                                                                        <option value="Beta">Beta</option>
-                                                                        <option value="Triangular">Triangular</option>
-                                                                        <option value="Uniform">Uniform</option>
-                                                                        <option value="Exponential">Exponential</option>
+                                                                        @change="continuousProcessTimeChange($event, 'distribution')">
+                                                                        <option value="Lognormal"
+                                                                            :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Lognormal'">
+                                                                            Lognormal
+                                                                        </option>
+                                                                        <option value="Normal"
+                                                                            :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Normal'">
+                                                                            Normal</option>
+                                                                        <option value="Beta"
+                                                                            :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Beta'">
+                                                                            Beta</option>
+                                                                        <option value="Triangular"
+                                                                            :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Triangular'">
+                                                                            Triangular</option>
+                                                                        <option value="Uniform"
+                                                                            :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Uniform'">
+                                                                            Uniform</option>
+                                                                        <option value="Exponential"
+                                                                            :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Exponential'">
+                                                                            Exponential</option>
                                                                     </select>
                                                                 </td>
                                                             </tr>
-                                                            <tr>
+                                                            <tr
+                                                                v-if="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution !== 'Normal'">
                                                                 <th><i class="bi bi-dash-lg"></i> Min (minutes)*</th>
                                                                 <td>
-                                                                    <input type="number" value="0"
-                                                                        class="small-number-input" />
+                                                                    <input type="number"
+                                                                        :value="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.min"
+                                                                        class="small-number-input"
+                                                                        @change="continuousProcessTimeChange($event, 'min')" />
                                                                 </td>
                                                             </tr>
-                                                            <tr>
+                                                            <tr
+                                                                v-if="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Beta' || this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Triangular' || this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Uniform'">
                                                                 <th><i class="bi bi-plus-lg"></i> Max (minutes)*</th>
                                                                 <td>
-                                                                    <input type="number" value="15"
-                                                                        class="small-number-input" />
+                                                                    <input type="number"
+                                                                        :value="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.max"
+                                                                        class="small-number-input"
+                                                                        @change="continuousProcessTimeChange($event, 'max')" />
+                                                                </td>
+                                                            </tr>
+                                                            <tr
+                                                                v-if="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution !== 'Uniform'">
+                                                                <th>{{
+                                                                    this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution
+                                                                        ===
+                                                                        'Lognormal' ||
+                                                                        this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution
+                                                                        ==
+                                                                        'Normal' ? "Mu" : "" }}
+                                                                    {{
+                                                                        this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution
+                                                                            ===
+                                                                            'Beta' ? "p" : "" }}
+                                                                    {{
+                                                                        this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution
+                                                                            ===
+                                                                            'Triangular' ? "Median" : "" }}
+                                                                    {{
+                                                                        this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution
+                                                                            ===
+                                                                            'Exponential' ? "Lambda" : "" }}
+                                                                </th>
+                                                                <td>
+                                                                    <input type="number" class="small-number-input"
+                                                                        @change="continuousProcessTimeChange($event, 'param1')"
+                                                                        :value="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.param1">
+                                                                </td>
+                                                            </tr>
+                                                            <tr
+                                                                v-if="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution === 'Lognormal' || this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Normal' || this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Beta'">
+                                                                <th>
+                                                                    {{
+                                                                        this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution
+                                                                            ===
+                                                                            'Lognormal' ||
+                                                                            this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution
+                                                                            ==
+                                                                            'Normal' ? "Sigma" : "" }}
+                                                                    {{
+                                                                        this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution
+                                                                            ===
+                                                                            'Beta' ? "q" : "" }}
+                                                                </th>
+                                                                <td>
+                                                                    <input type="number" class="small-number-input"
+                                                                        @change="continuousProcessTimeChange($event, 'param2')"
+                                                                        :value="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.param2">
                                                                 </td>
                                                             </tr>
                                                         </table>
@@ -569,28 +705,96 @@
                                                                 <td>
                                                                     <select name="distribution-type-apply-all-advanced"
                                                                         id="distribution-type-apply-all-advanced"
-                                                                        @change="e => this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution = e.target.value">
-                                                                        <option value="Lognormal">Lognormal</option>
-                                                                        <option value="Normal">Normal</option>
-                                                                        <option value="Beta">Beta</option>
-                                                                        <option value="Triangular">Triangular</option>
-                                                                        <option value="Uniform">Uniform</option>
-                                                                        <option value="Exponential">Exponential</option>
+                                                                        @change="continuousProcessTimeChange($event, 'distribution')">
+                                                                        <option value="Lognormal"
+                                                                            :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Lognormal'">
+                                                                            Lognormal
+                                                                        </option>
+                                                                        <option value="Normal"
+                                                                            :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Normal'">
+                                                                            Normal</option>
+                                                                        <option value="Beta"
+                                                                            :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Beta'">
+                                                                            Beta</option>
+                                                                        <option value="Triangular"
+                                                                            :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Triangular'">
+                                                                            Triangular</option>
+                                                                        <option value="Uniform"
+                                                                            :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Uniform'">
+                                                                            Uniform</option>
+                                                                        <option value="Exponential"
+                                                                            :selected="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Exponential'">
+                                                                            Exponential</option>
                                                                     </select>
                                                                 </td>
                                                             </tr>
-                                                            <tr>
+                                                            <tr
+                                                                v-if="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution !== 'Normal'">
                                                                 <th><i class="bi bi-dash-lg"></i> Min (minutes)*</th>
                                                                 <td>
-                                                                    <input type="number" value="0"
-                                                                        class="small-number-input" />
+                                                                    <input type="number"
+                                                                        :value="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.min"
+                                                                        class="small-number-input"
+                                                                        @change="continuousProcessTimeChange($event, 'min')" />
                                                                 </td>
                                                             </tr>
-                                                            <tr>
+                                                            <tr
+                                                                v-if="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Beta' || this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Triangular' || this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Uniform'">
                                                                 <th><i class="bi bi-plus-lg"></i> Max (minutes)*</th>
                                                                 <td>
-                                                                    <input type="number" value="15"
-                                                                        class="small-number-input" />
+                                                                    <input type="number"
+                                                                        :value="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.max"
+                                                                        class="small-number-input"
+                                                                        @change="continuousProcessTimeChange($event, 'max')" />
+                                                                </td>
+                                                            </tr>
+                                                            <tr
+                                                                v-if="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution !== 'Uniform'">
+                                                                <th>{{
+                                                                    this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution
+                                                                        ===
+                                                                        'Lognormal' ||
+                                                                        this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution
+                                                                        ==
+                                                                        'Normal' ? "Mu" : "" }}
+                                                                    {{
+                                                                        this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution
+                                                                            ===
+                                                                            'Beta' ? "p" : "" }}
+                                                                    {{
+                                                                        this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution
+                                                                            ===
+                                                                            'Triangular' ? "Median" : "" }}
+                                                                    {{
+                                                                        this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution
+                                                                            ===
+                                                                            'Exponential' ? "Lambda" : "" }}
+                                                                </th>
+                                                                <td>
+                                                                    <input type="number" class="small-number-input"
+                                                                        @change="continuousProcessTimeChange($event, 'param1')"
+                                                                        :value="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.param1">
+                                                                </td>
+                                                            </tr>
+                                                            <tr
+                                                                v-if="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution === 'Lognormal' || this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Normal' || this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution == 'Beta'">
+                                                                <th>
+                                                                    {{
+                                                                        this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution
+                                                                            ===
+                                                                            'Lognormal' ||
+                                                                            this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution
+                                                                            ==
+                                                                            'Normal' ? "Sigma" : "" }}
+                                                                    {{
+                                                                        this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.distribution
+                                                                            ===
+                                                                            'Beta' ? "q" : "" }}
+                                                                </th>
+                                                                <td>
+                                                                    <input type="number" class="small-number-input"
+                                                                        @change="continuousProcessTimeChange($event, 'param2')"
+                                                                        :value="this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values.param2">
                                                                 </td>
                                                             </tr>
                                                         </table>
@@ -1575,8 +1779,8 @@ export default {
                 dataRequest("/api/experiment/core/bulk/" + this.experimentID, "PUT", JSON.stringify({ data: coreData })),
                 dataRequest("/api/experiment/inputs/" + this.experimentID, "POST", JSON.stringify({ iteration: 1, targetIteration: this.iteration, data })),
                 dataRequest("/api/experiment/hours-of-operation/update/" + this.experimentID, "PUT", JSON.stringify(hooData)),
-                dataRequest("/api/experiment/promise-time-type/", "PUT", JSON.stringify(this.processTimeTypeData)),
-                dataRequest("/api/experiment/continuous-process-time/", "PUT", JSON.stringify(this.continuousProcessTimeData)),
+                dataRequest("/api/experiment/process-time-type/", "PUT", JSON.stringify(this.processTimeTypeData)),
+                dataRequest("/api/experiment/continuous-process-time/" + this.experimentID, "PUT", JSON.stringify(this.continuousProcessTimeData)),
                 this.saveJobChanges()
             ])
         },

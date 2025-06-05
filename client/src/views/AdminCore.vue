@@ -224,8 +224,8 @@ export default {
             }
         },
         async saveChanges() {
-            let deleteResponse = await dataRequest('/api/core-model/', 'DELETE', this.deleteCoreData);
-            let updateResponse = await dataRequest('/api/core-model/', 'PUT', this.updateCoreData);
+            let deleteResponse = await dataRequest('/api/core-model/', 'DELETE', JSON.stringify(this.deleteCoreData));
+            let updateResponse = await dataRequest('/api/core-model/', 'PUT', JSON.stringify(this.updateCoreData));
         }
     },
     mounted() {

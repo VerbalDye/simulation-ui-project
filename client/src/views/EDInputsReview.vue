@@ -2292,7 +2292,15 @@ export default {
             this.processTimeSettings.continuousElements[this.selectedAssets[0].asset_id].values[type] = e.target.value;
             let processTimes;
             if (!this.advancedMode) {
-                processTimes = this.continuousProcessTimeData.filter(f => this.selectedAssets.includes(f.process_time_distribution.asset_id));
+                processTimes = this.continuousProcessTimeData.filter(f => {
+                    let assetIDS = []
+                    this.selectedAssets.forEach(g => assetIDS.push(g.asset_id))
+                    if (assetIDS.includes(f.process_time_distribution.asset_id)) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+            });
             } else if (this.processTimeSettings.applyToAll) {
                 console.log(this.processTimeSettings.selectedModels[this.selectedAssets[0].asset_id]);
                 processTimes = this.continuousProcessTimeData.filter(f => this.selectedAssets.includes(f.process_time_distribution.asset_id) && this.processTimeSettings.selectedModels[this.selectedAssets[0].asset_id].includes(f.process_time_distribution.model_number))

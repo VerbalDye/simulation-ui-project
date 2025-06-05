@@ -27,7 +27,9 @@ router.get('/:id', (req, res) => {
 router.put('/', async (req, res) => {
     let promises = []
     try {
+        console.log("hey");
         console.log(req.body[0]);
+        console.log("look");
         if (req.body[0].iteration_number == 1) {
             req.body.forEach(entry => {
                 promises.push(ExperimentTimeType.update(entry, {

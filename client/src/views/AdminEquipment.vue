@@ -119,6 +119,11 @@
                 </table>
                 <button>Add Asset</button>
             </form>
+            <h2>Edit Asset</h2>
+            <select>
+                <option v-for="asset in assetData">{{ asset.display_name }}</option>
+            </select>
+            <h2>Delete Asset</h2>
         </div>
     </div>
 </template>

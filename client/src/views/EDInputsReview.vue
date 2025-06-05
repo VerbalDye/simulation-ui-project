@@ -2046,8 +2046,11 @@ export default {
             let processTimes
             if (!this.processTimeSettings.advancedMode) {
                 processTimes = this.continuousProcessTimeData.filter(f => this.selectedAssets.includes(f.process_time_distribution.asset_id));
-            } else {
+            } else if (this.processTimeSettings.applyToAll) {
+                console.log(this.processTimeSettings.selectedModels[this.selectedAssets[0].asset_id]);
                 processTimes = this.continuousProcessTimeData.filter(f => this.selectedAssets.includes(f.process_time_distribution) && this.processTimeSettings.selectedModels[this.selectedAssets[0].asset_id].includes(f.process_time_distribution.model_number))
+            } else {
+                // processTimes = this.continuousProcessTimeData.filter(f => this.selected)
             }
             processTimes.forEach(f => {
                 f.process_time_distribution[type] = e.target.value;

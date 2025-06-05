@@ -40,7 +40,7 @@ router.post('/', async (req, res) => {
         let coreSoakTimeData = await CoreSoakTime.create({
             core_number: req.body.core_number,
             model_number: req.body.model_number,
-            soak_temperature_F: req.body.soak_temperature_f,
+            soak_temperature_f: req.body.soak_temperature_f,
             time_minutes: req.body.time_minutes,
             core_oven_number: req.body.core_oven_number,
             core_oven_drawer_position: req.body.core_oven_drawer_position,

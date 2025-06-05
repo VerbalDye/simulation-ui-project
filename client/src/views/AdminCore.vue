@@ -202,7 +202,6 @@ export default {
 
 <style>
 .small-number-input {
-    border: none;
     margin: 4px;
     width: 50px;
 }

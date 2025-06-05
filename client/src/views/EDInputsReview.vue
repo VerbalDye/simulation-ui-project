@@ -2289,6 +2289,9 @@ export default {
             }
         },
         continuousProcessTimeChange(e, type, asset_id) {
+            if (!asset_id) {
+                asset_id = this.selectedAssets[0].asset_id;
+            }
             this.processTimeSettings.continuousElements[asset_id].values[type] = e.target.value;
             let processTimes;
             if (!this.advancedMode) {

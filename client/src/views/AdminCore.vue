@@ -202,7 +202,7 @@ export default {
             if (this.addCoreData.core_number === null || this.addCoreData.model_number === null || this.addCoreData.core_oven_drawer_position === null || this.addCoreData.core_oven_number === null || this.addCoreData.soak_temperature_f === null || this.addCoreData.time_minutes === null || this.addCoreData.status === null) {
                 window.alert("Please make sure all fields are filled in.");
             } else {
-                let response = dataRequest('/api/core-model', "POST", this.addCoreData);
+                let response = dataRequest('/api/core-model', "POST", JSON.stringify(this.addCoreData));
                 window.location.reload()
             }
         },

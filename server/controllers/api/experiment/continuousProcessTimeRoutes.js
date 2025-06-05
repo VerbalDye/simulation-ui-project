@@ -61,6 +61,7 @@ router.put('/:id', async (req, res) => {
                 })
             }
         }
+        console.log('finished');
         res.status(200);
     } catch (err) {
         console.log(err);

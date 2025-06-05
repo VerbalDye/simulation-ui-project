@@ -19,25 +19,24 @@
                             <th>Status</th>
                         </tr>
                         <tr>
-                            <td>{{ entry.core_number }}</td>
-                            <td>{{ entry.model_number }}</td>
+                            <td><input type="number" /></td>
+                            <td><input type="number" /></td>
                             <td><select>
-                                    <option value="1F" :selected="entry.core_oven_drawer_position == '1F'">1F</option>
-                                    <option value="2F" :selected="entry.core_oven_drawer_position == '2F'">2F</option>
+                                    <option value="1F" selected>1F</option>
+                                    <option value="2F">2F</option>
                                 </select></td>
-                            <td>{{ entry.core_oven_number }}</td>
-                            <td><input type="number" :value="entry.soak_temperature_f" /></td>
-                            <td><input type="number" :value="entry.time_minutes" /></td>
+                            <td><input type="number" /></td>
+                            <td><input type="number" /></td>
+                            <td><input type="number" /></td>
                             <td><select>
-                                    <option value="R&D" :selected="entry.status == 'R&D'">R&D</option>
-                                    <option value="APPROVED" :selected="entry.status == 'APPROVED'">APPROVED</option>
-                                    <option value="SCRAP" :selected="entry.status == 'SCRAP'">SCRAP</option>
-                                    <option value="QUARANTINE" :selected="entry.status == 'QUARANTINE'">QUARANTINE
-                                    </option>
-                                    <option value="REPAIR" :selected="entry.status == 'REPAIR'">REPAIR</option>
-                                    <option value="CANCELLED" :selected="entry.status == 'CANCELLED'">CANCELLED</option>
-                                    <option value="DEVELOP" :selected="entry.status == 'DEVELOP'">DEVELOP</option>
-                                    <option value="SOLD" :selected="entry.status == 'SOLD'">SOLD</option>
+                                    <option value="R&D" selected>R&D</option>
+                                    <option value="APPROVED">APPROVED</option>
+                                    <option value="SCRAP">SCRAP</option>
+                                    <option value="QUARANTINE">QUARANTINE</option>
+                                    <option value="REPAIR">REPAIR</option>
+                                    <option value="CANCELLED">CANCELLED</option>
+                                    <option value="DEVELOP">DEVELOP</option>
+                                    <option value="SOLD">SOLD</option>
                                 </select></td>
                         </tr>
                     </table>

@@ -61,7 +61,6 @@ router.put('/:id', async (req, res) => {
                 })
             }
         }
-        console.log('finished');
         res.status(200).json({ message: "Success" });
     } catch (err) {
         console.log(err);

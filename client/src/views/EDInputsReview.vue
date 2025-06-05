@@ -1487,14 +1487,24 @@ export default {
         async getContinuousProcessTimeData() {
             let data = await dataRequest("/api/experiment/continuous-process-time/" + this.experimentID, "GET");
             console.log(data);
-            this.backupContinuousProcessTimeData = data;
-            this.continuousProcessTimeData = data;
+            if (data.find(e => e.iteration_number == 1)) {
+                this.backupContinuousProcessTimeData = data.filter(e => e.iteration_number == 1);
+                this.continuousProcessTimeData = data.filter(e => e.iteration_number == 1);
+            } else {
+                this.backupContinuousProcessTimeData = data;
+                this.continuousProcessTimeData = data;
+            }
         },
         async getProcessTimeTypeData() {
             let data = await dataRequest("/api/experiment/process-time-type/" + this.experimentID, "GET");
             console.log(data);
-            this.backupProcessTimeTypeData = data;
-            this.processTimeTypeData = data;
+            if (data.find(e => e.iteration_number == 1)) {
+                this.backupProcessTimeTypeData = data.filter(e => e.iteration_number == 1);
+                this.processTimeTypeData = data.filter(e => e.iteration_number == 1);
+            } else {
+                this.backupProcessTimeTypeData = data;
+                this.processTimeTypeData = data;
+            }
         },
         async getRoutingData() {
             let data = await dataRequest("/api/experiment/routing/" + this.experimentID, "GET");

@@ -28,7 +28,7 @@
                         <td>{{ entry.core_oven_number }}</td>
                         <td><input type="number" :value="entry.soak_temperature_f"/></td>
                         <td><input type="number" :value="entry.time_minutes"/></td>
-                        <td><button>Delete</button></td>
+                        <td><button @click="deleteRow(entry.core_number)">Delete</button></td>
                     </tr>
                 </table>
                 <div>
@@ -39,7 +39,7 @@
                 <button @click="changePage('forward')"><i class="bi bi-chevron-right"></i></button>
                 <button @click="changePage('skip-forward')"><i class="bi bi-chevron-double-right"></i></button>
                 <br/>
-                <button @click="saveChanges">Save</button>
+                <button @click="saveChanges" class="space">Save</button>
             </div>
         </div>
     </div>
@@ -112,6 +112,10 @@ export default {
                 }
             })));
             this.changePage('reload');
+        },
+        deleteRow(core_number) {
+            this.tableData = this.tableData.filter(e => e.core_number !== core_number);
+            this.filteredTableData = this.filteredTableData.filter(e => e.core_number !== core_number);
         },
         saveChanges() {
 

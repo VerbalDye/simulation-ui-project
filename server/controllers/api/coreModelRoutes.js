@@ -60,7 +60,7 @@ router.delete('/', async (req, res) => {
             promises.push(
                 Core.destroy({
                     where: {
-                        core_number: entry.core_number
+                        core_number: entry
                     }
                 })
             )

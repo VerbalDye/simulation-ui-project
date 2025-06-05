@@ -40,6 +40,7 @@ router.put('/', async (req, res) => {
         } else {
             req.body.forEach(e => e.iteration_number = 1)
             req.body.forEach(e => delete e.experiment_time_type_id);
+            console.log(req.body)
             let response = await ExperimentTimeType.bulkCreate(req.body);
             res.json(response);
         }

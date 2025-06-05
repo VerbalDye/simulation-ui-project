@@ -40,54 +40,59 @@
                                 </select></td>
                         </tr>
                     </table>
-                    <button>Add Core</button>
+                    <button class="space">Add Core</button>
                 </div>
-                <label for="core-search">Search: </label>
-                <input name="core-search" id="core-search" type="text" @change="coreSearchChange($event)" />
-                <table class="full-table">
-                    <tr>
-                        <th>Core Number</th>
-                        <th>Model Number</th>
-                        <th>Oven Drawer Position</th>
-                        <th>Oven Number</th>
-                        <th>Oven Temperature (f)</th>
-                        <th>Soak Time (minutes)</th>
-                        <th>Status</th>
-                        <th>Delete?</th>
-                    </tr>
-                    <tr v-for="entry in shownTableData">
-                        <td>{{ entry.core_number }}</td>
-                        <td>{{ entry.model_number }}</td>
-                        <td><select>
-                                <option value="1F" :selected="entry.core_oven_drawer_position == '1F'">1F</option>
-                                <option value="2F" :selected="entry.core_oven_drawer_position == '2F'">2F</option>
-                            </select></td>
-                        <td>{{ entry.core_oven_number }}</td>
-                        <td><input type="number" :value="entry.soak_temperature_f" /></td>
-                        <td><input type="number" :value="entry.time_minutes" /></td>
-                        <td><select>
-                                <option value="R&D" :selected="entry.status == 'R&D'">R&D</option>
-                                <option value="APPROVED" :selected="entry.status == 'APPROVED'">APPROVED</option>
-                                <option value="SCRAP" :selected="entry.status == 'SCRAP'">SCRAP</option>
-                                <option value="QUARANTINE" :selected="entry.status == 'QUARANTINE'">QUARANTINE</option>
-                                <option value="REPAIR" :selected="entry.status == 'REPAIR'">REPAIR</option>
-                                <option value="CANCELLED" :selected="entry.status == 'CANCELLED'">CANCELLED</option>
-                                <option value="DEVELOP" :selected="entry.status == 'DEVELOP'">DEVELOP</option>
-                                <option value="SOLD" :selected="entry.status == 'SOLD'">SOLD</option>
-                            </select></td>
-                        <td><button @click="deleteRow(entry.core_number)">Delete</button></td>
-                    </tr>
-                </table>
                 <div>
-                    Showing {{ page + 1 }} - {{ page + pageCount > filteredTableData.length ? filteredTableData.length :
+                    <h2>Edit Cores</h2>
+                    <label for="core-search" class="space">Search: </label>
+                    <input name="core-search" id="core-search" type="text" @change="coreSearchChange($event)" />
+                    <table class="full-table">
+                        <tr>
+                            <th>Core Number</th>
+                            <th>Model Number</th>
+                            <th>Oven Drawer Position</th>
+                            <th>Oven Number</th>
+                            <th>Oven Temperature (f)</th>
+                            <th>Soak Time (minutes)</th>
+                            <th>Status</th>
+                            <th>Delete?</th>
+                        </tr>
+                        <tr v-for="entry in shownTableData">
+                            <td>{{ entry.core_number }}</td>
+                            <td>{{ entry.model_number }}</td>
+                            <td><select>
+                                    <option value="1F" :selected="entry.core_oven_drawer_position == '1F'">1F</option>
+                                    <option value="2F" :selected="entry.core_oven_drawer_position == '2F'">2F</option>
+                                </select></td>
+                            <td>{{ entry.core_oven_number }}</td>
+                            <td><input type="number" :value="entry.soak_temperature_f" /></td>
+                            <td><input type="number" :value="entry.time_minutes" /></td>
+                            <td><select>
+                                    <option value="R&D" :selected="entry.status == 'R&D'">R&D</option>
+                                    <option value="APPROVED" :selected="entry.status == 'APPROVED'">APPROVED</option>
+                                    <option value="SCRAP" :selected="entry.status == 'SCRAP'">SCRAP</option>
+                                    <option value="QUARANTINE" :selected="entry.status == 'QUARANTINE'">QUARANTINE
+                                    </option>
+                                    <option value="REPAIR" :selected="entry.status == 'REPAIR'">REPAIR</option>
+                                    <option value="CANCELLED" :selected="entry.status == 'CANCELLED'">CANCELLED</option>
+                                    <option value="DEVELOP" :selected="entry.status == 'DEVELOP'">DEVELOP</option>
+                                    <option value="SOLD" :selected="entry.status == 'SOLD'">SOLD</option>
+                                </select></td>
+                            <td><button @click="deleteRow(entry.core_number)">Delete</button></td>
+                        </tr>
+                    </table>
+                    <div>
+                        Showing {{ page + 1 }} - {{ page + pageCount > filteredTableData.length ?
+                            filteredTableData.length :
                         page + pageCount }} of {{ filteredTableData.length }}
+                    </div>
+                    <button @click="changePage('skip-back')"><i class="bi bi-chevron-double-left"></i></button>
+                    <button @click="changePage('back')"><i class="bi bi-chevron-left"></i></button>
+                    <button @click="changePage('forward')"><i class="bi bi-chevron-right"></i></button>
+                    <button @click="changePage('skip-forward')"><i class="bi bi-chevron-double-right"></i></button>
+                    <br />
+                    <button @click="saveChanges" class="space">Save</button>
                 </div>
-                <button @click="changePage('skip-back')"><i class="bi bi-chevron-double-left"></i></button>
-                <button @click="changePage('back')"><i class="bi bi-chevron-left"></i></button>
-                <button @click="changePage('forward')"><i class="bi bi-chevron-right"></i></button>
-                <button @click="changePage('skip-forward')"><i class="bi bi-chevron-double-right"></i></button>
-                <br />
-                <button @click="saveChanges" class="space">Save</button>
             </div>
         </div>
     </div>

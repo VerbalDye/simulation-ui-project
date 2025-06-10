@@ -24,32 +24,32 @@
                     </tr>
                     <tr>
                         <th><label for="asset-xpos-input">X Position (Feet):</label></th>
-                        <td><input type="number" id="asset-xpos-input" name="asset-xpos-input" value="0"
+                        <td><input step="0.001" type="number" id="asset-xpos-input" name="asset-xpos-input" value="0"
                                 class="small-number-input" /></td>
                     </tr>
                     <tr>
                         <th><label for="asset-ypos-input">Y Position (Feet):</label></th>
-                        <td><input type="number" id="asset-ypos-input" name="asset-ypos-input" value="0"
+                        <td><input step="0.001" type="number" id="asset-ypos-input" name="asset-ypos-input" value="0"
                                 class="small-number-input" /></td>
                     </tr>
                     <tr>
                         <th><label for="asset-zpos-input">Z Position (Feet):</label></th>
-                        <td><input type="number" id="asset-zpos-input" name="asset-zpos-input" value="0"
+                        <td><input step="0.001" type="number" id="asset-zpos-input" name="asset-zpos-input" value="0"
                                 class="small-number-input" /></td>
                     </tr>
                     <tr>
                         <th><label for="asset-width-input">Width (Feet):</label></th>
-                        <td><input type="number" min="0" id="asset-width-input" name="asset-width-input" value="5"
+                        <td><input step="0.001" type="number" min="0" id="asset-width-input" name="asset-width-input" value="5"
                                 class="small-number-input" /></td>
                     </tr>
                     <tr>
                         <th><label for="asset-length-input">Length (Feet):</label></th>
-                        <td><input type="number" min="0" id="asset-length-input" name="asset-length-input" value="5"
+                        <td><input step="0.001" type="number" min="0" id="asset-length-input" name="asset-length-input" value="5"
                                 class="small-number-input" /></td>
                     </tr>
                     <tr>
                         <th><label for="asset-height-input">Height (Feet):</label></th>
-                        <td><input type="number" min="0" id="asset-height-input" name="asset-height-input" value="5"
+                        <td><input step="0.001" type="number" min="0" id="asset-height-input" name="asset-height-input" value="5"
                                 class="small-number-input" /></td>
                     </tr>
                     <tr>
@@ -132,12 +132,12 @@
                     <table class="grid-less">
                         <tr>
                             <th><label for="edit-asset-name-input">Name:</label></th>
-                            <td><input type="text" id="edit-asset-name-input" name="edit-asset-name-input" :value="this.editAssetValues.aname"/></td>
+                            <td><input type="text" id="edit-asset-name-input" name="edit-asset-name-input" :value="this.editAssetValues.aname" @change="e => this.editAssetValues.aname = e.target.value"/></td>
                         </tr>
                         <tr>
                             <th><label for="edit-asset-type-select">Asset Type:</label></th>
                             <td>
-                                <select id="edit-asset-type-select" name="edit-asset-type-select">
+                                <select id="edit-asset-type-select" name="edit-asset-type-select" @change="e => this.editAssetValues.atype = e.target.value">
                                     <option value="EQUIPMENT_MACHINE" :selected="this.editAssetValues.atype == 'EQUIPMENT_MACHINE'">Equipment/Machine</option>
                                     <option value="STORAGE_AREA" :selected="this.editAssetValues.atype == 'STORAGE_AREA'">Storage Area</option>
                                 </select>
@@ -145,37 +145,37 @@
                         </tr>
                         <tr>
                             <th><label for="edit-asset-xpos-input">X Position (Feet):</label></th>
-                            <td><input type="number" id="edit-asset-xpos-input" name="edit-asset-xpos-input"
-                                    class="small-number-input" :value="this.editAssetValues.x"/></td>
+                            <td><input step="0.001" type="number" id="edit-asset-xpos-input" name="edit-asset-xpos-input"
+                                    class="small-number-input" :value="this.editAssetValues.x" @change="e => this.editAssetValues.x = e.target.value"/></td>
                         </tr>
                         <tr>
                             <th><label for="edit-asset-ypos-input">Y Position (Feet):</label></th>
-                            <td><input type="number" id="edit-asset-ypos-input" name="edit-asset-ypos-input"
-                                    class="small-number-input" :value="this.editAssetValues.y"/></td>
+                            <td><input step="0.001" type="number" id="edit-asset-ypos-input" name="edit-asset-ypos-input"
+                                    class="small-number-input" :value="this.editAssetValues.y" @change="e => this.editAssetValues.y = e.target.value"/></td>
                         </tr>
                         <tr>
                             <th><label for="edit-asset-zpos-input">Z Position (Feet):</label></th>
-                            <td><input type="number" id="edit-asset-zpos-input" name="edit-asset-zpos-input"
-                                    class="small-number-input" :value="this.editAssetValues.z"/></td>
+                            <td><input step="0.001" type="number" id="edit-asset-zpos-input" name="edit-asset-zpos-input"
+                                    class="small-number-input" :value="this.editAssetValues.z" @change="e => this.editAssetValues.z = e.target.value"/></td>
                         </tr>
                         <tr>
                             <th><label for="edit-asset-width-input">Width (Feet):</label></th>
-                            <td><input type="number" min="0" id="edit-asset-width-input" name="edit-asset-width-input"
-                                    :value="this.editAssetValues.w" class="small-number-input" /></td>
+                            <td><input step="0.001" type="number" min="0" id="edit-asset-width-input" name="edit-asset-width-input"
+                                    :value="this.editAssetValues.w" class="small-number-input" @change="e => this.editAssetValues.w = e.target.value"/></td>
                         </tr>
                         <tr>
                             <th><label for="edit-asset-length-input">Length (Feet):</label></th>
-                            <td><input type="number" min="0" id="edit-asset-length-input" name="edit-asset-length-input"
-                                    :value="this.editAssetValues.l" class="small-number-input" /></td>
+                            <td><input step="0.001" type="number" min="0" id="edit-asset-length-input" name="edit-asset-length-input"
+                                    :value="this.editAssetValues.l" class="small-number-input" @change="e => this.editAssetValues.l = e.target.value"/></td>
                         </tr>
                         <tr>
                             <th><label for="edit-asset-height-input">Height (Feet):</label></th>
-                            <td><input type="number" min="0" id="edit-asset-height-input" name="edit-asset-height-input"
-                                    :value="this.editAssetValues.h" class="small-number-input" /></td>
+                            <td><input step="0.001" type="number" min="0" id="edit-asset-height-input" name="edit-asset-height-input"
+                                    :value="this.editAssetValues.h" class="small-number-input" @change="e => this.editAssetValues.h = e.target.value"/></td>
                         </tr>
                         <tr>
                             <th><label for="edit-asset-capacity-input">Capacity:</label></th>
-                            <td><input type="number" min="0" step="1" id="edit-asset-capacity-input"
+                            <td><input type="number" min="0" step="1" id="edit-asset-capacity-input" @change="e => this.editAssetValues.capacity = e.target.value"
                                     name="edit-asset-capacity-input" :value="this.editAssetValues.capacity" class="small-number-input" />
                             </td>
                         </tr>
@@ -403,7 +403,6 @@ export default {
             }
             let toTime = Array.from(document.querySelectorAll("[id^='edit-asset-routing-to-time-input-']")).map(e => e.value);
             let body = {
-                asset_id: this.selectedToEdit,
                 display_name: document.getElementById("edit-asset-name-input").value,
                 asset_type: document.getElementById("edit-asset-type-select").value,
                 pos_x: document.getElementById("edit-asset-xpos-input").value,

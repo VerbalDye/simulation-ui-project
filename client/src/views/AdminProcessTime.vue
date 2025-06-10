@@ -73,7 +73,7 @@
                             <td>
                                 <select name="distribution-type-apply-all-advanced"
                                     id="distribution-type-apply-all-advanced"
-                                    @change="e => this.distributionType = e.target.value">
+                                    @change="e => this.continuousData.distribution = e.target.value">
                                     <option value="Lognormal" selected>Lognormal</option>
                                     <option value="Normal">Normal</option>
                                     <option value="Beta">Beta</option>
@@ -83,37 +83,44 @@
                                 </select>
                             </td>
                         </tr>
-                        <tr v-if="this.distributionType !== 'Normal'">
+                        <tr v-if="this.continuousData.distribution !== 'Normal'">
                             <th><i class="bi bi-dash-lg"></i> Min (minutes)*</th>
                             <td>
-                                <input type="number" value="0" class="small-number-input" @change="e => this.continuousData.min = e.target.value" />
+                                <input type="number" value="0" class="small-number-input"
+                                    @change="e => this.continuousData.min = e.target.value" />
                             </td>
                         </tr>
                         <tr
-                            v-if="this.distributionType == 'Beta' || this.distributionType == 'Triangular' || this.distributionType == 'Uniform'">
+                            v-if="this.continuousData.distribution == 'Beta' || this.continuousData.distribution == 'Triangular' || this.continuousData.distribution == 'Uniform'">
                             <th><i class="bi bi-plus-lg"></i> Max (minutes)*</th>
                             <td>
-                                <input type="number" value="0" class="small-number-input" @change="e => this.continuousData.max = e.target.value" />
+                                <input type="number" value="0" class="small-number-input"
+                                    @change="e => this.continuousData.max = e.target.value" />
                             </td>
                         </tr>
-                        <tr v-if="this.distributionType !== 'Uniform'">
+                        <tr v-if="this.continuousData.distribution !== 'Uniform'">
                             <th>
-                                {{ this.distributionType === 'Lognormal' || this.distributionType == 'Normal' ? "Mu" : "" }}
-                                {{ this.distributionType === 'Beta' ? "p" : "" }}
-                                {{ this.distributionType === 'Triangular' ? "Median" : "" }}
-                                {{ this.distributionType === 'Exponential' ? "Lambda" : "" }}
+                                {{ this.continuousData.distribution === 'Lognormal' || this.continuousData.distribution == 'Normal' ? "Mu" :
+                                    "" }}
+                                {{ this.continuousData.distribution === 'Beta' ? "p" : "" }}
+                                {{ this.continuousData.distribution === 'Triangular' ? "Median" : "" }}
+                                {{ this.continuousData.distribution === 'Exponential' ? "Lambda" : "" }}
                             </th>
                             <td>
-                                <input type="number" class="small-number-input" @change="e => this.continuousData.param1 = e.target.value" value="0">
+                                <input type="number" class="small-number-input"
+                                    @change="e => this.continuousData.param1 = e.target.value" value="0">
                             </td>
                         </tr>
-                        <tr v-if="this.distributionType === 'Lognormal' || this.distributionType == 'Normal' || this.distributionType == 'Beta'">
+                        <tr
+                            v-if="this.continuousData.distribution === 'Lognormal' || this.continuousData.distribution == 'Normal' || this.continuousData.distribution == 'Beta'">
                             <th>
-                                {{ this.distributionType === 'Lognormal' || this.distributionType == 'Normal' ? "Sigma" : "" }}
-                                {{ this.distributionType === 'Beta' ? "q" : "" }}
+                                {{ this.continuousData.distribution === 'Lognormal' || this.continuousData.distribution == 'Normal' ? "Sigma"
+                                    : "" }}
+                                {{ this.continuousData.distribution === 'Beta' ? "q" : "" }}
                             </th>
                             <td>
-                                <input type="number" class="small-number-input" @change="e => this.continuousData.param2 = e.target.value" value="0">
+                                <input type="number" class="small-number-input"
+                                    @change="e => this.continuousData.param2 = e.target.value" value="0">
                             </td>
                         </tr>
                     </table>
@@ -146,8 +153,8 @@ export default {
             currentEntries: [],
             processingTimeData: [],
             discreteMode: true,
-            distributionType: 'lognormal',
             continuousData: {
+                distribution: 'Lognormal',
                 min: 0,
                 max: 0,
                 param1: 0,
@@ -214,12 +221,27 @@ export default {
             })
             let body = {
                 model_number: this.selectedModels,
-                asset_id: selectedAssetIDs,
-                process_time: this.processingTimes
+                asset_id: selectedAssetIDs
             }
-            let data = await dataRequest("/api/process-time/change-default", "POST", JSON.stringify(body));
-            console.log(data);
-            window.alert("Saved!");
+            if (this.discreteMode) {
+                body.process_time = this.processingTimeData
+                console.log(body);
+                let { status } = await dataRequest("/api/process-time/change-default/discrete", "POST", JSON.stringify(body), { statusOnly: true });
+                if (status == 200) {
+                    window.alert("Saved successfully.")
+                } else {
+                    windwo.alert("Something went wrong during the saving process.")
+                }
+            } else {
+                body.process_time = this.continuousData;
+                console.log(body);
+                let { status } = await dataRequest("/api/process-time/change-default/continuous", "POST", JSON.stringify(body), { statusOnly: true });
+                if (status == 200) {
+                    window.alert("Saved successfully.")
+                } else {
+                    windwo.alert("Something went wrong during the saving process.")
+                }
+            }
         }
     },
     mounted() {

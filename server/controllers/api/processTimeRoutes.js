@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { Sequelize } = require('sequelize');
 const sequelize = require('../../config/connection');
-const { ExperimentProcessTime, ProcessTime, Scenario, Asset, OperationToLocation } = require('../../models');
+const { ExperimentProcessTime, ProcessTime, Scenario, Asset, OperationToLocation, ProcessTimeDistribution, ExperimentTimeDistribution, ExperimentTimeType } = require('../../models');
 const { withAdminAuth } = require('../../utils/auth');
 
 // router.get('/', (req, res) => {
@@ -32,7 +32,7 @@ const { withAdminAuth } = require('../../utils/auth');
 //         });
 // });
 
-router.post('/change-default', (req, res) => {
+router.post('/change-default/discrete', (req, res) => {
     let processTimeEntries = []
     Asset.findAll({
         include: [{
@@ -88,6 +88,20 @@ router.post('/change-default', (req, res) => {
             console.log(err);
             res.status(400).json(err);
         });
+})
+
+router.post('/change-default/continuous', async (req, res) => {
+    try {
+        let assetData = await Asset.findAll({
+            include: [{
+                model: OperationToLocation
+            }]
+        });
+        await ProcessTimeDistribution.destroy({})
+    } catch (err) {
+        console.log(err);
+        res.status(400).json(err);
+    }
 })
 
 // router.put('/:id', (req, res) => {

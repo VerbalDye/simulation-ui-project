@@ -434,10 +434,12 @@ export default {
             }
             if (validated) {
                 this.loading = true;
-                let { status } = await dataRequest("/api/asset/" + this.selectedToEdit, "PUT", JSON.stringify(body), { statusOnly: true });
+                let { assetStatus } = await dataRequest("/api/asset/" + this.selectedToEdit, "PUT", JSON.stringify(body), { statusOnly: true });
+                let { routingFromStatus } = await dataRequest("/api/routing/asset/from/" + this.selectedToEdit, "PUT", JSON.stringify(this.selectedFromRoutes), { statusOnly: true });
+                let { routingToStatus } = await dataRequest("/api/routing/asset/to/" + this.selectedToEdit, "PUT", JSON.stringify(this.selectedToRoutes), { statusOnly: true });
                 this.loading = false;
-                if (status == 200) {
-                    window.alert("Asset Added Successfully!");
+                if (assetStatus == 200 && routingFromStatus == 200 && routingToStatus == 200) {
+                    window.alert("Asset Saved Successfully!");
                     window.location.reload();
                 } else {
                     window.alert("Something went wrong. Check your connection. If you have internet, contact your admin the database may have been corrupted by this failure.");

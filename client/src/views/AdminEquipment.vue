@@ -273,7 +273,7 @@ export default {
             selectedEditToRoutes: null,
             processingTimes: [1],
             selectedToDelete: null,
-            selectedToEdit: null,
+            selectedToEdit: 1,
             editAssetValues: {
                 aname: null,
                 atype: null,
@@ -302,7 +302,7 @@ export default {
             this.assetData = data.map(e => e.asset);
             console.log(this.assetData);
             this.selectedToDelete = this.assetData[0].asset_id;
-            handleEditSelectionChange({ target: { value: this.assetData[1].asset_id } });
+            handleEditSelectionChange({ target: { value: this.assetData[0].asset_id } });
         },
         async getTaskSequenceData() {
             let data = await dataRequest("/api/experiment/task-sequence/" + this.experimentID, "GET");
@@ -479,7 +479,7 @@ export default {
         handleEditSelectionChange(e) {
             this.selectedToEdit = e.target.value;
             let asset = this.assetData.find(f => e.target.value == f.asset_id);
-            let operation = this.operationData.find(f => e.target.value == f.asset_id);
+            let operation = this.operationToLocationData.find(f => e.target.value == f.asset_id);
             console.log(operation);
             this.editAssetValues.aname = asset.display_name;
             this.editAssetValues.atype = asset.asset_type;

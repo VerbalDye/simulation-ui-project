@@ -448,8 +448,8 @@ export default {
             this.selectedEditFromRoutes.forEach(entry => origins.push(this.assetData.find(f => f.display_name == entry).asset_id))
             this.selectedEditToRoutes.forEach(entry => destinations.push(this.assetData.find(f => f.display_name == entry).asset_id))
             console.log(body);
-            console.log(this.origins);
-            console.log(this.destinations);
+            console.log(origins);
+            console.log(destinations);
             let validated = true;
             if (!body.display_name || body.display_name.length == 0) {
                 console.log('asset name exists')
@@ -473,10 +473,10 @@ export default {
                 let routingFromResponse = { status: 200 };
                 let routingToResponse = { status: 200 };
                 if (origins.length > 0) {
-                    let routingFromResponse = await dataRequest("/api/routing/asset/from/" + this.selectedToEdit, "PUT", JSON.stringify(this.origins), { statusOnly: true });
+                    let routingFromResponse = await dataRequest("/api/routing/asset/from/" + this.selectedToEdit, "PUT", JSON.stringify(origins), { statusOnly: true });
                 }
                 if (destinations.length > 0) {
-                    let routingToResponse = await dataRequest("/api/routing/asset/to/" + this.selectedToEdit, "PUT", JSON.stringify(this.destinations), { statusOnly: true });
+                    let routingToResponse = await dataRequest("/api/routing/asset/to/" + this.selectedToEdit, "PUT", JSON.stringify(destinations), { statusOnly: true });
                 }
                 this.loading = false;
                 if (assetResponse.status == 200 && routingFromResponse.status == 200 && routingToResponse.status == 200) {

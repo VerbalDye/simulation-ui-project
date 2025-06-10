@@ -61,7 +61,7 @@ router.put('/:id', (req, res) => {
 });
 
 router.delete('/:id', (req, res) => {
-    Asset.destroy(req.body, {
+    Asset.destroy({
         where: {
             asset_id: req.params.id
         }

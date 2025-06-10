@@ -423,15 +423,19 @@ export default {
             console.log(this.selectedEditToRoutes);
             let validated = true;
             if (!body.display_name || body.display_name.length == 0) {
+                console.log('asset name exists')
                 validated = false;
             }
             if (this.assetData.find(e => e.display_name == body.display_name && e.asset_id !== body.asset_id)) {
+                console.log('asset name duplication')
                 validated = false;
             }
             if (this.editToRoutes && this.editToRoutes.length > 0 && (!this.selectedEditToRoutes || this.selectedEditToRoutes.length == 0)) {
+                console.log('to');
                 validated = false;
             }
             if (this.editFromRoutes && this.editFromRoutes.length > 0 && (!this.selectedEditFromRoutes || this.selectedEditFromRoutes.length == 0)) {
+                console.log('from');
                 validated = false;
             }
             if (validated) {

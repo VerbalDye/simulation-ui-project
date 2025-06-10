@@ -122,92 +122,93 @@
                 </table>
                 <button>Add Asset</button>
             </form>
-            <br/>
+            <br />
             <div>
                 <h2>Edit Asset</h2>
-                <select>
-                    <option v-for="asset in assetData" :value="asset.asset_id">{{ asset.display_name }}</option>
+                <select @change="handleEditSelectionChange($event)">
+                    <option v-for="asset in assetData" :value="asset.asset_id" :selected="this.selectedToDelete == asset.asset_id">{{ asset.display_name }}</option>
                 </select>
-                <form @submit.prevent="handleAddAsset">
+                <form @submit.prevent="handleEditAsset">
                     <table class="grid-less">
                         <tr>
-                            <th><label for="asset-name-input">Name:</label></th>
-                            <td><input type="text" id="asset-name-input" name="asset-name-input" /></td>
+                            <th><label for="edit-asset-name-input">Name:</label></th>
+                            <td><input type="text" id="edit-asset-name-input" name="edit-asset-name-input" /></td>
                         </tr>
                         <tr>
-                            <th><label for="asset-type-select">Asset Type:</label></th>
+                            <th><label for="edit-asset-type-select">Asset Type:</label></th>
                             <td>
-                                <select id="asset-type-select" name="asset-type-select">
+                                <select id="edit-asset-type-select" name="edit-asset-type-select">
                                     <option value="EQUIPMENT_MACHINE" selected>Equipment/Machine</option>
                                     <option value="STORAGE_AREA">Storage Area</option>
                                 </select>
                             </td>
                         </tr>
                         <tr>
-                            <th><label for="asset-xpos-input">X Position (Feet):</label></th>
-                            <td><input type="number" id="asset-xpos-input" name="asset-xpos-input" value="0"
+                            <th><label for="edit-asset-xpos-input">X Position (Feet):</label></th>
+                            <td><input type="number" id="edit-asset-xpos-input" name="edit-asset-xpos-input" value="0"
                                     class="small-number-input" /></td>
                         </tr>
                         <tr>
-                            <th><label for="asset-ypos-input">Y Position (Feet):</label></th>
-                            <td><input type="number" id="asset-ypos-input" name="asset-ypos-input" value="0"
+                            <th><label for="edit-asset-ypos-input">Y Position (Feet):</label></th>
+                            <td><input type="number" id="edit-asset-ypos-input" name="edit-asset-ypos-input" value="0"
                                     class="small-number-input" /></td>
                         </tr>
                         <tr>
-                            <th><label for="asset-zpos-input">Z Position (Feet):</label></th>
-                            <td><input type="number" id="asset-zpos-input" name="asset-zpos-input" value="0"
+                            <th><label for="edit-asset-zpos-input">Z Position (Feet):</label></th>
+                            <td><input type="number" id="edit-asset-zpos-input" name="edit-asset-zpos-input" value="0"
                                     class="small-number-input" /></td>
                         </tr>
                         <tr>
-                            <th><label for="asset-width-input">Width (Feet):</label></th>
-                            <td><input type="number" min="0" id="asset-width-input" name="asset-width-input" value="5"
-                                    class="small-number-input" /></td>
+                            <th><label for="edit-asset-width-input">Width (Feet):</label></th>
+                            <td><input type="number" min="0" id="edit-asset-width-input" name="edit-asset-width-input"
+                                    value="5" class="small-number-input" /></td>
                         </tr>
                         <tr>
-                            <th><label for="asset-length-input">Length (Feet):</label></th>
-                            <td><input type="number" min="0" id="asset-length-input" name="asset-length-input" value="5"
-                                    class="small-number-input" /></td>
+                            <th><label for="edit-asset-length-input">Length (Feet):</label></th>
+                            <td><input type="number" min="0" id="edit-asset-length-input" name="edit-asset-length-input"
+                                    value="5" class="small-number-input" /></td>
                         </tr>
                         <tr>
-                            <th><label for="asset-height-input">Height (Feet):</label></th>
-                            <td><input type="number" min="0" id="asset-height-input" name="asset-height-input" value="5"
-                                    class="small-number-input" /></td>
+                            <th><label for="edit-asset-height-input">Height (Feet):</label></th>
+                            <td><input type="number" min="0" id="edit-asset-height-input" name="edit-asset-height-input"
+                                    value="5" class="small-number-input" /></td>
                         </tr>
                         <tr>
-                            <th><label for="asset-capacity-input">Capacity:</label></th>
-                            <td><input type="number" min="0" step="1" id="asset-capacity-input"
-                                    name="asset-capacity-input" value="1" class="small-number-input" />
+                            <th><label for="edit-asset-capacity-input">Capacity:</label></th>
+                            <td><input type="number" min="0" step="1" id="edit-asset-capacity-input"
+                                    name="edit-asset-capacity-input" value="1" class="small-number-input" />
                             </td>
                         </tr>
                         <tr>
-                            <th><label for="asset-operation-select">Associated Operation:</label></th>
+                            <th><label for="edit-asset-operation-select">Associated Operation:</label></th>
                             <td>
-                                <select id="asset-operation-select" name="asset-type-select"
+                                <select id="edit-asset-operation-select" name="edit-asset-type-select"
                                     @change="handleOperationChange">
                                     <option v-for="operation in operationData" :value="operation.operation_id"
                                         :selected="operation.operation_id == selectedOperation">{{
-                                        operation.display_name }}
+                                            operation.display_name }}
                                     </option>
                                 </select>
                             </td>
                         </tr>
                         <tr>
-                            <th><label for="asset-process-time-input"># of Processing Times:</label></th>
-                            <td><input type="number" id="asset-process-time-input" name="asset-process-time-input"
-                                    min="1" step="1" :value="processingTimes.length"
-                                    @change="handleNumberOfProcessTimesChange" class="small-number-input" /></td>
+                            <th><label for="edit-asset-process-time-input"># of Processing Times:</label></th>
+                            <td><input type="number" id="edit-asset-process-time-input"
+                                    name="edit-asset-process-time-input" min="1" step="1"
+                                    :value="editProcessingTimes.length" @change="handleNumberOfProcessTimesChange"
+                                    class="small-number-input" /></td>
                         </tr>
                         <tr>
                             <th>Processing Time(s) in Minutes:</th>
-                            <td><input v-for="(processingTime, index) in processingTimes" type="number" min="0"
-                                    :value="processingTime" :id="'asset-process-time-input-' + index"
-                                    :name="'asset-process-time-input-' + index" class="small-number-input"
+                            <td><input v-for="(processingTime, index) in editProcessingTimes" type="number" min="0"
+                                    :value="processingTime" :id="'edit-asset-process-time-input-' + index"
+                                    :name="'edit-asset-process-time-input-' + index" class="small-number-input"
                                     @change="handleProcessTimesChange($event, index)" /></td>
                         </tr>
                         <tr v-if="fromRoutes">
                             <th>Routing From:</th>
                             <td>
-                                <VueMultiselect v-model="selectedFromRoutes" :options="fromRoutes" :multiple="true"
+                                <VueMultiselect v-model="selectedEditFromRoutes" :options="editFromRoutes" :multiple="true"
                                     :close-on-select="false" placeholder="Select at least one job">
                                     <template slot="selection" slot-scope="{ values, search, isOpen }"><span
                                             class="multiselect__single" v-if="values.length" v-show="!isOpen">{{
@@ -216,17 +217,17 @@
                                 </VueMultiselect>
                             </td>
                         </tr>
-                        <tr v-if="fromRoutes && selectedFromRoutes && selectedFromRoutes.length">
+                        <tr v-if="editFromRoutes && selectedEditFromRoutes && selectedEditFromRoutes.length">
                             <th>Routing From Time(s) in Minutes:</th>
-                            <td><input v-for="(selection, index) in selectedFromRoutes" value="0" min="0" type="number"
+                            <td><input v-for="(selection, index) in editSelectedFromRoutes" value="0" min="0" type="number"
                                     :id="'asset-routing-from-time-input-' + index"
                                     :name="'asset-routing-from-time-input-' + index" class="small-number-input" />
                             </td>
                         </tr>
-                        <tr v-if="toRoutes">
+                        <tr v-if="editToRoutes">
                             <th>Routing To:</th>
                             <td>
-                                <VueMultiselect v-model="selectedToRoutes" :options="toRoutes" :multiple="true"
+                                <VueMultiselect v-model="selectedEditToRoutes" :options="editToRoutes" :multiple="true"
                                     :close-on-select="false" placeholder="Select at least one job">
                                     <template slot="selection" slot-scope="{ values, search, isOpen }"><span
                                             class="multiselect__single" v-if="values.length" v-show="!isOpen">{{
@@ -235,9 +236,9 @@
                                 </VueMultiselect>
                             </td>
                         </tr>
-                        <tr v-if="toRoutes && selectedToRoutes && selectedToRoutes.length">
+                        <tr v-if="editToRoutes && selectedEditToRoutes && selectedEditToRoutes.length">
                             <th>Routing To Time(s) in Minutes:</th>
-                            <td><input v-for="(selection, index) in selectedToRoutes" value="0" min="0" type="number"
+                            <td><input v-for="(selection, index) in selectedEditToRoutes" value="0" min="0" type="number"
                                     :id="'asset-routing-to-time-input-' + index"
                                     :name="'asset-routing-to-time-input-' + index" class="small-number-input" /></td>
                         </tr>
@@ -245,11 +246,11 @@
                     <button>Add Asset</button>
                 </form>
             </div>
-            <br/>
+            <br />
             <div>
                 <h2>Delete Asset</h2>
                 <select @change="e => this.selectedToDelete = e.target.value">
-                    <option v-for="asset in assetData" :value="asset.asset_id">{{ asset.display_name }}</option>
+                    <option v-for="asset in assetData" :value="asset.asset_id" :selected="this.selectedToDelete == asset.asset_id">{{ asset.display_name }}</option>
                 </select>
                 <button @click="handleDeleteAsset">Delete</button>
             </div>
@@ -279,8 +280,31 @@ export default {
             selectedFromRoutes: null,
             toRoutes: null,
             selectedToRoutes: null,
+            editFromRoutes: null,
+            selectedEditFromRoutes: null,
+            editToRoutes: null,
+            selectedEditToRoutes: null,
             processingTimes: [1],
+            editProcessingTimes: [1],
             selectedToDelete: null,
+            selectedToEdit: null,
+            editAssetValues: {
+                aname: null,
+                atype: null,
+                x: null,
+                y: null,
+                z: null,
+                l: null,
+                w: null,
+                h: null,
+                capacity: null,
+                op_id: null,
+                proc_time: null,
+                fromList: null,
+                fromTime: null,
+                toList: null,
+                toTime: null
+            }
         }
     },
     mixins: [titleMixin],
@@ -291,6 +315,9 @@ export default {
             let data = await dataRequest("/api/experiment/asset/" + this.experimentID, "GET");
             // console.log(data);
             this.assetData = data.map(e => e.asset);
+            console.log(this.assetData);
+            this.selectedToDelete = this.assetData[0].asset_id;
+            handleEditSelectionChange({ target: { value: this.assetData[0].asset_id } });
         },
         async getTaskSequenceData() {
             let data = await dataRequest("/api/experiment/task-sequence/" + this.experimentID, "GET");
@@ -365,6 +392,67 @@ export default {
                 this.loading = false;
                 if (status == 200) {
                     window.alert("Asset Added Successfully!");
+                    window.location.reload();
+                } else {
+                    window.alert("Something went wrong. Check your connection. If you have internet, contact your admin the database may have been corrupted by this failure.");
+                }
+            } else {
+                window.alert('Incorrect Inputs. Asset must have a unique name and at least one "From Route" and one "To Route" must be selected.')
+            }
+        },
+        async handleEditAsset(e) {
+            let fromList;
+            let toList;
+            if (this.selectedEditFromRoutes) {
+                fromList = this.assetData.filter(e => this.selectedEditFromRoutes.indexOf(e.display_name) !== -1).map(e => e.asset_id);
+            } else {
+                fromList = ""
+            }
+            let fromTime = Array.from(document.querySelectorAll("[id^='edit-asset-routing-from-time-input-']")).map(e => e.value);
+            if (this.selectedEditToRoutes) {
+                toList = this.assetData.filter(e => this.selectedEditToRoutes.indexOf(e.display_name) !== -1).map(e => e.asset_id);
+            } else {
+                toList = ""
+            }
+            let toTime = Array.from(document.querySelectorAll("[id^='edit-asset-routing-to-time-input-']")).map(e => e.value);
+            let body = {
+                aname: document.getElementById("edit-asset-name-input").value,
+                atype: document.getElementById("edit-asset-type-select").value,
+                x: document.getElementById("edit-asset-xpos-input").value,
+                y: document.getElementById("edit-asset-ypos-input").value,
+                z: document.getElementById("edit-asset-zpos-input").value,
+                l: document.getElementById("edit-asset-length-input").value,
+                w: document.getElementById("edit-asset-width-input").value,
+                h: document.getElementById("edit-asset-height-input").value,
+                capacity: document.getElementById("edit-asset-capacity-input").value,
+                op_id: document.getElementById("edit-asset-operation-select").value,
+                proc_time: this.editProcessingTimes.toString(),
+                fromList: fromList.toString(),
+                fromTime: fromTime.toString(),
+                toList: toList.toString(),
+                toTime: toTime.toString()
+            }
+            console.log(body);
+            let validated = true;
+            if (!body.aname || body.aname.length == 0) {
+                validated = false;
+            }
+            if (this.assetData.find(e => e.display_name == body.aname)) {
+                validated = false;
+            }
+            if (this.toRoutes && this.toRoutes.length > 0 && (!this.selectedEditToRoutes || this.selectedEditToRoutes.length == 0)) {
+                validated = false;
+            }
+            if (this.fromRoutes && this.fromRoutes.length > 0 && (!this.selectedEditFromRoutes || this.selectedEditFromRoutes.length == 0)) {
+                validated = false;
+            }
+            if (validated) {
+                this.loading = true;
+                let { status } = await dataRequest("/api/asset/" + this.selectedToEdit, "PUT", JSON.stringify(body), { statusOnly: true });
+                this.loading = false;
+                if (status == 200) {
+                    window.alert("Asset Added Successfully!");
+                    window.location.reload();
                 } else {
                     window.alert("Something went wrong. Check your connection. If you have internet, contact your admin the database may have been corrupted by this failure.");
                 }
@@ -404,8 +492,34 @@ export default {
         handleProcessTimesChange(e, index) {
             this.processingTimes[index] = parseInt(e.target.value);
         },
+        handleEditSelectionChange(e) {
+            this.selectedToEdit = e.target.value;
+            let asset = this.assetData.find(f => e.target.value == f.asset_id);
+            let operation = this.operationData.find(f => e.target.value == f.asset_id);
+            this.editAssetValues.aname = asset.display_name;
+            this.editAssetValues.atype = asset.asset_type;
+            this.editAssetValues.x = asset.pos_x;
+            this.editAssetValues.y = asset.pos_y;
+            this.editAssetValues.z = asset.pos_z;
+            this.editAssetValues.l = asset.dim_length_feet;
+            this.editAssetValues.w = asset.dim_width_feet;
+            this.editAssetValues.h = asset.dim_height_feet;
+            this.editAssetValues.capacity = asset.capacity;
+            this.editAssetValues.op_id = operation.operation_id;
+            // this.editAssetValues.proc_time = ;
+            // this.editAssetValues.fromList = ;
+            // this.editAssetValues.fromTime = ;
+            // this.editAssetValues.toList = ;
+            // this.editAssetValues.toTime = ;
+        },
         async handleDeleteAsset() {
-            let response = await dataRequest('/api/asset/' + this.selectedToDelete, "DELETE");
+            let { status } = await dataRequest('/api/asset/' + this.selectedToDelete, "DELETE", { statusOnly: true });
+            if (status == 200) {
+                window.alert("Asset Deleted Successfully")
+                window.location.reload();
+            } else {
+                window.alert("Something went wrong when deleting asset.")
+            }
         }
     },
     mounted() {

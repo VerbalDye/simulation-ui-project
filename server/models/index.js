@@ -43,6 +43,7 @@ const ScenarioFilter = require('./ScenarioFilter');
 const Sessions = require('./Sessions');
 const Site = require('./Site');
 const TaskSequence = require('./TaskSequence');
+const TransportTime = require('./TransportTime');
 const Throughput = require('./Throughput');
 const Users = require('./Users');
 
@@ -203,6 +204,23 @@ Routing.belongsTo(Asset, {
     as: 'destination_asset',
     onDelete: 'CASCADE'
 });
+
+Asset.hasMany(TransportTime, {
+    foreignKey: 'asset_id',
+    targetKey: 'origin'
+});
+Asset.hasMany(TransportTime, {
+    foreignKey: 'asset_id',
+    targetKey: 'destination'
+});
+TransportTime.belongsTo(Asset, {
+    foreignKey: 'origin',
+    onDelete: 'CASCADE'
+});
+TransportTime.belongsTO(Asset, {
+    foreignKey: 'destination',
+    onDelete: 'CASCADE'
+})
 
 // Resource Utilization-Asset
 Asset.hasMany(ResourceUtilization, {
@@ -621,6 +639,7 @@ module.exports = {
     Sessions,
     Site,
     TaskSequence,
+    TransportTime,
     Throughput,
     Users
 };

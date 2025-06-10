@@ -15,7 +15,8 @@ router.put('/asset/to/:id', (req, res) => {
     let promises = [];
     Routing.findAll({
         where: {
-            origin: req.params.id
+            origin: req.params.id,
+            is_default: 1
         }
     })
         .then(dbRoutingData => {
@@ -57,7 +58,8 @@ router.put('/asset/from/:id', (req, res) => {
     let promises = [];
     Routing.findAll({
         where: {
-            destination: req.params.id
+            destination: req.params.id,
+            is_default: 1
         }
     })
         .then(dbRoutingData => {

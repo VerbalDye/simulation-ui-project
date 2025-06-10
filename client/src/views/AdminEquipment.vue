@@ -191,7 +191,7 @@
                                 </select>
                             </td>
                         </tr>
-                        <tr v-if="fromRoutes">
+                        <tr v-if="editFromRoutes">
                             <th>Routing From:</th>
                             <td>
                                 <VueMultiselect v-model="selectedEditFromRoutes" :options="editFromRoutes" :multiple="true"
@@ -464,14 +464,14 @@ export default {
             console.log(this.fromRoutes);
         },
         handleEditOperationChange(e) {
-            this.selectedOperation = e.target.value;
-            let toOperationEntry = this.taskSequenceData.find(e => e.operation_id == this.selectedEditOperation);
+            this.editAssetValues.op_id = e.target.value;
+            let toOperationEntry = this.taskSequenceData.find(e => e.operation_id == this.editAssetValues.op_id);
             if (toOperationEntry && toOperationEntry.next_operation) {
                 this.editToRoutes = this.operationToLocationData.filter(e => e.operation_id == toOperationEntry.next_operation).map(e => e.asset.display_name);
             } else {
                 this.editToRoutes = null;
             }
-            let fromOperationEntry = this.taskSequenceData.find(e => e.next_operation == this.selectedEditOperation);
+            let fromOperationEntry = this.taskSequenceData.find(e => e.next_operation == this.editAssetValues.op_id);
             if (fromOperationEntry) {
                 this.editFromRoutes = this.operationToLocationData.filter(e => e.operation_id == fromOperationEntry.operation_id).map(e => e.asset.display_name);
             } else {

@@ -205,7 +205,7 @@
                         </tr>
                         <tr v-if="editFromRoutes && selectedEditFromRoutes && selectedEditFromRoutes.length">
                             <th>Routing From Time(s) in Minutes:</th>
-                            <td><input v-for="(selection, index) in editSelectedFromRoutes" value="0" min="0" type="number"
+                            <td><input v-for="(selection, index) in selectedEditFromRoutes" value="0" min="0" type="number"
                                     :id="'asset-routing-from-time-input-' + index"
                                     :name="'asset-routing-from-time-input-' + index" class="small-number-input" />
                             </td>
@@ -300,7 +300,7 @@ export default {
             let data = await dataRequest("/api/experiment/asset/" + this.experimentID, "GET");
             // console.log(data);
             this.assetData = data.map(e => e.asset);
-            console.log(this.assetData);
+            // console.log(this.assetData);
             this.selectedToDelete = this.assetData[0].asset_id;
             this.handleEditSelectionChange({ target: { value: this.assetData[0].asset_id } });
         },
@@ -310,12 +310,12 @@ export default {
             this.taskSequenceData = data.map(e => e.task_sequence);
             this.operationData = data.map(e => e.task_sequence.operation);
             this.handleOperationChange({ target: { value: data[0].task_sequence.operation.operation_id } });
-            console.log(this.taskSequenceData);
-            console.log(this.operationData);
+            // console.log(this.taskSequenceData);
+            // console.log(this.operationData);
         },
         async getOperationToLocationData() {
             let data = await dataRequest("/api/experiment/operation-to-location/" + this.experimentID, "GET");
-            console.log(data);
+            // console.log(data);
             this.operationToLocationData = data.map(e => e.operation_to_location);
         },
         async getData() {
@@ -359,7 +359,7 @@ export default {
                 toList: toList.toString(),
                 toTime: toTime.toString()
             }
-            console.log(body);
+            // console.log(body);
             let validated = true;
             if (!body.aname || body.aname.length == 0) {
                 validated = false;
@@ -419,8 +419,8 @@ export default {
                 // toTime: toTime.toString()
             }
             console.log(body);
-            console.log(this.selectedFromRoutes);
-            console.log(this.selectedToRoutes);
+            console.log(this.selectedEditFromRoutes);
+            console.log(this.selectedEditToRoutes);
             let validated = true;
             if (!body.display_name || body.display_name.length == 0) {
                 validated = false;
@@ -437,8 +437,8 @@ export default {
             if (validated) {
                 this.loading = true;
                 let { assetStatus } = await dataRequest("/api/asset/" + this.selectedToEdit, "PUT", JSON.stringify(body), { statusOnly: true });
-                let { routingFromStatus } = await dataRequest("/api/routing/asset/from/" + this.selectedToEdit, "PUT", JSON.stringify(this.selectedFromRoutes), { statusOnly: true });
-                let { routingToStatus } = await dataRequest("/api/routing/asset/to/" + this.selectedToEdit, "PUT", JSON.stringify(this.selectedToRoutes), { statusOnly: true });
+                let { routingFromStatus } = await dataRequest("/api/routing/asset/from/" + this.selectedToEdit, "PUT", JSON.stringify(this.selectedEditFromRoutes), { statusOnly: true });
+                let { routingToStatus } = await dataRequest("/api/routing/asset/to/" + this.selectedToEdit, "PUT", JSON.stringify(this.selectedEditToRoutes), { statusOnly: true });
                 this.loading = false;
                 if (assetStatus == 200 && routingFromStatus == 200 && routingToStatus == 200) {
                     window.alert("Asset Saved Successfully!");
@@ -466,8 +466,8 @@ export default {
             }
             this.selectedFromRoutes = null;
             this.selectedToRoutes = null;
-            console.log(this.toRoutes);
-            console.log(this.fromRoutes);
+            // console.log(this.toRoutes);
+            // console.log(this.fromRoutes);
         },
         handleEditOperationChange(e) {
             this.editAssetValues.op_id = e.target.value;
@@ -485,8 +485,8 @@ export default {
             }
             this.selectedEditFromRoutes = null;
             this.selectedEditToRoutes = null;
-            console.log(this.editToRoutes);
-            console.log(this.editFromRoutes);
+            // console.log(this.editToRoutes);
+            // console.log(this.editFromRoutes);
         },
         handleNumberOfProcessTimesChange(e) {
             if (e.target.value > this.processingTimes.length) {
@@ -505,7 +505,7 @@ export default {
             this.selectedToEdit = e.target.value;
             let asset = this.assetData.find(f => e.target.value == f.asset_id);
             let operation = this.operationToLocationData.find(f => e.target.value == f.asset_id);
-            console.log(operation);
+            // console.log(operation);
             this.editAssetValues.aname = asset.display_name;
             this.editAssetValues.atype = asset.asset_type;
             this.editAssetValues.x = asset.pos_x;

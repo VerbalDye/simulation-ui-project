@@ -2029,7 +2029,19 @@ export default {
                     this.processTimeSettings.elements[asset.asset_id].values[e.experiment_process_time_id] = e.process_time.process_time;
                 })
                 let exampleModel = this.continuousProcessTimeData.find(e => e.process_time_distribution.asset_id == asset.asset_id && e.process_time_distribution.model_number == this.processTimeSettings.selectedModels[asset.asset_id][0]);
-                console.log(exampleModel);
+                // console.log(exampleModel);
+                if (!exampleModel) {
+                    exampleModel = {
+                        process_time_distribution: { 
+                            distriburion: "lognormal",
+                            min: 0,
+                            max: 0,
+                            param1: 0,
+                            param2: 0
+                        },
+                        
+                    }
+                }
                 this.processTimeSettings.continuousElements[asset.asset_id] = {
                     name: asset.display_name,
                     values: {

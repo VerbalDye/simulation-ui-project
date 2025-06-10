@@ -426,7 +426,7 @@ export default {
                 console.log('asset name exists')
                 validated = false;
             }
-            if (this.assetData.find(e => e.display_name == body.display_name && e.asset_id !== body.asset_id)) {
+            if (this.assetData.find(e => e.display_name == body.display_name && e.asset_id !== this.selectedToEdit)) {
                 console.log('asset name duplication')
                 validated = false;
             }

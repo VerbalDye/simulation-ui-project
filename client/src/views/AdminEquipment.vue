@@ -61,7 +61,8 @@
                     <tr>
                         <th><label for="asset-operation-select">Associated Operation:</label></th>
                         <td>
-                            <select id="asset-operation-select" name="asset-type-select" @change="handleOperationChange">
+                            <select id="asset-operation-select" name="asset-type-select"
+                                @change="handleOperationChange">
                                 <option v-for="operation in operationData" :value="operation.operation_id"
                                     :selected="operation.operation_id == selectedOperation">{{ operation.display_name }}
                                 </option>
@@ -87,7 +88,8 @@
                             <VueMultiselect v-model="selectedFromRoutes" :options="fromRoutes" :multiple="true"
                                 :close-on-select="false" placeholder="Select at least one job">
                                 <template slot="selection" slot-scope="{ values, search, isOpen }"><span
-                                        class="multiselect__single" v-if="values.length" v-show="!isOpen">{{ values.length
+                                        class="multiselect__single" v-if="values.length" v-show="!isOpen">{{
+                                            values.length
                                         }} options selected</span></template>
                             </VueMultiselect>
                         </td>
@@ -105,7 +107,8 @@
                             <VueMultiselect v-model="selectedToRoutes" :options="toRoutes" :multiple="true"
                                 :close-on-select="false" placeholder="Select at least one job">
                                 <template slot="selection" slot-scope="{ values, search, isOpen }"><span
-                                        class="multiselect__single" v-if="values.length" v-show="!isOpen">{{ values.length
+                                        class="multiselect__single" v-if="values.length" v-show="!isOpen">{{
+                                            values.length
                                         }} options selected</span></template>
                             </VueMultiselect>
                         </td>
@@ -113,17 +116,141 @@
                     <tr v-if="toRoutes && selectedToRoutes && selectedToRoutes.length">
                         <th>Routing To Time(s) in Minutes:</th>
                         <td><input v-for="(selection, index) in selectedToRoutes" value="0" min="0" type="number"
-                                :id="'asset-routing-to-time-input-' + index" :name="'asset-routing-to-time-input-' + index"
-                                class="small-number-input" /></td>
+                                :id="'asset-routing-to-time-input-' + index"
+                                :name="'asset-routing-to-time-input-' + index" class="small-number-input" /></td>
                     </tr>
                 </table>
                 <button>Add Asset</button>
             </form>
-            <h2>Edit Asset</h2>
-            <select>
-                <option v-for="asset in assetData">{{ asset.display_name }}</option>
-            </select>
-            <h2>Delete Asset</h2>
+            <div>
+                <h2>Edit Asset</h2>
+                <select>
+                    <option v-for="asset in assetData" :value="asset.asset_id">{{ asset.display_name }}</option>
+                </select>
+                <form @submit.prevent="handleAddAsset">
+                    <table class="grid-less">
+                        <tr>
+                            <th><label for="asset-name-input">Name:</label></th>
+                            <td><input type="text" id="asset-name-input" name="asset-name-input" /></td>
+                        </tr>
+                        <tr>
+                            <th><label for="asset-type-select">Asset Type:</label></th>
+                            <td>
+                                <select id="asset-type-select" name="asset-type-select">
+                                    <option value="EQUIPMENT_MACHINE" selected>Equipment/Machine</option>
+                                    <option value="STORAGE_AREA">Storage Area</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="asset-xpos-input">X Position (Feet):</label></th>
+                            <td><input type="number" id="asset-xpos-input" name="asset-xpos-input" value="0"
+                                    class="small-number-input" /></td>
+                        </tr>
+                        <tr>
+                            <th><label for="asset-ypos-input">Y Position (Feet):</label></th>
+                            <td><input type="number" id="asset-ypos-input" name="asset-ypos-input" value="0"
+                                    class="small-number-input" /></td>
+                        </tr>
+                        <tr>
+                            <th><label for="asset-zpos-input">Z Position (Feet):</label></th>
+                            <td><input type="number" id="asset-zpos-input" name="asset-zpos-input" value="0"
+                                    class="small-number-input" /></td>
+                        </tr>
+                        <tr>
+                            <th><label for="asset-width-input">Width (Feet):</label></th>
+                            <td><input type="number" min="0" id="asset-width-input" name="asset-width-input" value="5"
+                                    class="small-number-input" /></td>
+                        </tr>
+                        <tr>
+                            <th><label for="asset-length-input">Length (Feet):</label></th>
+                            <td><input type="number" min="0" id="asset-length-input" name="asset-length-input" value="5"
+                                    class="small-number-input" /></td>
+                        </tr>
+                        <tr>
+                            <th><label for="asset-height-input">Height (Feet):</label></th>
+                            <td><input type="number" min="0" id="asset-height-input" name="asset-height-input" value="5"
+                                    class="small-number-input" /></td>
+                        </tr>
+                        <tr>
+                            <th><label for="asset-capacity-input">Capacity:</label></th>
+                            <td><input type="number" min="0" step="1" id="asset-capacity-input"
+                                    name="asset-capacity-input" value="1" class="small-number-input" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="asset-operation-select">Associated Operation:</label></th>
+                            <td>
+                                <select id="asset-operation-select" name="asset-type-select"
+                                    @change="handleOperationChange">
+                                    <option v-for="operation in operationData" :value="operation.operation_id"
+                                        :selected="operation.operation_id == selectedOperation">{{
+                                        operation.display_name }}
+                                    </option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><label for="asset-process-time-input"># of Processing Times:</label></th>
+                            <td><input type="number" id="asset-process-time-input" name="asset-process-time-input"
+                                    min="1" step="1" :value="processingTimes.length"
+                                    @change="handleNumberOfProcessTimesChange" class="small-number-input" /></td>
+                        </tr>
+                        <tr>
+                            <th>Processing Time(s) in Minutes:</th>
+                            <td><input v-for="(processingTime, index) in processingTimes" type="number" min="0"
+                                    :value="processingTime" :id="'asset-process-time-input-' + index"
+                                    :name="'asset-process-time-input-' + index" class="small-number-input"
+                                    @change="handleProcessTimesChange($event, index)" /></td>
+                        </tr>
+                        <tr v-if="fromRoutes">
+                            <th>Routing From:</th>
+                            <td>
+                                <VueMultiselect v-model="selectedFromRoutes" :options="fromRoutes" :multiple="true"
+                                    :close-on-select="false" placeholder="Select at least one job">
+                                    <template slot="selection" slot-scope="{ values, search, isOpen }"><span
+                                            class="multiselect__single" v-if="values.length" v-show="!isOpen">{{
+                                                values.length
+                                            }} options selected</span></template>
+                                </VueMultiselect>
+                            </td>
+                        </tr>
+                        <tr v-if="fromRoutes && selectedFromRoutes && selectedFromRoutes.length">
+                            <th>Routing From Time(s) in Minutes:</th>
+                            <td><input v-for="(selection, index) in selectedFromRoutes" value="0" min="0" type="number"
+                                    :id="'asset-routing-from-time-input-' + index"
+                                    :name="'asset-routing-from-time-input-' + index" class="small-number-input" />
+                            </td>
+                        </tr>
+                        <tr v-if="toRoutes">
+                            <th>Routing To:</th>
+                            <td>
+                                <VueMultiselect v-model="selectedToRoutes" :options="toRoutes" :multiple="true"
+                                    :close-on-select="false" placeholder="Select at least one job">
+                                    <template slot="selection" slot-scope="{ values, search, isOpen }"><span
+                                            class="multiselect__single" v-if="values.length" v-show="!isOpen">{{
+                                                values.length
+                                            }} options selected</span></template>
+                                </VueMultiselect>
+                            </td>
+                        </tr>
+                        <tr v-if="toRoutes && selectedToRoutes && selectedToRoutes.length">
+                            <th>Routing To Time(s) in Minutes:</th>
+                            <td><input v-for="(selection, index) in selectedToRoutes" value="0" min="0" type="number"
+                                    :id="'asset-routing-to-time-input-' + index"
+                                    :name="'asset-routing-to-time-input-' + index" class="small-number-input" /></td>
+                        </tr>
+                    </table>
+                    <button>Add Asset</button>
+                </form>
+            </div>
+            <div>
+                <h2>Delete Asset</h2>
+                <select>
+                    <option v-for="asset in assetData" :value="asset.asset_id">{{ asset.display_name }}</option>
+                </select>
+                <button @click="handleDeleteAsset">Delete</button>
+            </div>
         </div>
     </div>
 </template>
@@ -273,6 +400,9 @@ export default {
         },
         handleProcessTimesChange(e, index) {
             this.processingTimes[index] = parseInt(e.target.value);
+        },
+        handleDeleteAsset() {
+
         }
     },
     mounted() {
@@ -283,8 +413,10 @@ export default {
 
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
 
-<style>.small-number-input {
+<style>
+.small-number-input {
     /* border: none; */
     margin: 4px;
     width: 50px;
-}</style>
+}
+</style>

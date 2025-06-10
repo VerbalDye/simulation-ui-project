@@ -132,51 +132,51 @@
                     <table class="grid-less">
                         <tr>
                             <th><label for="edit-asset-name-input">Name:</label></th>
-                            <td><input type="text" id="edit-asset-name-input" name="edit-asset-name-input" :value="this.editAssetValues.aname" /></td>
+                            <td><input type="text" id="edit-asset-name-input" name="edit-asset-name-input" :value="this.editAssetValues.aname"/></td>
                         </tr>
                         <tr>
                             <th><label for="edit-asset-type-select">Asset Type:</label></th>
                             <td>
                                 <select id="edit-asset-type-select" name="edit-asset-type-select">
-                                    <option value="EQUIPMENT_MACHINE" selected>Equipment/Machine</option>
-                                    <option value="STORAGE_AREA">Storage Area</option>
+                                    <option value="EQUIPMENT_MACHINE" :selected="this.editAssetValues.atype == 'EQUIPMENT_MACHINE'">Equipment/Machine</option>
+                                    <option value="STORAGE_AREA" :selected="this.editAssetValues.atype == 'STORAGE_AREA'">Storage Area</option>
                                 </select>
                             </td>
                         </tr>
                         <tr>
                             <th><label for="edit-asset-xpos-input">X Position (Feet):</label></th>
-                            <td><input type="number" id="edit-asset-xpos-input" name="edit-asset-xpos-input" value="0"
-                                    class="small-number-input" /></td>
+                            <td><input type="number" id="edit-asset-xpos-input" name="edit-asset-xpos-input"
+                                    class="small-number-input" :value="this.editAssetValues.x"/></td>
                         </tr>
                         <tr>
                             <th><label for="edit-asset-ypos-input">Y Position (Feet):</label></th>
-                            <td><input type="number" id="edit-asset-ypos-input" name="edit-asset-ypos-input" value="0"
-                                    class="small-number-input" /></td>
+                            <td><input type="number" id="edit-asset-ypos-input" name="edit-asset-ypos-input"
+                                    class="small-number-input" :value="this.editAssetValues.y"/></td>
                         </tr>
                         <tr>
                             <th><label for="edit-asset-zpos-input">Z Position (Feet):</label></th>
-                            <td><input type="number" id="edit-asset-zpos-input" name="edit-asset-zpos-input" value="0"
-                                    class="small-number-input" /></td>
+                            <td><input type="number" id="edit-asset-zpos-input" name="edit-asset-zpos-input"
+                                    class="small-number-input" :value="this.editAssetValues.z"/></td>
                         </tr>
                         <tr>
                             <th><label for="edit-asset-width-input">Width (Feet):</label></th>
                             <td><input type="number" min="0" id="edit-asset-width-input" name="edit-asset-width-input"
-                                    value="5" class="small-number-input" /></td>
+                                    :value="this.editAssetValues.w" class="small-number-input" /></td>
                         </tr>
                         <tr>
                             <th><label for="edit-asset-length-input">Length (Feet):</label></th>
                             <td><input type="number" min="0" id="edit-asset-length-input" name="edit-asset-length-input"
-                                    value="5" class="small-number-input" /></td>
+                                    :value="this.editAssetValues.l" class="small-number-input" /></td>
                         </tr>
                         <tr>
                             <th><label for="edit-asset-height-input">Height (Feet):</label></th>
                             <td><input type="number" min="0" id="edit-asset-height-input" name="edit-asset-height-input"
-                                    value="5" class="small-number-input" /></td>
+                                    :value="this.editAssetValues.h" class="small-number-input" /></td>
                         </tr>
                         <tr>
                             <th><label for="edit-asset-capacity-input">Capacity:</label></th>
                             <td><input type="number" min="0" step="1" id="edit-asset-capacity-input"
-                                    name="edit-asset-capacity-input" value="1" class="small-number-input" />
+                                    name="edit-asset-capacity-input" :value="this.editAssetValues.capacity" class="small-number-input" />
                             </td>
                         </tr>
                         <tr>
@@ -185,7 +185,7 @@
                                 <select id="edit-asset-operation-select" name="edit-asset-type-select"
                                     @change="handleOperationChange">
                                     <option v-for="operation in operationData" :value="operation.operation_id"
-                                        :selected="operation.operation_id == selectedOperation">{{
+                                        :selected="operation.operation_id == this.editAssetValues.op_id">{{
                                             operation.display_name }}
                                     </option>
                                 </select>
@@ -302,7 +302,7 @@ export default {
             this.assetData = data.map(e => e.asset);
             console.log(this.assetData);
             this.selectedToDelete = this.assetData[0].asset_id;
-            handleEditSelectionChange({ target: { value: this.assetData[0].asset_id } });
+            handleEditSelectionChange({ target: { value: this.assetData[1].asset_id } });
         },
         async getTaskSequenceData() {
             let data = await dataRequest("/api/experiment/task-sequence/" + this.experimentID, "GET");
@@ -480,6 +480,7 @@ export default {
             this.selectedToEdit = e.target.value;
             let asset = this.assetData.find(f => e.target.value == f.asset_id);
             let operation = this.operationData.find(f => e.target.value == f.asset_id);
+            console.log(operation);
             this.editAssetValues.aname = asset.display_name;
             this.editAssetValues.atype = asset.asset_type;
             this.editAssetValues.x = asset.pos_x;
@@ -490,7 +491,6 @@ export default {
             this.editAssetValues.h = asset.dim_height_feet;
             this.editAssetValues.capacity = asset.capacity;
             this.editAssetValues.op_id = operation.operation_id;
-            // this.editAssetValues.proc_time = ;
             // this.editAssetValues.fromList = ;
             // this.editAssetValues.fromTime = ;
             // this.editAssetValues.toList = ;

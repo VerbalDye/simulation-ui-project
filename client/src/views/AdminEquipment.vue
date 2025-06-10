@@ -229,7 +229,7 @@
                                     :name="'asset-routing-to-time-input-' + index" class="small-number-input" /></td>
                         </tr>
                     </table>
-                    <button>Add Asset</button>
+                    <button>Save Asset Changes</button>
                 </form>
             </div>
             <br />
@@ -319,11 +319,13 @@ export default {
             this.operationToLocationData = data.map(e => e.operation_to_location);
         },
         async getData() {
-            await this.getOperationToLocationData()
-            await Promise.allSettled([
-                this.getAssetData(),
-                this.getTaskSequenceData(),
-            ])
+            await this.getOperationToLocationData();
+            await this.getTaskSequenceData();
+            await this.getAssetData();
+            // await Promise.allSettled([
+            //     this.getAssetData(),
+            //     this.getTaskSequenceData(),
+            // ])
         },
         async handleAddAsset(e) {
             let fromList;

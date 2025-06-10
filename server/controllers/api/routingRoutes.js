@@ -41,7 +41,7 @@ router.put('/asset/to/:id', (req, res) => {
                         }
                         ))
                 }
-                Promise.all(promises)
+                Promise.allSettled(promises)
                     .then(response => {
                         res.json(response)
                     })
@@ -83,7 +83,7 @@ router.put('/asset/from/:id', (req, res) => {
                         }
                         ))
                 }
-                Promise.all(promises)
+                Promise.allSettled(promises)
                     .then(response => {
                         res.json(response)
                     })

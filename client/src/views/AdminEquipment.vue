@@ -419,6 +419,8 @@ export default {
                 // toTime: toTime.toString()
             }
             console.log(body);
+            console.log(this.selectedFromRoutes);
+            console.log(this.selectedToRoutes);
             let validated = true;
             if (!body.display_name || body.display_name.length == 0) {
                 validated = false;

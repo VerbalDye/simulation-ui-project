@@ -67,10 +67,6 @@ router.delete('/:id', (req, res) => {
         }
     })
         .then(dbAssetData => {
-            if (!dbAssetData[0]) {
-                res.status(404).json({ message: 'No asset found with this ID' });
-                return;
-            }
             res.json(dbAssetData);
         })
         .catch(err => {

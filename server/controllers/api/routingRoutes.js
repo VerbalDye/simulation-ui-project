@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
         });
 });
 
-router.put('/asset/from/:id', (req, res) => {
+router.put('/asset/to/:id', (req, res) => {
     let promises = [];
     Routing.findAll({
         where: {
@@ -53,7 +53,7 @@ router.put('/asset/from/:id', (req, res) => {
         });
 })
 
-router.put('/asset/to/:id', (req, res) => {
+router.put('/asset/from/:id', (req, res) => {
     let promises = [];
     Routing.findAll({
         where: {

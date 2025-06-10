@@ -39,18 +39,18 @@
                     </tr>
                     <tr>
                         <th><label for="asset-width-input">Width (Feet):</label></th>
-                        <td><input step="0.001" type="number" min="0" id="asset-width-input" name="asset-width-input" value="5"
-                                class="small-number-input" /></td>
+                        <td><input step="0.001" type="number" min="0" id="asset-width-input" name="asset-width-input"
+                                value="5" class="small-number-input" /></td>
                     </tr>
                     <tr>
                         <th><label for="asset-length-input">Length (Feet):</label></th>
-                        <td><input step="0.001" type="number" min="0" id="asset-length-input" name="asset-length-input" value="5"
-                                class="small-number-input" /></td>
+                        <td><input step="0.001" type="number" min="0" id="asset-length-input" name="asset-length-input"
+                                value="5" class="small-number-input" /></td>
                     </tr>
                     <tr>
                         <th><label for="asset-height-input">Height (Feet):</label></th>
-                        <td><input step="0.001" type="number" min="0" id="asset-height-input" name="asset-height-input" value="5"
-                                class="small-number-input" /></td>
+                        <td><input step="0.001" type="number" min="0" id="asset-height-input" name="asset-height-input"
+                                value="5" class="small-number-input" /></td>
                     </tr>
                     <tr>
                         <th><label for="asset-capacity-input">Capacity:</label></th>
@@ -126,57 +126,80 @@
             <div>
                 <h2>Edit Asset</h2>
                 <select @change="handleEditSelectionChange($event)">
-                    <option v-for="asset in assetData" :value="asset.asset_id" :selected="this.selectedToDelete == asset.asset_id">{{ asset.display_name }}</option>
+                    <option v-for="asset in assetData" :value="asset.asset_id"
+                        :selected="this.selectedToDelete == asset.asset_id">
+                        {{ asset.display_name }}</option>
                 </select>
                 <form @submit.prevent="handleEditAsset">
                     <table class="grid-less">
                         <tr>
                             <th><label for="edit-asset-name-input">Name:</label></th>
-                            <td><input type="text" id="edit-asset-name-input" name="edit-asset-name-input" :value="this.editAssetValues.aname" @change="e => this.editAssetValues.aname = e.target.value"/></td>
+                            <td><input type="text" id="edit-asset-name-input" name="edit-asset-name-input"
+                                    :value="this.editAssetValues.aname"
+                                    @change="e => this.editAssetValues.aname = e.target.value" /></td>
                         </tr>
                         <tr>
                             <th><label for="edit-asset-type-select">Asset Type:</label></th>
                             <td>
-                                <select id="edit-asset-type-select" name="edit-asset-type-select" @change="e => this.editAssetValues.atype = e.target.value">
-                                    <option value="EQUIPMENT_MACHINE" :selected="this.editAssetValues.atype == 'EQUIPMENT_MACHINE'">Equipment/Machine</option>
-                                    <option value="STORAGE_AREA" :selected="this.editAssetValues.atype == 'STORAGE_AREA'">Storage Area</option>
+                                <select id="edit-asset-type-select" name="edit-asset-type-select"
+                                    @change="e => this.editAssetValues.atype = e.target.value">
+                                    <option value="EQUIPMENT_MACHINE"
+                                        :selected="this.editAssetValues.atype == 'EQUIPMENT_MACHINE'">
+                                        Equipment/Machine</option>
+                                    <option value="STORAGE_AREA"
+                                        :selected="this.editAssetValues.atype == 'STORAGE_AREA'">Storage
+                                        Area</option>
                                 </select>
                             </td>
                         </tr>
                         <tr>
                             <th><label for="edit-asset-xpos-input">X Position (Feet):</label></th>
-                            <td><input step="0.001" type="number" id="edit-asset-xpos-input" name="edit-asset-xpos-input"
-                                    class="small-number-input" :value="this.editAssetValues.x" @change="e => this.editAssetValues.x = e.target.value"/></td>
+                            <td><input step="0.001" type="number" id="edit-asset-xpos-input"
+                                    name="edit-asset-xpos-input" class="small-number-input"
+                                    :value="this.editAssetValues.x"
+                                    @change="e => this.editAssetValues.x = e.target.value" /></td>
                         </tr>
                         <tr>
                             <th><label for="edit-asset-ypos-input">Y Position (Feet):</label></th>
-                            <td><input step="0.001" type="number" id="edit-asset-ypos-input" name="edit-asset-ypos-input"
-                                    class="small-number-input" :value="this.editAssetValues.y" @change="e => this.editAssetValues.y = e.target.value"/></td>
+                            <td><input step="0.001" type="number" id="edit-asset-ypos-input"
+                                    name="edit-asset-ypos-input" class="small-number-input"
+                                    :value="this.editAssetValues.y"
+                                    @change="e => this.editAssetValues.y = e.target.value" /></td>
                         </tr>
                         <tr>
                             <th><label for="edit-asset-zpos-input">Z Position (Feet):</label></th>
-                            <td><input step="0.001" type="number" id="edit-asset-zpos-input" name="edit-asset-zpos-input"
-                                    class="small-number-input" :value="this.editAssetValues.z" @change="e => this.editAssetValues.z = e.target.value"/></td>
+                            <td><input step="0.001" type="number" id="edit-asset-zpos-input"
+                                    name="edit-asset-zpos-input" class="small-number-input"
+                                    :value="this.editAssetValues.z"
+                                    @change="e => this.editAssetValues.z = e.target.value" /></td>
                         </tr>
                         <tr>
                             <th><label for="edit-asset-width-input">Width (Feet):</label></th>
-                            <td><input step="0.001" type="number" min="0" id="edit-asset-width-input" name="edit-asset-width-input"
-                                    :value="this.editAssetValues.w" class="small-number-input" @change="e => this.editAssetValues.w = e.target.value"/></td>
+                            <td><input step="0.001" type="number" min="0" id="edit-asset-width-input"
+                                    name="edit-asset-width-input" :value="this.editAssetValues.w"
+                                    class="small-number-input" @change="e => this.editAssetValues.w = e.target.value" />
+                            </td>
                         </tr>
                         <tr>
                             <th><label for="edit-asset-length-input">Length (Feet):</label></th>
-                            <td><input step="0.001" type="number" min="0" id="edit-asset-length-input" name="edit-asset-length-input"
-                                    :value="this.editAssetValues.l" class="small-number-input" @change="e => this.editAssetValues.l = e.target.value"/></td>
+                            <td><input step="0.001" type="number" min="0" id="edit-asset-length-input"
+                                    name="edit-asset-length-input" :value="this.editAssetValues.l"
+                                    class="small-number-input" @change="e => this.editAssetValues.l = e.target.value" />
+                            </td>
                         </tr>
                         <tr>
                             <th><label for="edit-asset-height-input">Height (Feet):</label></th>
-                            <td><input step="0.001" type="number" min="0" id="edit-asset-height-input" name="edit-asset-height-input"
-                                    :value="this.editAssetValues.h" class="small-number-input" @change="e => this.editAssetValues.h = e.target.value"/></td>
+                            <td><input step="0.001" type="number" min="0" id="edit-asset-height-input"
+                                    name="edit-asset-height-input" :value="this.editAssetValues.h"
+                                    class="small-number-input" @change="e => this.editAssetValues.h = e.target.value" />
+                            </td>
                         </tr>
                         <tr>
                             <th><label for="edit-asset-capacity-input">Capacity:</label></th>
-                            <td><input type="number" min="0" step="1" id="edit-asset-capacity-input" @change="e => this.editAssetValues.capacity = e.target.value"
-                                    name="edit-asset-capacity-input" :value="this.editAssetValues.capacity" class="small-number-input" />
+                            <td><input type="number" min="0" step="1" id="edit-asset-capacity-input"
+                                    @change="e => this.editAssetValues.capacity = e.target.value"
+                                    name="edit-asset-capacity-input" :value="this.editAssetValues.capacity"
+                                    class="small-number-input" />
                             </td>
                         </tr>
                         <tr>
@@ -194,8 +217,8 @@
                         <tr v-if="editFromRoutes">
                             <th>Routing From:</th>
                             <td>
-                                <VueMultiselect v-model="selectedEditFromRoutes" :options="editFromRoutes" :multiple="true"
-                                    :close-on-select="false" placeholder="Select at least one job">
+                                <VueMultiselect v-model="selectedEditFromRoutes" :options="editFromRoutes"
+                                    :multiple="true" :close-on-select="false" placeholder="Select at least one job">
                                     <template slot="selection" slot-scope="{ values, search, isOpen }"><span
                                             class="multiselect__single" v-if="values.length" v-show="!isOpen">{{
                                                 values.length
@@ -205,8 +228,8 @@
                         </tr>
                         <tr v-if="editFromRoutes && selectedEditFromRoutes && selectedEditFromRoutes.length">
                             <th>Routing From Time(s) in Minutes:</th>
-                            <td><input v-for="(selection, index) in selectedEditFromRoutes" value="0" min="0" type="number"
-                                    :id="'asset-routing-from-time-input-' + index"
+                            <td><input v-for="(selection, index) in selectedEditFromRoutes" value="0" min="0"
+                                    type="number" :id="'asset-routing-from-time-input-' + index"
                                     :name="'asset-routing-from-time-input-' + index" class="small-number-input" />
                             </td>
                         </tr>
@@ -224,8 +247,8 @@
                         </tr>
                         <tr v-if="editToRoutes && selectedEditToRoutes && selectedEditToRoutes.length">
                             <th>Routing To Time(s) in Minutes:</th>
-                            <td><input v-for="(selection, index) in selectedEditToRoutes" value="0" min="0" type="number"
-                                    :id="'asset-routing-to-time-input-' + index"
+                            <td><input v-for="(selection, index) in selectedEditToRoutes" value="0" min="0"
+                                    type="number" :id="'asset-routing-to-time-input-' + index"
                                     :name="'asset-routing-to-time-input-' + index" class="small-number-input" /></td>
                         </tr>
                     </table>
@@ -236,7 +259,9 @@
             <div>
                 <h2>Delete Asset</h2>
                 <select @change="e => this.selectedToDelete = e.target.value">
-                    <option v-for="asset in assetData" :value="asset.asset_id" :selected="this.selectedToDelete == asset.asset_id">{{ asset.display_name }}</option>
+                    <option v-for="asset in assetData" :value="asset.asset_id"
+                        :selected="this.selectedToDelete == asset.asset_id">
+                        {{ asset.display_name }}</option>
                 </select>
                 <button @click="handleDeleteAsset">Delete</button>
             </div>
@@ -418,6 +443,10 @@ export default {
                 // toList: toList.toString(),
                 // toTime: toTime.toString()
             }
+            let origins = [];
+            let destinations = [];
+            this.selectedEditFromRoutes.forEach(entry => origins.push(this.assetData.find(f => f.display_name == entry).asset_id))
+            this.selectedEditToRoutes.forEach(entry => destinations.push(this.assetData.find(f => f.display_name == entry).asset_id))
             console.log(body);
             console.log(this.selectedEditFromRoutes);
             console.log(this.selectedEditToRoutes);
@@ -440,11 +469,17 @@ export default {
             }
             if (validated) {
                 this.loading = true;
-                let { assetStatus } = await dataRequest("/api/asset/" + this.selectedToEdit, "PUT", JSON.stringify(body), { statusOnly: true });
-                let { routingFromStatus } = await dataRequest("/api/routing/asset/from/" + this.selectedToEdit, "PUT", JSON.stringify(this.selectedEditFromRoutes), { statusOnly: true });
-                let { routingToStatus } = await dataRequest("/api/routing/asset/to/" + this.selectedToEdit, "PUT", JSON.stringify(this.selectedEditToRoutes), { statusOnly: true });
+                let assetResponse = await dataRequest("/api/asset/" + this.selectedToEdit, "PUT", JSON.stringify(body), { statusOnly: true });
+                let routingFromResponse = { status: 200 };
+                let routingToResponse = { status: 200 };
+                if (origins.length > 0) {
+                    let routingFromResponse = await dataRequest("/api/routing/asset/from/" + this.selectedToEdit, "PUT", JSON.stringify(this.origins), { statusOnly: true });
+                }
+                if (destinations.length > 0) {
+                    let routingToResponse = await dataRequest("/api/routing/asset/to/" + this.selectedToEdit, "PUT", JSON.stringify(this.destinations), { statusOnly: true });
+                }
                 this.loading = false;
-                if (assetStatus == 200 && routingFromStatus == 200 && routingToStatus == 200) {
+                if (assetResponse.status == 200 && routingFromResponse.status == 200 && routingToResponse.status == 200) {
                     window.alert("Asset Saved Successfully!");
                     window.location.reload();
                 } else {

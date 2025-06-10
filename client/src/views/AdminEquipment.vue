@@ -122,6 +122,7 @@
                 </table>
                 <button>Add Asset</button>
             </form>
+            <br/>
             <div>
                 <h2>Edit Asset</h2>
                 <select>
@@ -244,9 +245,10 @@
                     <button>Add Asset</button>
                 </form>
             </div>
+            <br/>
             <div>
                 <h2>Delete Asset</h2>
-                <select>
+                <select @change="e => this.selectedToDelete = e.target.value">
                     <option v-for="asset in assetData" :value="asset.asset_id">{{ asset.display_name }}</option>
                 </select>
                 <button @click="handleDeleteAsset">Delete</button>
@@ -277,7 +279,8 @@ export default {
             selectedFromRoutes: null,
             toRoutes: null,
             selectedToRoutes: null,
-            processingTimes: [1]
+            processingTimes: [1],
+            selectedToDelete: null,
         }
     },
     mixins: [titleMixin],
@@ -401,8 +404,8 @@ export default {
         handleProcessTimesChange(e, index) {
             this.processingTimes[index] = parseInt(e.target.value);
         },
-        handleDeleteAsset() {
-
+        async handleDeleteAsset() {
+            let response = await dataRequest('/api/asset/' + this.selectedToDelete, "DELETE");
         }
     },
     mounted() {

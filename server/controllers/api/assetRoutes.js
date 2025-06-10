@@ -60,4 +60,23 @@ router.put('/:id', (req, res) => {
         });
 });
 
+router.delete('/:id', (req, res) => {
+    Asset.destroy(req.body, {
+        where: {
+            asset_id: req.params.id
+        }
+    })
+        .then(dbAssetData => {
+            if (!dbAssetData[0]) {
+                res.status(404).json({ message: 'No asset found with this ID' });
+                return;
+            }
+            res.json(dbAssetData);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
+        });
+})
+
 module.exports = router;

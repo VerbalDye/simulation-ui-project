@@ -183,7 +183,7 @@
                             <th><label for="edit-asset-operation-select">Associated Operation:</label></th>
                             <td>
                                 <select id="edit-asset-operation-select" name="edit-asset-type-select"
-                                    @change="handleOperationChange">
+                                    @change="handleEditOperationChange">
                                     <option v-for="operation in operationData" :value="operation.operation_id"
                                         :selected="operation.operation_id == this.editAssetValues.op_id">{{
                                             operation.display_name }}
@@ -302,7 +302,7 @@ export default {
             this.assetData = data.map(e => e.asset);
             console.log(this.assetData);
             this.selectedToDelete = this.assetData[0].asset_id;
-            handleEditSelectionChange({ target: { value: this.assetData[0].asset_id } });
+            this.handleEditSelectionChange({ target: { value: this.assetData[0].asset_id } });
         },
         async getTaskSequenceData() {
             let data = await dataRequest("/api/experiment/task-sequence/" + this.experimentID, "GET");
@@ -424,10 +424,10 @@ export default {
             if (this.assetData.find(e => e.display_name == body.aname)) {
                 validated = false;
             }
-            if (this.toRoutes && this.toRoutes.length > 0 && (!this.selectedEditToRoutes || this.selectedEditToRoutes.length == 0)) {
+            if (this.editToRoutes && this.editToRoutes.length > 0 && (!this.selectedEditToRoutes || this.selectedEditToRoutes.length == 0)) {
                 validated = false;
             }
-            if (this.fromRoutes && this.fromRoutes.length > 0 && (!this.selectedEditFromRoutes || this.selectedEditFromRoutes.length == 0)) {
+            if (this.editFromRoutes && this.editFromRoutes.length > 0 && (!this.selectedEditFromRoutes || this.selectedEditFromRoutes.length == 0)) {
                 validated = false;
             }
             if (validated) {
@@ -463,6 +463,25 @@ export default {
             console.log(this.toRoutes);
             console.log(this.fromRoutes);
         },
+        handleEditOperationChange(e) {
+            this.selectedOperation = e.target.value;
+            let toOperationEntry = this.taskSequenceData.find(e => e.operation_id == this.selectedEditOperation);
+            if (toOperationEntry && toOperationEntry.next_operation) {
+                this.editToRoutes = this.operationToLocationData.filter(e => e.operation_id == toOperationEntry.next_operation).map(e => e.asset.display_name);
+            } else {
+                this.editToRoutes = null;
+            }
+            let fromOperationEntry = this.taskSequenceData.find(e => e.next_operation == this.selectedEditOperation);
+            if (fromOperationEntry) {
+                this.editFromRoutes = this.operationToLocationData.filter(e => e.operation_id == fromOperationEntry.operation_id).map(e => e.asset.display_name);
+            } else {
+                this.editFromRoutes = null;
+            }
+            this.selectedEditFromRoutes = null;
+            this.selectedEditToRoutes = null;
+            console.log(this.editToRoutes);
+            console.log(this.editFromRoutes);
+        },
         handleNumberOfProcessTimesChange(e) {
             if (e.target.value > this.processingTimes.length) {
                 let iterations = e.target.value - this.processingTimes.length
@@ -491,6 +510,7 @@ export default {
             this.editAssetValues.h = asset.dim_height_feet;
             this.editAssetValues.capacity = asset.capacity;
             this.editAssetValues.op_id = operation.operation_id;
+            this.handleEditOperationChange({ target: { value: operation.operation_id } });
             // this.editAssetValues.fromList = ;
             // this.editAssetValues.fromTime = ;
             // this.editAssetValues.toList = ;

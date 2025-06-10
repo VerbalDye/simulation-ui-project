@@ -27,6 +27,7 @@
                         :excludedColumns="['job_location_id', 'job_core_id']" :dropdownData="jobDropdownData"
                         @selection-change="handleJobSelectionChange" />
                 </div> -->
+                
             </div>
         </div>
     </div>

@@ -274,6 +274,7 @@ export default {
             operationData: null,
             operationToLocationData: null,
             taskSequenceData: null,
+            processTimeData: null,
             experimentID: 2,
             selectedOperation: null,
             fromRoutes: null,
@@ -333,11 +334,17 @@ export default {
             console.log(data);
             this.operationToLocationData = data.map(e => e.operation_to_location);
         },
+        async getProcessTimeData() {
+            let data = await dataRequest("/api/experiment/process-time/" + this.experimentID, "GET");
+            console.log(data);
+            this.processTimeData = data;
+        },
         async getData() {
             await this.getOperationToLocationData()
             await Promise.allSettled([
                 this.getAssetData(),
                 this.getTaskSequenceData(),
+                this.getProcessTimeData(),
             ])
         },
         async handleAddAsset(e) {

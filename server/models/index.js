@@ -217,7 +217,7 @@ TransportTime.belongsTo(Asset, {
     foreignKey: 'origin',
     onDelete: 'CASCADE'
 });
-TransportTime.belongsTO(Asset, {
+TransportTime.belongsTo(Asset, {
     foreignKey: 'destination',
     onDelete: 'CASCADE'
 })

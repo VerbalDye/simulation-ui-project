@@ -273,7 +273,7 @@ export default {
             selectedEditToRoutes: null,
             processingTimes: [1],
             selectedToDelete: null,
-            selectedToEdit: 1,
+            selectedToEdit: null,
             editAssetValues: {
                 aname: null,
                 atype: null,
@@ -403,27 +403,28 @@ export default {
             }
             let toTime = Array.from(document.querySelectorAll("[id^='edit-asset-routing-to-time-input-']")).map(e => e.value);
             let body = {
-                aname: document.getElementById("edit-asset-name-input").value,
-                atype: document.getElementById("edit-asset-type-select").value,
-                x: document.getElementById("edit-asset-xpos-input").value,
-                y: document.getElementById("edit-asset-ypos-input").value,
-                z: document.getElementById("edit-asset-zpos-input").value,
-                l: document.getElementById("edit-asset-length-input").value,
-                w: document.getElementById("edit-asset-width-input").value,
-                h: document.getElementById("edit-asset-height-input").value,
+                asset_id: this.selectedToEdit,
+                display_name: document.getElementById("edit-asset-name-input").value,
+                asset_type: document.getElementById("edit-asset-type-select").value,
+                pos_x: document.getElementById("edit-asset-xpos-input").value,
+                pos_y: document.getElementById("edit-asset-ypos-input").value,
+                pos_z: document.getElementById("edit-asset-zpos-input").value,
+                dim_length_feet: document.getElementById("edit-asset-length-input").value,
+                dim_width_feet: document.getElementById("edit-asset-width-input").value,
+                dim_height_feet: document.getElementById("edit-asset-height-input").value,
                 capacity: document.getElementById("edit-asset-capacity-input").value,
-                op_id: document.getElementById("edit-asset-operation-select").value,
-                fromList: fromList.toString(),
-                fromTime: fromTime.toString(),
-                toList: toList.toString(),
-                toTime: toTime.toString()
+                // op_id: document.getElementById("edit-asset-operation-select").value,
+                // fromList: fromList.toString(),
+                // fromTime: fromTime.toString(),
+                // toList: toList.toString(),
+                // toTime: toTime.toString()
             }
             console.log(body);
             let validated = true;
             if (!body.aname || body.aname.length == 0) {
                 validated = false;
             }
-            if (this.assetData.find(e => e.display_name == body.aname)) {
+            if (this.assetData.find(e => e.display_name == body.display_name && e.asset_id !== body.asset_id)) {
                 validated = false;
             }
             if (this.editToRoutes && this.editToRoutes.length > 0 && (!this.selectedEditToRoutes || this.selectedEditToRoutes.length == 0)) {

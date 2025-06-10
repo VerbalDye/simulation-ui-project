@@ -41,11 +41,11 @@ router.put('/asset/to/:id', (req, res) => {
                         }
                         ))
                 }
-                Promise.allSettled(promises)
-                    .then(response => {
-                        res.json(response)
-                    })
-            })
+            });
+            Promise.allSettled(promises)
+                .then(response => {
+                    res.json(response)
+                })
         })
         .catch(err => {
             console.log(err);
@@ -83,11 +83,11 @@ router.put('/asset/from/:id', (req, res) => {
                         }
                         ))
                 }
-                Promise.allSettled(promises)
-                    .then(response => {
-                        res.json(response)
-                    })
-            })
+            });
+            Promise.allSettled(promises)
+                .then(response => {
+                    res.json(response)
+                })
         })
         .catch(err => {
             console.log(err);

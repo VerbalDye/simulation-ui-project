@@ -448,8 +448,8 @@ export default {
             this.selectedEditFromRoutes.forEach(entry => origins.push(this.assetData.find(f => f.display_name == entry).asset_id))
             this.selectedEditToRoutes.forEach(entry => destinations.push(this.assetData.find(f => f.display_name == entry).asset_id))
             console.log(body);
-            console.log(this.selectedEditFromRoutes);
-            console.log(this.selectedEditToRoutes);
+            console.log(this.origins);
+            console.log(this.destinations);
             let validated = true;
             if (!body.display_name || body.display_name.length == 0) {
                 console.log('asset name exists')

@@ -191,20 +191,6 @@
                                 </select>
                             </td>
                         </tr>
-                        <tr>
-                            <th><label for="edit-asset-process-time-input"># of Processing Times:</label></th>
-                            <td><input type="number" id="edit-asset-process-time-input"
-                                    name="edit-asset-process-time-input" min="1" step="1"
-                                    :value="editProcessingTimes.length" @change="handleNumberOfProcessTimesChange"
-                                    class="small-number-input" /></td>
-                        </tr>
-                        <tr>
-                            <th>Processing Time(s) in Minutes:</th>
-                            <td><input v-for="(processingTime, index) in editProcessingTimes" type="number" min="0"
-                                    :value="processingTime" :id="'edit-asset-process-time-input-' + index"
-                                    :name="'edit-asset-process-time-input-' + index" class="small-number-input"
-                                    @change="handleProcessTimesChange($event, index)" /></td>
-                        </tr>
                         <tr v-if="fromRoutes">
                             <th>Routing From:</th>
                             <td>

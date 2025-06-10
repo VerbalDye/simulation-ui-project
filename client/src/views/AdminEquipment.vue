@@ -421,7 +421,7 @@ export default {
             }
             console.log(body);
             let validated = true;
-            if (!body.aname || body.aname.length == 0) {
+            if (!body.display_name || body.display_name.length == 0) {
                 validated = false;
             }
             if (this.assetData.find(e => e.display_name == body.display_name && e.asset_id !== body.asset_id)) {

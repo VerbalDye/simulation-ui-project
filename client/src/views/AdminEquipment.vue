@@ -132,7 +132,7 @@
                     <table class="grid-less">
                         <tr>
                             <th><label for="edit-asset-name-input">Name:</label></th>
-                            <td><input type="text" id="edit-asset-name-input" name="edit-asset-name-input" /></td>
+                            <td><input type="text" id="edit-asset-name-input" name="edit-asset-name-input" :value="this.editAssetValues.aname" /></td>
                         </tr>
                         <tr>
                             <th><label for="edit-asset-type-select">Asset Type:</label></th>
@@ -286,7 +286,6 @@ export default {
             editToRoutes: null,
             selectedEditToRoutes: null,
             processingTimes: [1],
-            editProcessingTimes: [1],
             selectedToDelete: null,
             selectedToEdit: null,
             editAssetValues: {
@@ -300,7 +299,6 @@ export default {
                 h: null,
                 capacity: null,
                 op_id: null,
-                proc_time: null,
                 fromList: null,
                 fromTime: null,
                 toList: null,
@@ -334,17 +332,11 @@ export default {
             console.log(data);
             this.operationToLocationData = data.map(e => e.operation_to_location);
         },
-        async getProcessTimeData() {
-            let data = await dataRequest("/api/experiment/process-time/" + this.experimentID, "GET");
-            console.log(data);
-            this.processTimeData = data;
-        },
         async getData() {
             await this.getOperationToLocationData()
             await Promise.allSettled([
                 this.getAssetData(),
                 this.getTaskSequenceData(),
-                this.getProcessTimeData(),
             ])
         },
         async handleAddAsset(e) {
@@ -433,7 +425,6 @@ export default {
                 h: document.getElementById("edit-asset-height-input").value,
                 capacity: document.getElementById("edit-asset-capacity-input").value,
                 op_id: document.getElementById("edit-asset-operation-select").value,
-                proc_time: this.editProcessingTimes.toString(),
                 fromList: fromList.toString(),
                 fromTime: fromTime.toString(),
                 toList: toList.toString(),

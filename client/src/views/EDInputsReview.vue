@@ -2053,6 +2053,7 @@ export default {
                     }
                 }
             })
+            console.log(processTimeSettings.elements[selectedAssets[0].asset_id].values);
         },
         handleAdvanceModeChange(e) {
             this.advancedMode = e.target.checked;

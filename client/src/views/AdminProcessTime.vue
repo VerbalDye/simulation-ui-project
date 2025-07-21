@@ -230,7 +230,7 @@ export default {
                 if (status == 200) {
                     window.alert("Saved successfully.")
                 } else {
-                    windwo.alert("Something went wrong during the saving process.")
+                    window.alert("Something went wrong during the saving process.")
                 }
             } else {
                 body.process_time = this.continuousData;
@@ -239,7 +239,7 @@ export default {
                 if (status == 200) {
                     window.alert("Saved successfully.")
                 } else {
-                    windwo.alert("Something went wrong during the saving process.")
+                    window.alert("Something went wrong during the saving process.")
                 }
             }
         }

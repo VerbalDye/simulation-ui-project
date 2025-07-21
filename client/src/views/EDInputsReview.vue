@@ -2024,8 +2024,9 @@ export default {
             this.selectedAssets.forEach(asset => {
                 processTimes = [];
                 modelIndex = 0;
-                while (processTimes.length == 0) {
+                while (processTimes.length == 0 && modelIndex < 300) {
                     processTimes = this.processTimeData.filter(e => e.process_time.asset_id == asset.asset_id && e.process_time.model_number == this.processTimeSettings.selectedModels[asset.asset_id][modelIndex]);
+                    console.log(this.processTimeSettings.selectedModels[asset.asset_id][modelIndex]);
                     console.log(processTimes);
                     console.log(modelIndex);
                     modelIndex = modelIndex + 1;

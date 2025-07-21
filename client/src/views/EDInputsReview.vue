@@ -2053,7 +2053,8 @@ export default {
                     }
                 }
             })
-            console.log(this.processTimeSettings.elements[selectedAssets[0].asset_id].values);
+            console.log(this.processTimeSettings.elements[this.selectedAssets[0].asset_id].values);
+            console.log(this.processTimeSettings.elements[this.selectedAssets[0].asset_id]);
         },
         handleAdvanceModeChange(e) {
             this.advancedMode = e.target.checked;

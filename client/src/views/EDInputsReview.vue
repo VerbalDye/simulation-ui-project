@@ -2000,7 +2000,7 @@ export default {
                 this.selectedAssetInclusion = this.selectedAssets.map(e => this.excludedAssets.indexOf(e.asset_id) == -1);
                 this.processTimeSettings.selectedModels = {};
                 this.selectedAssets.forEach(asset => {
-                    this.processTimeSettings.selectedModels[asset.asset_id] = [this.processTimeSettings.modelData[0]];
+                    this.processTimeSettings.selectedModels[asset.asset_id] = [this.processTimeSettings.modelData[1]];
                 });
             } else {
                 this.selectedAssets = [{ Status: "No Associated Assets" }];
@@ -2019,25 +2019,15 @@ export default {
         processTimeElementChange() {
             this.processTimeSettings.elements = {};
             this.processTimeSettings.continuousElements = {};
-            let modelIndex = 0;
-            let processTimes = [];
             this.selectedAssets.forEach(asset => {
-                processTimes = [];
-                modelIndex = 0;
-                while (processTimes.length == 0 && modelIndex < 300) {
-                    processTimes = this.processTimeData.filter(e => e.process_time.asset_id == asset.asset_id && e.process_time.model_number == this.processTimeSettings.selectedModels[asset.asset_id][modelIndex]);
-                    console.log(this.processTimeSettings.selectedModels[asset.asset_id][modelIndex]);
-                    console.log(processTimes);
-                    console.log(modelIndex);
-                    modelIndex = modelIndex + 1;
-                }
+                let processTimes = this.processTimeData.filter(e => e.process_time.asset_id == asset.asset_id && e.process_time.model_number == this.processTimeSettings.selectedModels[asset.asset_id][0]);
                 this.processTimeSettings.elements[asset.asset_id] = {
                     name: asset.display_name,
                     values: {}
                 }
-                console.log("Asset ID: " + asset.asset_id);
-                console.log("Model Number: " + this.processTimeSettings.selectedModels[asset.asset_id][0]);
-                console.log(this.processTimeData.filter(e => e.process_time.asset_id == asset.asset_id && e.process_time.model_number == this.processTimeSettings.selectedModels[asset.asset_id][0]));
+                // console.log("Asset ID: " + asset.asset_id);
+                // console.log("Model Number: " + this.processTimeSettings.selectedModels[asset.asset_id][0]);
+                // console.log(this.processTimeData.filter(e => e.process_time.asset_id == asset.asset_id && e.process_time.model_number == this.processTimeSettings.selectedModels[asset.asset_id][0]));
                 processTimes.forEach(e => {
                     this.processTimeSettings.elements[asset.asset_id].values[e.experiment_process_time_id] = e.process_time.process_time;
                 })

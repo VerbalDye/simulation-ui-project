@@ -1998,7 +1998,7 @@ export default {
             let selectedExperimentAssets = [];
             while (selectedExperimentAssets.length == 0 && operationIndex < 10) {
                 operationIndex = operationIndex + 1;
-                console.log(operationIndex);
+                // console.log(operationIndex);
                 selectedExperimentAssets = validExperimentAssets.filter(item => {
                     if (item.asset.operation_to_locations[operationIndex] && item.asset.operation_to_locations[operationIndex].operation_id == this.taskSequenceData[this.selectedOperation].task_sequence.operation_id) {
                         return true;
@@ -2012,6 +2012,7 @@ export default {
                 this.selectedAssets = selectedAssets.map(({ operation_to_locations, ...rest }) => rest);
                 this.selectedAssetInclusion = this.selectedAssets.map(e => this.excludedAssets.indexOf(e.asset_id) == -1);
                 this.processTimeSettings.selectedModels = {};
+                console.log(this.processTimeSettings.modelData[1]);
                 this.selectedAssets.forEach(asset => {
                     this.processTimeSettings.selectedModels[asset.asset_id] = [this.processTimeSettings.modelData[1]];
                 });

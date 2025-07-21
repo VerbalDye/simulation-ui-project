@@ -2015,10 +2015,8 @@ export default {
                 let modelIndex = -1;
                 while (this.processTimeData.filter(e => e.process_time.model_number == this.processTimeSettings.modelData[modelIndex]).length == 0 && modelIndex < 300) {
                     modelIndex = modelIndex + 1;
+                    console.log(this.processTimeSettings.modelData[modelIndex])
                 }
-                // console.log(this.processTimeSettings.modelData[1]);
-                // console.log(this.processTimeData.filter(e => e.process_time.model_number == this.processTimeSettings.modelData[0]));
-                // console.log(this.processTimeData.filter(e => e.process_time.model_number == this.processTimeSettings.modelData[1]));
                 this.selectedAssets.forEach(asset => {
                     this.processTimeSettings.selectedModels[asset.asset_id] = [this.processTimeSettings.modelData[modelIndex]];
                 });

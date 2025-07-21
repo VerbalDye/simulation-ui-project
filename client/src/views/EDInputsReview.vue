@@ -124,19 +124,19 @@
                                             <th>Phase:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.phase.display_name
-                                                }}</td>
+                                            }}</td>
                                         </tr>
                                         <tr>
                                             <th>Cell:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.cell.display_name
-                                                }}</td>
+                                            }}</td>
                                         </tr>
                                         <tr>
                                             <th>Operation:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.operation.display_name
-                                                }}</td>
+                                            }}</td>
                                         </tr>
                                     </table>
                                     <p>Location(s):</p>
@@ -2020,20 +2020,20 @@ export default {
             this.processTimeSettings.elements = {};
             this.processTimeSettings.continuousElements = {};
             let modelIndex = 0;
+            let processTimes = [];
             this.selectedAssets.forEach(asset => {
-                let processTimes = [];
+                processTimes = [];
                 modelIndex = 0;
                 while (processTimes.length == 0) {
                     processTimes = this.processTimeData.filter(e => e.process_time.asset_id == asset.asset_id && e.process_time.model_number == this.processTimeSettings.selectedModels[asset.asset_id][modelIndex]);
                     console.log(processTimes);
                     console.log(modelIndex);
-                    this.processTimeSettings.elements[asset.asset_id] = {
-                        name: asset.display_name,
-                        values: {}
-                    }
                     modelIndex = modelIndex + 1;
                 }
-
+                this.processTimeSettings.elements[asset.asset_id] = {
+                    name: asset.display_name,
+                    values: {}
+                }
                 console.log("Asset ID: " + asset.asset_id);
                 console.log("Model Number: " + this.processTimeSettings.selectedModels[asset.asset_id][0]);
                 console.log(this.processTimeData.filter(e => e.process_time.asset_id == asset.asset_id && e.process_time.model_number == this.processTimeSettings.selectedModels[asset.asset_id][0]));

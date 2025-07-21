@@ -2013,8 +2013,8 @@ export default {
                 this.selectedAssetInclusion = this.selectedAssets.map(e => this.excludedAssets.indexOf(e.asset_id) == -1);
                 this.processTimeSettings.selectedModels = {};
                 console.log(this.processTimeSettings.modelData[1]);
-                console.log(this.processTimeData.filter(e => e.modelNumber == this.processTimeSettings.modelData[0]));
-                console.log(this.processTimeData.filter(e => e.modelNumber == this.processTimeSettings.modelData[1]));
+                console.log(this.processTimeData.filter(e => e.process_time.model_number == this.processTimeSettings.selectedModels[asset.asset_id][0]));
+                console.log(this.processTimeData.filter(e => e.process_time.model_number == this.processTimeSettings.selectedModels[asset.asset_id][1]));
                 this.selectedAssets.forEach(asset => {
                     this.processTimeSettings.selectedModels[asset.asset_id] = [this.processTimeSettings.modelData[1]];
                 });

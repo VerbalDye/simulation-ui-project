@@ -124,19 +124,19 @@
                                             <th>Phase:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.phase.display_name
-                                            }}</td>
+                                                }}</td>
                                         </tr>
                                         <tr>
                                             <th>Cell:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.cell.display_name
-                                            }}</td>
+                                                }}</td>
                                         </tr>
                                         <tr>
                                             <th>Operation:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.operation.display_name
-                                            }}</td>
+                                                }}</td>
                                         </tr>
                                     </table>
                                     <p>Location(s):</p>
@@ -2019,12 +2019,19 @@ export default {
         processTimeElementChange() {
             this.processTimeSettings.elements = {};
             this.processTimeSettings.continuousElements = {};
+            let assetIndex = 0;
             this.selectedAssets.forEach(asset => {
-                let processTimes = this.processTimeData.filter(e => e.process_time.asset_id == asset.asset_id && e.process_time.model_number == this.processTimeSettings.selectedModels[asset.asset_id][0]);
-                this.processTimeSettings.elements[asset.asset_id] = {
-                    name: asset.display_name,
-                    values: {}
+                let processTimes;
+                assetIndex = 0;
+                while (processTimes.length == 0) {
+                    processTimes = this.processTimeData.filter(e => e.process_time.asset_id == asset.asset_id && e.process_time.model_number == this.processTimeSettings.selectedModels[asset.asset_id][assetIndex]);
+                    this.processTimeSettings.elements[asset.asset_id] = {
+                        name: asset.display_name,
+                        values: {}
+                    }
+                    assetIndex = assetIndex + 1;
                 }
+
                 console.log("Asset ID: " + asset.asset_id);
                 console.log("Model Number: " + this.processTimeSettings.selectedModels[asset.asset_id][0]);
                 console.log(this.processTimeData.filter(e => e.process_time.asset_id == asset.asset_id && e.process_time.model_number == this.processTimeSettings.selectedModels[asset.asset_id][0]));
@@ -2035,14 +2042,14 @@ export default {
                 // console.log(exampleModel);
                 if (!exampleModel) {
                     exampleModel = {
-                        process_time_distribution: { 
+                        process_time_distribution: {
                             distriburion: "lognormal",
                             min: 0,
                             max: 0,
                             param1: 0,
                             param2: 0
                         },
-                        
+
                     }
                 }
                 this.processTimeSettings.continuousElements[asset.asset_id] = {

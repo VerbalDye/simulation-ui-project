@@ -2019,17 +2019,19 @@ export default {
         processTimeElementChange() {
             this.processTimeSettings.elements = {};
             this.processTimeSettings.continuousElements = {};
-            let assetIndex = 0;
+            let modelIndex = 0;
             this.selectedAssets.forEach(asset => {
                 let processTimes = [];
-                assetIndex = 0;
+                modelIndex = 0;
                 while (processTimes.length == 0) {
-                    processTimes = this.processTimeData.filter(e => e.process_time.asset_id == asset.asset_id && e.process_time.model_number == this.processTimeSettings.selectedModels[asset.asset_id][assetIndex]);
+                    processTimes = this.processTimeData.filter(e => e.process_time.asset_id == asset.asset_id && e.process_time.model_number == this.processTimeSettings.selectedModels[asset.asset_id][modelIndex]);
+                    console.log(processTimes);
+                    console.log(modelIndex);
                     this.processTimeSettings.elements[asset.asset_id] = {
                         name: asset.display_name,
                         values: {}
                     }
-                    assetIndex = assetIndex + 1;
+                    modelIndex = modelIndex + 1;
                 }
 
                 console.log("Asset ID: " + asset.asset_id);

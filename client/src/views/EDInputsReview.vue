@@ -2023,6 +2023,7 @@ export default {
                             assetsCovered = assetsCovered + 1
                         }
                     })
+                    console.log(assetsCovered + " " + this.assetData.length);
                 }
                 this.selectedAssets.forEach(asset => {
                     this.processTimeSettings.selectedModels[asset.asset_id] = [this.processTimeSettings.modelData[modelIndex]];

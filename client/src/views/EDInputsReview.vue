@@ -2025,7 +2025,7 @@ export default {
                     name: asset.display_name,
                     values: {}
                 }
-                console.log(this.processTimeData.filter(e => e.process_time.asset_id == asset.asset_id));
+                console.log(this.processTimeData.filter(e => e.process_time.model_number == this.processTimeSettings.selectedModels[asset.asset_id][0]));
                 processTimes.forEach(e => {
                     this.processTimeSettings.elements[asset.asset_id].values[e.experiment_process_time_id] = e.process_time.process_time;
                 })

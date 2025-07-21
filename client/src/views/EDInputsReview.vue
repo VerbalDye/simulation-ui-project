@@ -2000,6 +2000,7 @@ export default {
                 selectedExperimentAssets = validExperimentAssets.filter(item => item.asset.operation_to_locations[operationIndex].operation_id == this.taskSequenceData[this.selectedOperation].task_sequence.operation_id);
                 operationIndex = operationIndex + 1;
             }
+            selectedExperimentAssets = validExperimentAssets.filter(item => item.asset.operation_to_locations[operationIndex].operation_id == this.taskSequenceData[this.selectedOperation].task_sequence.operation_id);
             console.log(validExperimentAssets);
             console.log(validExperimentAssets.filter(item => item.asset.operation_to_locations[0].operation_id == this.taskSequenceData[this.selectedOperation].task_sequence.operation_id));
             if (selectedExperimentAssets.length > 0) {

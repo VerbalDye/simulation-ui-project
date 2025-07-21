@@ -2021,7 +2021,7 @@ export default {
             this.processTimeSettings.continuousElements = {};
             let assetIndex = 0;
             this.selectedAssets.forEach(asset => {
-                let processTimes;
+                let processTimes = [];
                 assetIndex = 0;
                 while (processTimes.length == 0) {
                     processTimes = this.processTimeData.filter(e => e.process_time.asset_id == asset.asset_id && e.process_time.model_number == this.processTimeSettings.selectedModels[asset.asset_id][assetIndex]);

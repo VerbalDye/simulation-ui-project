@@ -2025,7 +2025,7 @@ export default {
                     name: asset.display_name,
                     values: {}
                 }
-                console.log(this.processTimeData);
+                console.log(this.selectedAssets);
                 processTimes.forEach(e => {
                     this.processTimeSettings.elements[asset.asset_id].values[e.experiment_process_time_id] = e.process_time.process_time;
                 })
@@ -2054,8 +2054,8 @@ export default {
                     }
                 }
             })
-            console.log(this.processTimeSettings.elements[this.selectedAssets[0].asset_id].values);
-            console.log(this.processTimeSettings.elements[this.selectedAssets[0].asset_id]);
+            // console.log(this.processTimeSettings.elements[this.selectedAssets[0].asset_id].values);
+            // console.log(this.processTimeSettings.elements[this.selectedAssets[0].asset_id]);
         },
         handleAdvanceModeChange(e) {
             this.advancedMode = e.target.checked;

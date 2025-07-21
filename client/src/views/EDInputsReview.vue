@@ -1994,7 +1994,11 @@ export default {
         selectedOperationChange() {
             let validExperimentAssets = this.assetData.filter(item => item.asset.operation_to_locations.length > 0);
             // operation to location may need to be iterated in the future
-            let selectedExperimentAssets = validExperimentAssets.filter(item => item.asset.operation_to_locations[0].operation_id == this.taskSequenceData[this.selectedOperation].task_sequence.operation_id);
+            let operationIndex = 0;
+            let selectedExperimentAssets = [];
+            while (selectedExperimentAssets.length == 0 && operationIndex < 10) {
+                selectedExperimentAssets = validExperimentAssets.filter(item => item.asset.operation_to_locations[operationIndex].operation_id == this.taskSequenceData[this.selectedOperation].task_sequence.operation_id);
+            }
             console.log(validExperimentAssets);
             console.log(validExperimentAssets.filter(item => item.asset.operation_to_locations[0].operation_id == this.taskSequenceData[this.selectedOperation].task_sequence.operation_id));
             if (selectedExperimentAssets.length > 0) {

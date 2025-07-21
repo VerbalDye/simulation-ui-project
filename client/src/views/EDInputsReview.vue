@@ -2007,9 +2007,6 @@ export default {
                     }
                 });
             }
-            selectedExperimentAssets = validExperimentAssets.filter(item => item.asset.operation_to_locations[operationIndex].operation_id == this.taskSequenceData[this.selectedOperation].task_sequence.operation_id);
-            console.log(selectedExperimentAssets);
-            console.log(validExperimentAssets.filter(item => item.asset.operation_to_locations[operationIndex].operation_id == this.taskSequenceData[this.selectedOperation].task_sequence.operation_id));
             if (selectedExperimentAssets.length > 0) {
                 let selectedAssets = selectedExperimentAssets.map(item => item.asset);
                 this.selectedAssets = selectedAssets.map(({ operation_to_locations, ...rest }) => rest);

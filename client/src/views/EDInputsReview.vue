@@ -2012,11 +2012,15 @@ export default {
                 this.selectedAssets = selectedAssets.map(({ operation_to_locations, ...rest }) => rest);
                 this.selectedAssetInclusion = this.selectedAssets.map(e => this.excludedAssets.indexOf(e.asset_id) == -1);
                 this.processTimeSettings.selectedModels = {};
-                console.log(this.processTimeSettings.modelData[1]);
-                console.log(this.processTimeData.filter(e => e.process_time.model_number == this.processTimeSettings.modelData[0]));
-                console.log(this.processTimeData.filter(e => e.process_time.model_number == this.processTimeSettings.modelData[1]));
+                let modelIndex = -1;
+                while (this.processTimeData.filter(e => e.process_time.model_number == this.processTimeSettings.modelData[modelIndex]).length == 0 && modelIndex < 300) {
+                    modelIndex = modelIndex + 1;
+                }
+                // console.log(this.processTimeSettings.modelData[1]);
+                // console.log(this.processTimeData.filter(e => e.process_time.model_number == this.processTimeSettings.modelData[0]));
+                // console.log(this.processTimeData.filter(e => e.process_time.model_number == this.processTimeSettings.modelData[1]));
                 this.selectedAssets.forEach(asset => {
-                    this.processTimeSettings.selectedModels[asset.asset_id] = [this.processTimeSettings.modelData[1]];
+                    this.processTimeSettings.selectedModels[asset.asset_id] = [this.processTimeSettings.modelData[modelIndex]];
                 });
             } else {
                 this.selectedAssets = [{ Status: "No Associated Assets" }];

@@ -2025,6 +2025,7 @@ export default {
                     name: asset.display_name,
                     values: {}
                 }
+                console.log(processTimes);
                 processTimes.forEach(e => {
                     this.processTimeSettings.elements[asset.asset_id].values[e.experiment_process_time_id] = e.process_time.process_time;
                 })

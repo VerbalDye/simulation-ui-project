@@ -1899,6 +1899,8 @@ export default {
             let currentPosition = 0;
             for (let i = 0; i < data.length; i++) {
                 console.log(formattedData);
+                console.log(currentID);
+                console.log(data.find(e => e.task_sequence.operation_id == currentID));
                 let sequenceItem = data.find(e => e.task_sequence.operation_id == currentID).task_sequence;
                 console.log("A");
                 if (!completedPhases.includes(sequenceItem.phase.phase_id)) {

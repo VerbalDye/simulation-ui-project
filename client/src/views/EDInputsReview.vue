@@ -1892,16 +1892,15 @@ export default {
             await Promise.allSettled(promises);
         },
         formatTaskSequenceData(data) {
-            console.log("A");
             const formattedData = [];
             const completedPhases = [];
             const completedCells = [];
             let currentID = data.find(e => e.task_sequence.start == true).task_sequence_id;
             let currentPosition = 0;
-            console.log("B");
             for (let i = 0; i < data.length; i++) {
                 console.log(formattedData);
                 let sequenceItem = data.find(e => e.task_sequence.operation_id == currentID).task_sequence;
+                console.log("A");
                 if (!completedPhases.includes(sequenceItem.phase.phase_id)) {
                     formattedData.push({
                         type: 'phase',
@@ -1913,6 +1912,7 @@ export default {
                     currentPosition++;
                     completedPhases.push(sequenceItem.phase.phase_id);
                 }
+                console.log("B");
                 if (!completedCells.includes(sequenceItem.cell.cell_id)) {
                     formattedData.push({
                         type: 'cell',
@@ -1924,18 +1924,20 @@ export default {
                     currentPosition++;
                     completedCells.push(sequenceItem.cell.cell_id)
                 }
+                console.log("C");
                 formattedData.push({
                     type: 'operation',
                     id: sequenceItem.operation.operation_id,
                     displayName: sequenceItem.operation.display_name,
                     position: currentPosition
                 })
-                if (i < data.length - 1) {
-                    currentPosition++;
-                    currentID = sequenceItem.next_operation;
-                }
+                console.log("D");
+                currentPosition++;
+                console.log("E");
+                currentID = sequenceItem.next_operation;
+                console.log("F");
             }
-            console.log("D");
+            console.log("G");
             return formattedData;
         },
         findNextOperation(index, steps) {

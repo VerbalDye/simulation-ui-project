@@ -1897,7 +1897,7 @@ export default {
             const completedCells = [];
             let currentID = data.find(e => e.task_sequence.start == true).task_sequence_id;
             let currentPosition = 0;
-            for (let i = 0; i < data.length; i++) {
+            for (let i = 0; i < data.length - 1; i++) {
                 console.log(formattedData);
                 console.log(currentID);
                 console.log(data.find(e => e.task_sequence.operation_id == currentID));

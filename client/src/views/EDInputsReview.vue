@@ -124,19 +124,19 @@
                                             <th>Phase:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.phase.display_name
-                                            }}</td>
+                                                }}</td>
                                         </tr>
                                         <tr>
                                             <th>Cell:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.cell.display_name
-                                            }}</td>
+                                                }}</td>
                                         </tr>
                                         <tr>
                                             <th>Operation:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.operation.display_name
-                                            }}</td>
+                                                }}</td>
                                         </tr>
                                     </table>
                                     <p>Location(s):</p>
@@ -1930,8 +1930,10 @@ export default {
                     displayName: sequenceItem.operation.display_name,
                     position: currentPosition
                 })
-                currentPosition++;
-                currentID = sequenceItem.next_operation
+                if (i < data.length - 1) {
+                    currentPosition++;
+                    currentID = sequenceItem.next_operation;
+                }
             }
             console.log("D");
             return formattedData;

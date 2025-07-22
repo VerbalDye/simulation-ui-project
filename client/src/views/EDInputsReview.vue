@@ -1427,15 +1427,10 @@ export default {
             this.backlogData = data;
         },
         async getTaskSequenceData() {
-            console.log("A");
             let data = await dataRequest("/api/experiment/task-sequence/" + this.experimentID, "GET");
-            console.log("B");
             this.taskSequenceData = data.filter(e => e.iteration_number == 0);
-            console.log("C");
             this.formattedTaskSequenceData = this.formatTaskSequenceData(this.taskSequenceData);
-            console.log("D")
             console.log(this.formattedTaskSequenceData);
-            console.log("E");
             this.selectedOperation = 0;
         },
         async getAssetData() {
@@ -1897,12 +1892,15 @@ export default {
             await Promise.allSettled(promises);
         },
         formatTaskSequenceData(data) {
+            console.log("A");
             const formattedData = [];
             const completedPhases = [];
             const completedCells = [];
             let currentID = data.find(e => e.task_sequence.start == true).task_sequence_id;
             let currentPosition = 0;
+            console.log("B");
             for (let i = 0; i < data.length; i++) {
+                console.log("C");
                 let sequenceItem = data.find(e => e.task_sequence.operation_id == currentID).task_sequence;
                 if (!completedPhases.includes(sequenceItem.phase.phase_id)) {
                     formattedData.push({
@@ -1935,7 +1933,7 @@ export default {
                 currentPosition++;
                 currentID = sequenceItem.next_operation
             }
-            console.log(formattedData);
+            console.log("D");
             return formattedData;
         },
         findNextOperation(index, steps) {

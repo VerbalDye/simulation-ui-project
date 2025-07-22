@@ -1430,6 +1430,7 @@ export default {
             let data = await dataRequest("/api/experiment/task-sequence/" + this.experimentID, "GET");
             this.taskSequenceData = data.filter(e => e.iteration_number == 0);
             this.formattedTaskSequenceData = this.formatTaskSequenceData(this.taskSequenceData);
+            console.log(this.formattedTaskSequenceData);
             this.selectedOperation = 0;
         },
         async getAssetData() {

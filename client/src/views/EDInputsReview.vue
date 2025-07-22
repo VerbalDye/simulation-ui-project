@@ -1935,6 +1935,7 @@ export default {
                 currentPosition++;
                 currentID = sequenceItem.next_operation
             }
+            console.log(formattedData);
             return formattedData;
         },
         findNextOperation(index, steps) {

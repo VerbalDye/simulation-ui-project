@@ -1900,7 +1900,7 @@ export default {
             let currentPosition = 0;
             console.log("B");
             for (let i = 0; i < data.length; i++) {
-                console.log("C");
+                console.log(formattedData);
                 let sequenceItem = data.find(e => e.task_sequence.operation_id == currentID).task_sequence;
                 if (!completedPhases.includes(sequenceItem.phase.phase_id)) {
                     formattedData.push({

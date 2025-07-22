@@ -1427,12 +1427,15 @@ export default {
             this.backlogData = data;
         },
         async getTaskSequenceData() {
+            console.log("A");
             let data = await dataRequest("/api/experiment/task-sequence/" + this.experimentID, "GET");
+            console.log("B");
             this.taskSequenceData = data.filter(e => e.iteration_number == 0);
+            console.log("C");
             this.formattedTaskSequenceData = this.formatTaskSequenceData(this.taskSequenceData);
-            console.log("K")
+            console.log("D")
             console.log(this.formattedTaskSequenceData);
-            console.log("K");
+            console.log("E");
             this.selectedOperation = 0;
         },
         async getAssetData() {

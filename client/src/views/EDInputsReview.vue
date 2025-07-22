@@ -1998,7 +1998,7 @@ export default {
         },
         selectedOperationChange() {
             let validExperimentAssets = this.assetData.filter(item => item.asset.operation_to_locations.length > 0);
-            // operation to location may need to be iterated in the future
+            console.log(this.formattedTaskSequenceData);
             let operationIndex = -1;
             let selectedExperimentAssets = [];
             while (selectedExperimentAssets.length == 0 && operationIndex < 10) {

@@ -1543,7 +1543,7 @@ export default {
         async getCoreModelData() {
             let data = await dataRequest("/api/experiment/core/" + this.experimentID, "GET");
             this.coreUsage = data.map(e => e.available);
-            console.log("A");
+            console.log(data);
             let coreModelData = data.map(({ experiment_core_id, available, core, ...rest }) => {
                 console.log(experiment_core_id);
                 console.log(available);

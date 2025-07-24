@@ -1757,7 +1757,7 @@ export default {
                 }),
                 downtime: downtime
             }
-            // console.log(this.coreModelData)
+            console.log(this.coreModelData);
             let coreData = this.coreModelData.map(({ experiment_core_id, available, ...rest }) => { return { experiment_core_id, available } })
             // console.log(coreData);
             let hooData = [];

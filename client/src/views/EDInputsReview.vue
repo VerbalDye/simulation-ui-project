@@ -1430,7 +1430,7 @@ export default {
             let data = await dataRequest("/api/experiment/task-sequence/" + this.experimentID, "GET");
             this.taskSequenceData = data.filter(e => e.iteration_number == 0);
             this.formattedTaskSequenceData = this.formatTaskSequenceData(this.taskSequenceData);
-            console.log(this.formattedTaskSequenceData);
+            // console.log(this.formattedTaskSequenceData);
             this.selectedOperation = 0;
         },
         async getAssetData() {
@@ -1905,7 +1905,6 @@ export default {
                 console.log(currentID);
                 console.log(data.find(e => e.task_sequence.operation_id == currentID));
                 let sequenceItem = data.find(e => e.task_sequence.operation_id == currentID).task_sequence;
-                console.log("A");
                 if (!completedPhases.includes(sequenceItem.phase.phase_id)) {
                     formattedData.push({
                         type: 'phase',
@@ -1917,7 +1916,6 @@ export default {
                     currentPosition++;
                     completedPhases.push(sequenceItem.phase.phase_id);
                 }
-                console.log("B");
                 if (!completedCells.includes(sequenceItem.cell.cell_id)) {
                     formattedData.push({
                         type: 'cell',
@@ -1929,20 +1927,15 @@ export default {
                     currentPosition++;
                     completedCells.push(sequenceItem.cell.cell_id)
                 }
-                console.log("C");
                 formattedData.push({
                     type: 'operation',
                     id: sequenceItem.operation.operation_id,
                     displayName: sequenceItem.operation.display_name,
                     position: currentPosition
                 })
-                console.log("D");
                 currentPosition++;
-                console.log("E");
                 currentID = sequenceItem.next_operation;
-                console.log("F");
             }
-            console.log("G");
             return formattedData;
         },
         findNextOperation(index, steps) {
@@ -2007,7 +2000,7 @@ export default {
         },
         selectedOperationChange() {
             let validExperimentAssets = this.assetData.filter(item => item.asset.operation_to_locations.length > 0);
-            console.log(this.formattedTaskSequenceData);
+            // console.log(this.formattedTaskSequenceData);
             let operationIndex = -1;
             let selectedExperimentAssets = [];
             while (selectedExperimentAssets.length == 0 && operationIndex < 10) {
@@ -2029,7 +2022,6 @@ export default {
                 let modelIndex = -1;
                 while (this.processTimeData.filter(e => e.process_time.model_number == this.processTimeSettings.modelData[modelIndex]).length == 0 && modelIndex < 300) {
                     modelIndex = modelIndex + 1;
-                    console.log(this.processTimeSettings.modelData[modelIndex])
                 }
                 // let assetsCovered = 0;
                 // while (assetsCovered !== this.assetData.length && modelIndex < 300) {
@@ -2049,8 +2041,6 @@ export default {
             } else {
                 this.selectedAssets = [{ Status: "No Associated Assets" }];
             }
-            console.log(this.processTimeTypeData.find(e => e.operation_id == this.taskSequenceData[this.selectedOperation].task_sequence.operation_id));
-            console.log(this.processTimeTypeData);
             if (this.processTimeTypeData.find(e => e.operation_id == this.taskSequenceData[this.selectedOperation].task_sequence.operation_id).discrete == 1) {
                 this.processTimeSettings.discrete = true;
             } else {

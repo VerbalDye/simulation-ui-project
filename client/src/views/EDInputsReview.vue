@@ -1566,6 +1566,9 @@ export default {
                 }
             });
             this.coreModelData = coreModelData;
+            console.log("A");
+            console.log(this.coreModelData);
+            console.log("B");
         },
         async getJobData() {
             let results = await Promise.allSettled([

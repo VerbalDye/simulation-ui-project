@@ -1545,16 +1545,16 @@ export default {
             this.coreUsage = data.map(e => e.available);
             console.log("A");
             let coreModelData = data.map(({ experiment_core_id, available, core, ...rest }) => {
-                // console.log({
-                //     experiment_core_id: experiment_core_id,
-                //     available: available,
-                //     core_model_id: core.core_model.core_model_id,
-                //     core_number: core.core_model.core_number,
-                //     model_number: core.core_model.model_number,
-                //     status: core.core_model.status,
-                //     created: core.core_model.created,
-                //     last_modified: core.core_model.last_modified
-                // })
+                console.log({
+                    experiment_core_id: experiment_core_id,
+                    available: available,
+                    core_model_id: core.core_model.core_model_id,
+                    core_number: core.core_model.core_number,
+                    model_number: core.core_model.model_number,
+                    status: core.core_model.status,
+                    created: core.core_model.created,
+                    last_modified: core.core_model.last_modified
+                })
                 return {
                     experiment_core_id: experiment_core_id,
                     available: available,

@@ -219,12 +219,14 @@ export default {
             })
             let newReplications;
             if (successes.length) {
+                console.log("A")
                 let maxCount = successes.reduce((acc, value) => value < acc ? value : acc).count;
                 newReplications = replications.filter((e, index) => successes.find(f => f.iteration_number == e.iteration_number && f.replication == e.replication).count == maxCount);
             } else {
+                console.log("B");
                 newReplications = [replications[0]];
             }
-            console.log(newReplications);
+            // console.log(newReplications);
             if (this.goalData.find(e => e.priority > goals[0].priority)) {
                 return this.getReplicationsForPriority(newReplications, goals[0].priority);
             } else {

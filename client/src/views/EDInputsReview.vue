@@ -1803,6 +1803,7 @@ export default {
             let backlogInput = document.getElementById("backlog-input");
             let jsonData = await csvJson.CSVtoJson(backlogInput.files[0]);
             let backlogData = jsonData.map(e => {
+                console.log(e);
                 let obj = {
                     experiment_id: this.experimentID,
                     job_number: parseInt(e["Job"].match(/([0-9]+)[A-Z]*/, "")[1]),

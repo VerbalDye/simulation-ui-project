@@ -224,8 +224,6 @@ export default {
             } else {
                 newReplications = [replications[0]];
             }
-            console.log(replications);
-            // console.log(newReplications);
             if (this.goalData.find(e => e.priority > goals[0].priority)) {
                 return this.getReplicationsForPriority(newReplications, goals[0].priority);
             } else {
@@ -233,6 +231,7 @@ export default {
             }
         },
         async getCanonReplication() {
+            console.log(this.throughputData);
             let replications = this.throughputData.filter(e => e.iteration_number !== 'Iteration 0').map(({ iteration_number, replication, ...rest }) => {
                 return { iteration_number: parseInt(iteration_number.replace('Iteration ', '')), replication: parseInt(replication.replace('Replication ', '')) }
             });

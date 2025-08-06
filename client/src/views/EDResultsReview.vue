@@ -224,6 +224,7 @@ export default {
             } else {
                 newReplications = [replications[0]];
             }
+            console.log(newReplications);
             if (this.goalData.find(e => e.priority > goals[0].priority)) {
                 return this.getReplicationsForPriority(newReplications, goals[0].priority);
             } else {

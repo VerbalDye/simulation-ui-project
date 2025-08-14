@@ -124,19 +124,19 @@
                                             <th>Phase:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.phase.display_name
-                                                }}</td>
+                                            }}</td>
                                         </tr>
                                         <tr>
                                             <th>Cell:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.cell.display_name
-                                                }}</td>
+                                            }}</td>
                                         </tr>
                                         <tr>
                                             <th>Operation:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.operation.display_name
-                                                }}</td>
+                                            }}</td>
                                         </tr>
                                     </table>
                                     <p>Location(s):</p>
@@ -1368,7 +1368,8 @@ export default {
                     min: 45,
                     max: 70
                 },
-                startDate: dayjs().format('YYYY-MM-DD').toString()
+                startDate: dayjs().format('YYYY-MM-DD').toString(),
+                uploadedBacklog: false
             },
             processTimeData: null,
             backupProcessTimeData: null,
@@ -1802,6 +1803,7 @@ export default {
             this.loading = true;
             let backlogInput = document.getElementById("backlog-input");
             let jsonData = await csvJson.CSVtoJson(backlogInput.files[0]);
+            // console.log(jsonData);
             let backlogData = jsonData.map(e => {
                 console.log(e);
                 let obj = {
@@ -1845,6 +1847,7 @@ export default {
             } else {
                 window.alert('Backlog validation error. Please review file and try again. Expected format available to download under "Download Template"')
             }
+            this.demandSettings.uploadedBacklog = true;
             this.loading = false;
         },
         async populateFromUI() {
@@ -1970,13 +1973,17 @@ export default {
             this.$router.push("/experiments/design/experiment-configuration/" + this.experimentID);
         },
         async clickNext() {
-            await this.saveAllChanges();
-            if (this.experimentData.scenario.scenario_id == 8) {
-                await dataRequest("/api/experiment/populate/jobs/" + this.experimentID, "POST")
+            if (this.experimentData.scenario.scenario_id == 8 && this.demandSettings.uploadedBacklog == false) {
+                window.alert("Please Upload a Backlog File");
             } else {
-                await this.populateFromUI();
+                await this.saveAllChanges();
+                if (this.experimentData.scenario.scenario_id == 8) {
+                    await dataRequest("/api/experiment/populate/jobs/" + this.experimentID, "POST")
+                } else {
+                    await this.populateFromUI();
+                }
+                this.$router.push("/experiments/design/experiment-parameters/" + this.experimentID);
             }
-            this.$router.push("/experiments/design/experiment-parameters/" + this.experimentID);
         },
         clickNextOperation() {
             let index = this.findNextOperation(this.selectedOperation);

@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const sequelize = require('../../config/connection');
-const { CoreModel, ModelObject, Core, CoreSoakTime } = require('../../models');
+const { CoreModel, ModelObject, Core, CoreSoakTime, ExperimentCore } = require('../../models');
 
 router.get('/', (req, res) => {
     CoreModel.findAll()
@@ -45,8 +45,19 @@ router.post('/', async (req, res) => {
             core_oven_number: req.body.core_oven_number,
             core_oven_drawer_position: req.body.core_oven_drawer_position,
             is_default: 1
-        })
-        res.json({ core: coreData, core_model: coreModelData, core_soak_time: coreSoakTimeData });
+        });
+        let experimentCoreData = await ExperimentCore.bulkCreate([
+            { experiment_id: 2, core_number: req.body.core_number, available: 1 },
+            { experiment_id: 3, core_number: req.body.core_number, available: 1 },
+            { experiment_id: 4, core_number: req.body.core_number, available: 1 },
+            { experiment_id: 5, core_number: req.body.core_number, available: 1 },
+            { experiment_id: 6, core_number: req.body.core_number, available: 1 },
+            { experiment_id: 7, core_number: req.body.core_number, available: 1 },
+            { experiment_id: 8, core_number: req.body.core_number, available: 1 },
+            { experiment_id: 9, core_number: req.body.core_number, available: 1 },
+            { experiment_id: 10, core_number: req.body.core_number, available: 1 },
+        ])
+        res.json({ core: coreData, core_model: coreModelData, core_soak_time: coreSoakTimeData, experiment_core: experimentCoreData });
     } catch (err) {
         console.log(err);
         res.status(400).json(err);

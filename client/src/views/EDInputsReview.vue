@@ -811,6 +811,11 @@
                             </div>
                         </div>
                     </Collapsable>
+                    <Collapsable @toggle-collapse="collapsableToggleChange" title="Priority" name="priority" :reset="collapsableStatus['priority']">
+                        <select>
+                            <option v-for="(operation) in this.operationData">{{ operation.display_name }}</option>
+                        </select>
+                    </Collapsable>
                 </Collapsable>
                 <Collapsable @toggle-collapse="collapsableToggleChange" title="Resources" name="resources"
                     :reset="collapsableStatus['resources']">

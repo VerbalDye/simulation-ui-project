@@ -1126,6 +1126,7 @@
                                     <label for="priority-time-growth">Time Growth:</label>
                                     <input id="priority-time-growth" name="priority-time-growth" type="number" />
                                 </div>
+                                <button class="space">Save</button>
                             </div>
                             <div v-else>
                                 <h3>This Operation Does Not Support Priority At This Time</h3>

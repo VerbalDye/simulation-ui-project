@@ -13,6 +13,7 @@ const routingRoutes = require('./routingRoutes');
 const scenarioRoutes = require('./scenarioRoutes');
 const siteRoutes = require('./siteRoutes');
 const userRoutes = require('./userRoutes');
+const workerRoutes = require('./workerRoutes');
 
 const sessionsRoutes = require('./sessionRoutes');
 
@@ -29,5 +30,6 @@ router.use('/scenario', withAuth, scenarioRoutes);
 router.use('/session', withAuth, sessionsRoutes);
 router.use('/site', withAuth, siteRoutes);
 router.use('/user', userRoutes);
+router.use('/worker', workerRoutes);
 
 module.exports = router;

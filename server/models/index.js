@@ -34,18 +34,24 @@ const ModelObject = require('./Model');
 const Operation = require('./Operation');
 const OperationToLocation = require('./OperationToLocation');
 const Phases = require('./Phases');
+const Priority = require('./Priority');
 const ProcessTime = require('./ProcessTime');
 const ProcessTimeDistribution = require('./ProcessTimeDistribution');
 const ResourceUtilization = require('./ResourceUtilization');
+const RestrictedCores = require('./RestrictedCores');
 const Routing = require('./Routing');
 const Scenario = require('./Scenario');
 const ScenarioFilter = require('./ScenarioFilter');
 const Sessions = require('./Sessions');
+const Shift = require('./Shift');
 const Site = require('./Site');
+const Skills = require('./Skills');
 const TaskSequence = require('./TaskSequence');
 const TransportTime = require('./TransportTime');
 const Throughput = require('./Throughput');
 const Users = require('./Users');
+const Worker = require('./Worker');
+const WorkerShift = require('./WorkerShift');
 
 // Asset Availability-Asset
 Asset.hasMany(AssetAvailability, {
@@ -222,6 +228,15 @@ TransportTime.belongsTo(Asset, {
     onDelete: 'CASCADE'
 })
 
+//Priority-Operation
+Operation.hasMany(Priority, {
+    foreignKey: 'operation_id'
+});
+Priority.belongsTo(Operation, {
+    foreignKey: 'operation_id',
+    onDelete: 'cascade'
+});
+
 // Resource Utilization-Asset
 Asset.hasMany(ResourceUtilization, {
     foreignKey: 'asset_id'
@@ -229,6 +244,22 @@ Asset.hasMany(ResourceUtilization, {
 ResourceUtilization.belongsTo(Asset, {
     foreignKey: 'asset_id',
     onDelete: 'CASCADE'
+});
+
+//Restricted Cores
+Core.hasMany(RestrictedCores, {
+    foreignKey: 'core_number'
+});
+RestrictedCores.belongsTo(Core, {
+    foreignKey: 'core_number',
+    onDelete: 'cascade'
+});
+Asset.hasMany(RestrictedCores, {
+    foreignKey: 'asset_id'
+});
+RestrictedCores.belongsTo(Asset, {
+    foreignKey: 'asset_id',
+    onDelete: 'cascade'
 });
 
 // Operation-Task Sequence
@@ -267,6 +298,22 @@ ScenarioFilter.belongsTo(Scenario, {
     onDelete: 'CASCADE'
 });
 
+//Skills
+Worker.hasMany(Skills, {
+    foreignKey: 'worker_id'
+});
+Skills.belongsTo(Worker, {
+    foreignKey: 'worker_id',
+    onDelete: 'cascade'
+});
+Asset.hasMany(Skills, {
+    foreignKey: 'asset_id'
+});
+Skills.belongsTo(Asset, {
+    foreignKey: 'asset_id',
+    onDelete: 'cascade'
+});
+
 // User-Session Associations
 Users.hasOne(Sessions, {
     foreignKey: 'user_id'
@@ -281,6 +328,22 @@ Users.hasMany(Experiment, {
 });
 Experiment.belongsTo(Users, {
     foreignKey: 'user_id'
+});
+
+//Worker Shift
+Worker.hasMany(WorkerShift, {
+    foreignKey: 'worker_id'
+});
+WorkerShift.belongsTo(Worker, {
+    foreignKey: 'worker_id',
+    onDelete: 'cascade'
+});
+Shift.hasMany(WorkerShift, {
+    foreignKey: 'shift_id'
+});
+WorkerShift.belongsTo(Shift, {
+    foreignKey: 'shift_id',
+    onDelete: 'cascade'
 });
 
 // Experiment-Asset Associations
@@ -630,16 +693,22 @@ module.exports = {
     Operation,
     OperationToLocation,
     Phases,
+    Priority,
     ProcessTime,
     ProcessTimeDistribution,
     ResourceUtilization,
+    RestrictedCores,
     Routing,
     Scenario,
     ScenarioFilter,
     Sessions,
+    Shift,
     Site,
+    Skills,
     TaskSequence,
     TransportTime,
     Throughput,
-    Users
+    Users,
+    Worker,
+    WorkerShift
 };

@@ -811,11 +811,6 @@
                             </div>
                         </div>
                     </Collapsable>
-                    <Collapsable @toggle-collapse="collapsableToggleChange" title="Priority" name="priority" :reset="collapsableStatus['priority']">
-                        <select>
-                            <option v-for="(operation) in this.operationData">{{ operation.display_name }}</option>
-                        </select>
-                    </Collapsable>
                 </Collapsable>
                 <Collapsable @toggle-collapse="collapsableToggleChange" title="Resources" name="resources"
                     :reset="collapsableStatus['resources']">
@@ -1083,7 +1078,10 @@
                             back="routing" next="priority" :reset="collapsableStatus['queuing']" tbd="true">TBD
                         </Collapsable>
                         <Collapsable @toggle-collapse="collapsableToggleChange" title="Priority" name="priority"
-                            back="queuing" next="transportation" :reset="collapsableStatus['priority']" tbd="true">TBD
+                            back="queuing" next="transportation" :reset="collapsableStatus['priority']" tbd="true">
+                            <select>
+                                <option v-for="(entry) in this.priorityData" :id="'prioirty' + entry.priority_id">{{ entry.operation_id }}</option>
+                            </select>
                         </Collapsable>
                     </div>
                 </Collapsable>
@@ -1319,6 +1317,7 @@ export default {
             assetData: null,
             routingData: null,
             routingDisplayData: null,
+            priorityData: null,
             jobMixData: null,
             jobData: null,
             downtimeData: null,
@@ -1402,6 +1401,7 @@ export default {
                 sunday: { opens: true, closes: false, starts: "00:00", ends: null },
             },
             defaultHOO: true,
+            operationList: [],
         }
     },
     mixins: [titleMixin],
@@ -1438,6 +1438,11 @@ export default {
             this.formattedTaskSequenceData = this.formatTaskSequenceData(this.taskSequenceData);
             // console.log(this.formattedTaskSequenceData);
             this.selectedOperation = 0;
+        },
+        async getPriorityData() {
+            let data = await dataRequest("/api/priority", "GET");
+            console.log(data);
+            this.priorityData = data;
         },
         async getAssetData() {
             let data = await dataRequest("/api/experiment/asset/with-op-to-loc/" + this.experimentID, "GET");
@@ -1648,6 +1653,7 @@ export default {
                 this.getTaskSequenceData(),
                 this.getProcessTimeData(),
                 this.getContinuousProcessTimeData(),
+                this.getPriorityData(),
                 this.getProcessTimeTypeData(),
                 this.getExperimentData(),
                 this.getSiteData(),

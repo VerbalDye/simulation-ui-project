@@ -1339,7 +1339,7 @@ export default {
             routingData: null,
             routingDisplayData: null,
             priorityData: null,
-            selectedPriority: null,
+            selectedPriority: 1,
             jobMixData: null,
             jobData: null,
             downtimeData: null,

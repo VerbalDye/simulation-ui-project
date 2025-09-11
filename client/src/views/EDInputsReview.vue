@@ -989,7 +989,11 @@
                         TBD
                     </Collapsable>
                     <Collapsable @toggle-collapse="collapsableToggleChange" title="Labor" name="labor" next="routing"
-                        back="materials" :heading="3" :reset="collapsableStatus['labor']" tbd="true">TBD</Collapsable>
+                        back="materials" :heading="3" :reset="collapsableStatus['labor']">
+                        <select>
+                            <option v-for="(worker) in this.workerData">{{ worker.name }}</option>
+                        </select>
+                    </Collapsable>
                 </Collapsable>
                 <Collapsable @toggle-collapse="collapsableToggleChange" title="Routing, Queuing, and Prioritization"
                     name="routing-queuing-prioritization" :reset="collapsableStatus['routing-queuing-prioritization']">
@@ -1078,8 +1082,8 @@
                         </Collapsable>
                         <Collapsable @toggle-collapse="collapsableToggleChange" title="Priority" name="priority"
                             back="queuing" next="transportation" :reset="collapsableStatus['priority']">
-                            <h3>Static Priority?</h3>
                             <div v-if="this.priorityData.find(e => e.operation_id == this.selectedOperation)">
+                                <h3>Static Priority?</h3>
                                 <label class="switch">
                                     <input type="checkbox" name="static-priority-toggle"
                                         :checked="this.priorityData.find(e => e.operation_id == this.selectedOperation).static_priority"
@@ -1351,6 +1355,7 @@ export default {
             jobData: null,
             downtimeData: null,
             coreModelData: null,
+            workerData: null,
             jobListData: null,
             selectedOperation: 2,
             selectedAssets: null,
@@ -1512,6 +1517,11 @@ export default {
                 }
             }
             // console.log(this.closingData);
+        },
+        async getWorkerData() {
+            let data = await dataRequest("/api/worker", "GET");
+            console.log(data);
+            this.workerData = data;
         },
         async getProcessTimeData() {
             let data = await dataRequest("/api/experiment/process-time/" + this.experimentID, "GET");

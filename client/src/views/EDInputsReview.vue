@@ -124,19 +124,19 @@
                                             <th>Phase:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.phase.display_name
-                                            }}</td>
+                                                }}</td>
                                         </tr>
                                         <tr>
                                             <th>Cell:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.cell.display_name
-                                            }}</td>
+                                                }}</td>
                                         </tr>
                                         <tr>
                                             <th>Operation:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.operation.display_name
-                                            }}</td>
+                                                }}</td>
                                         </tr>
                                     </table>
                                     <p>Location(s):</p>
@@ -996,10 +996,18 @@
                         </select>
                         <h3>Shift:</h3>
                         <select>
-                            <option v-for="(shift) in this.shiftData">{{ shift.start + shift.end }}</option>
+                            <option v-for="(shift) in this.shiftData">{{ shift.begin + "-" + shift.end }}</option>
                         </select>
                         <h3>Skills:</h3>
-
+                        <VueMultiselect v-model="this.selectedSkills"
+                            :options="this.assetNames" :multiple="true" :close-on-select="false"
+                            placeholder="Select at least one model"
+                            @update:model-value="handleModelSelectChange(asset_id)" :preselect-first="true">
+                            <template slot="selection" slot-scope="{ values, search, isOpen }"><span
+                                    class="multiselect__single" v-show="!isOpen">
+                                    options
+                                    selected</span></template>
+                        </VueMultiselect>
                     </Collapsable>
                 </Collapsable>
                 <Collapsable @toggle-collapse="collapsableToggleChange" title="Routing, Queuing, and Prioritization"
@@ -1368,6 +1376,8 @@ export default {
             selectedOperation: 2,
             selectedAssets: null,
             jobDropdownData: null,
+            assetNames: null,
+            selectedSkills: null,
             hoursOfOperationData: null,
             continuousProcessTimeData: null,
             backupContinuousProcessTimeData: null,
@@ -1495,6 +1505,7 @@ export default {
             } else {
                 this.assetData = data;
             }
+            this.assetNames = this.assetData.map(e => e.asset.display_name);
             // console.log(data);
             // console.log(this.assetData);
         },

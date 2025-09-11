@@ -1008,6 +1008,7 @@
                                     options
                                     selected</span></template>
                         </VueMultiselect>
+                        <button class="space">Save</button>
                     </Collapsable>
                 </Collapsable>
                 <Collapsable @toggle-collapse="collapsableToggleChange" title="Routing, Queuing, and Prioritization"

@@ -11,6 +11,7 @@ const priorityRoutes = require('./priorityRoutes');
 const processTimeRoutes = require('./processTimeRoutes');
 const routingRoutes = require('./routingRoutes');
 const scenarioRoutes = require('./scenarioRoutes');
+const shiftRoutes = require('./shiftRoutes');
 const siteRoutes = require('./siteRoutes');
 const userRoutes = require('./userRoutes');
 const workerRoutes = require('./workerRoutes');
@@ -28,8 +29,9 @@ router.use('/process-time', withAuth, processTimeRoutes);
 router.use('/routing', withAuth, routingRoutes);
 router.use('/scenario', withAuth, scenarioRoutes);
 router.use('/session', withAuth, sessionsRoutes);
+router.use('/shift', withAuth, shiftRoutes);
 router.use('/site', withAuth, siteRoutes);
 router.use('/user', userRoutes);
-router.use('/worker', workerRoutes);
+router.use('/worker', withAuth, workerRoutes);
 
 module.exports = router;

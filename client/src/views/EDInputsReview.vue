@@ -990,9 +990,16 @@
                     </Collapsable>
                     <Collapsable @toggle-collapse="collapsableToggleChange" title="Labor" name="labor" next="routing"
                         back="materials" :heading="3" :reset="collapsableStatus['labor']">
+                        <h3>Worker:</h3>
                         <select>
                             <option v-for="(worker) in this.workerData">{{ worker.name }}</option>
                         </select>
+                        <h3>Shift:</h3>
+                        <select>
+                            <option v-for="(shift) in this.shiftData">{{ shift.start + shift.end }}</option>
+                        </select>
+                        <h3>Skills:</h3>
+
                     </Collapsable>
                 </Collapsable>
                 <Collapsable @toggle-collapse="collapsableToggleChange" title="Routing, Queuing, and Prioritization"
@@ -1112,7 +1119,7 @@
                                 </div>
                             </div>
                             <div v-else>
-                                <h3>This Operation Does Not Support Priority at this Time</h3>
+                                <h3>This Operation Does Not Support Priority At This Time</h3>
                             </div>
                         </Collapsable>
                     </div>
@@ -1355,6 +1362,7 @@ export default {
             jobData: null,
             downtimeData: null,
             coreModelData: null,
+            shiftData: null,
             workerData: null,
             jobListData: null,
             selectedOperation: 2,
@@ -1557,6 +1565,11 @@ export default {
                 this.backupProcessTimeTypeData = data;
                 this.processTimeTypeData = data;
             }
+        },
+        async getShiftData() {
+            let data = await dataRequest("/api/shift", "GET");
+            console.log(data);
+            this.shiftData = data;
         },
         async getRoutingData() {
             let data = await dataRequest("/api/experiment/routing/" + this.experimentID, "GET");

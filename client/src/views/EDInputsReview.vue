@@ -1712,6 +1712,7 @@ export default {
                 this.getCurrentlyRunning(),
                 this.getModelData(),
                 this.getDowntimeData(),
+                this.getShiftData(),
                 this.getWorkerData(),
             ])
             this.excludedAssets = this.assetData.filter(e => e.asset.capacity == 0).map(e => e.asset.asset_id);

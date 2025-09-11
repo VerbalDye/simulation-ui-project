@@ -1078,19 +1078,15 @@
                         </Collapsable>
                         <Collapsable @toggle-collapse="collapsableToggleChange" title="Priority" name="priority"
                             back="queuing" next="transportation" :reset="collapsableStatus['priority']">
-                            <select @change="(e) => this.selectedPriority = e.target.id">
-                                <option v-for="(entry) in this.priorityData" :id="entry.priority_id">{{
-                                    entry.operation_id }}</option>
-                            </select>
                             <h3>Static Priority?</h3>
                             <label class="switch">
-                                <input type="checkbox" name="static-priority-toggle" :checked="this.priorityData.find(e => e.priority_id == this.selectedPriority).static_priority"
-                                    @input="e => this.priorityData.find(e => e.priority_id == this.selectedPriority).static_priority == e.target.checked">
+                                <input type="checkbox" name="static-priority-toggle" :checked="this.priorityData.find(e => e.operation_id == this.selectedOperation).static_priority"
+                                    @input="e => this.priorityData.find(e => e.operation_id == this.selectedOperation).static_priority = e.target.checked">
                                 <span class="slider round"></span>
                             </label>
-                            <div v-if="this.priorityData.find(e => e.priority_id == this.selectedPriority).static_priority">
+                            <div v-if="this.priorityData.find(e => e.operation_id == this.selectedOperation).static_priority">
                                 <h4>Priority Value</h4>
-                                <input type="number" :value="this.priorityData.find(e => e.priority_id == this.selectedPriority).priority"/>
+                                <input type="number" :value="this.priorityData.find(e => e.operation_id == this.selectedOperation).priority"/>
                             </div>
                             <div v-else>
                                 <h4>Dynamic Priority</h4>

@@ -124,19 +124,19 @@
                                             <th>Phase:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.phase.display_name
-                                            }}</td>
+                                                }}</td>
                                         </tr>
                                         <tr>
                                             <th>Cell:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.cell.display_name
-                                            }}</td>
+                                                }}</td>
                                         </tr>
                                         <tr>
                                             <th>Operation:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.operation.display_name
-                                            }}</td>
+                                                }}</td>
                                         </tr>
                                     </table>
                                     <p>Location(s):</p>
@@ -992,8 +992,7 @@
                         back="materials" :heading="3" :reset="collapsableStatus['labor']" tbd="true">TBD</Collapsable>
                 </Collapsable>
                 <Collapsable @toggle-collapse="collapsableToggleChange" title="Routing, Queuing, and Prioritization"
-                    name="routing-queuing-prioritization" :reset="collapsableStatus['routing-queuing-prioritization']"
-                    tbd="true">
+                    name="routing-queuing-prioritization" :reset="collapsableStatus['routing-queuing-prioritization']">
                     <div class="flex-between">
                         <div class="card-with-title">
                             <h4 class="card-title">Phases, Cells, & Operations</h4>
@@ -1078,10 +1077,32 @@
                             back="routing" next="priority" :reset="collapsableStatus['queuing']" tbd="true">TBD
                         </Collapsable>
                         <Collapsable @toggle-collapse="collapsableToggleChange" title="Priority" name="priority"
-                            back="queuing" next="transportation" :reset="collapsableStatus['priority']" tbd="true">
-                            <select>
-                                <option v-for="(entry) in this.priorityData" :id="'prioirty' + entry.priority_id">{{ entry.operation_id }}</option>
+                            back="queuing" next="transportation" :reset="collapsableStatus['priority']">
+                            <select @change="(e) => this.selectedPriority = e.target.id">
+                                <option v-for="(entry) in this.priorityData" :id="entry.priority_id">{{
+                                    entry.operation_id }}</option>
                             </select>
+                            <h3>Static Priority?</h3>
+                            <label class="switch">
+                                <input type="checkbox" name="static-priority-toggle" :checked="this.priorityData.find(e => e.priority_id == this.selectedPriority).static_priority"
+                                    @input="e => this.demandSettings.default = e.target.checked">
+                                <span class="slider round"></span>
+                            </label>
+                            <div v-if="this.priorityData.find(e => e.priority_id == this.selectedPriority).static_priority">
+                                <h4>Priority Value</h4>
+                                <input type="number"/>
+                            </div>
+                            <div v-else>
+                                <h4>Dynamic Priority</h4>
+                                <label for="priority-max-tubes">Max Tubes:</label>
+                                <input id="priority-max-tubes" name="priority-max-tubes" type="number"/>
+                                <label for="priority-max-priority">Max Priority:</label>
+                                <input id="priority-max-priority" name="priority-max-priority" type="number"/>
+                                <label for="priority-n-growth">N Growth:</label>
+                                <input id="priority-n-growth" name="priority-n-growth" type="number"/>
+                                <label for="priority-time-growth">Time Growth:</label>
+                                <input id="priority-time-growth" name="priority-time-growth" type="number"/>
+                            </div>
                         </Collapsable>
                     </div>
                 </Collapsable>
@@ -1318,6 +1339,7 @@ export default {
             routingData: null,
             routingDisplayData: null,
             priorityData: null,
+            selectedPriority: null,
             jobMixData: null,
             jobData: null,
             downtimeData: null,

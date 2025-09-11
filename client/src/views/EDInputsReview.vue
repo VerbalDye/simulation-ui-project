@@ -124,19 +124,19 @@
                                             <th>Phase:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.phase.display_name
-                                                }}</td>
+                                            }}</td>
                                         </tr>
                                         <tr>
                                             <th>Cell:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.cell.display_name
-                                                }}</td>
+                                            }}</td>
                                         </tr>
                                         <tr>
                                             <th>Operation:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.operation.display_name
-                                                }}</td>
+                                            }}</td>
                                         </tr>
                                     </table>
                                     <p>Location(s):</p>
@@ -1079,25 +1079,36 @@
                         <Collapsable @toggle-collapse="collapsableToggleChange" title="Priority" name="priority"
                             back="queuing" next="transportation" :reset="collapsableStatus['priority']">
                             <h3>Static Priority?</h3>
-                            <label class="switch">
-                                <input type="checkbox" name="static-priority-toggle" :checked="this.priorityData.find(e => e.operation_id == this.selectedOperation).static_priority"
-                                    @input="e => this.priorityData.find(e => e.operation_id == this.selectedOperation).static_priority = e.target.checked">
-                                <span class="slider round"></span>
-                            </label>
-                            <div v-if="this.priorityData.find(e => e.operation_id == this.selectedOperation).static_priority">
-                                <h4>Priority Value</h4>
-                                <input type="number" :value="this.priorityData.find(e => e.operation_id == this.selectedOperation).priority"/>
+                            <div v-if="this.priorityData.find(e => e.operation_id == this.selectedOperation)">
+                                <label class="switch">
+                                    <input type="checkbox" name="static-priority-toggle"
+                                        :checked="this.priorityData.find(e => e.operation_id == this.selectedOperation).static_priority"
+                                        @input="e => this.priorityData.find(e => e.operation_id == this.selectedOperation).static_priority = e.target.checked">
+                                    <span class="slider round"></span>
+                                </label>
+                                <div
+                                    v-if="this.priorityData.find(e => e.operation_id == this.selectedOperation).static_priority">
+                                    <h4>Priority Value</h4>
+                                    <input type="number"
+                                        :value="this.priorityData.find(e => e.operation_id == this.selectedOperation).priority" />
+                                </div>
+                                <div v-else>
+                                    <h4>Dynamic Priority</h4>
+                                    <label for="priority-max-tubes">Max Tubes:</label>
+                                    <input id="priority-max-tubes" name="priority-max-tubes" type="number" />
+                                    <br />
+                                    <label for="priority-max-priority">Max Priority:</label>
+                                    <input id="priority-max-priority" name="priority-max-priority" type="number" />
+                                    <br />
+                                    <label for="priority-n-growth">N Growth:</label>
+                                    <input id="priority-n-growth" name="priority-n-growth" type="number" />
+                                    <br />
+                                    <label for="priority-time-growth">Time Growth:</label>
+                                    <input id="priority-time-growth" name="priority-time-growth" type="number" />
+                                </div>
                             </div>
                             <div v-else>
-                                <h4>Dynamic Priority</h4>
-                                <label for="priority-max-tubes">Max Tubes:</label>
-                                <input id="priority-max-tubes" name="priority-max-tubes" type="number"/>
-                                <label for="priority-max-priority">Max Priority:</label>
-                                <input id="priority-max-priority" name="priority-max-priority" type="number"/>
-                                <label for="priority-n-growth">N Growth:</label>
-                                <input id="priority-n-growth" name="priority-n-growth" type="number"/>
-                                <label for="priority-time-growth">Time Growth:</label>
-                                <input id="priority-time-growth" name="priority-time-growth" type="number"/>
+                                <h3>This Operation Does Not Support Priority at this Time</h3>
                             </div>
                         </Collapsable>
                     </div>

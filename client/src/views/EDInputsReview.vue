@@ -1595,14 +1595,14 @@ export default {
             this.coreUsage = data.map(e => e.available);
             console.log(data);
             let coreModelData = data.map(({ experiment_core_id, available, core, ...rest }) => {
-                console.log(experiment_core_id);
-                console.log(available);
-                console.log(core.core_model.core_model_id);
-                console.log(core.core_model.core_number);
-                console.log(core.core_model.model_number);
-                console.log(core.core_model.status);
-                console.log(core.core_model.created);
-                console.log(core.core_model.last_modified);
+                // console.log(experiment_core_id);
+                // console.log(available);
+                // console.log(core.core_model.core_model_id);
+                // console.log(core.core_model.core_number);
+                // console.log(core.core_model.model_number);
+                // console.log(core.core_model.status);
+                // console.log(core.core_model.created);
+                // console.log(core.core_model.last_modified);
                 return {
                     experiment_core_id: experiment_core_id,
                     available: available,
@@ -1699,6 +1699,7 @@ export default {
                 this.getCurrentlyRunning(),
                 this.getModelData(),
                 this.getDowntimeData(),
+                this.getWorkerData(),
             ])
             this.excludedAssets = this.assetData.filter(e => e.asset.capacity == 0).map(e => e.asset.asset_id);
             this.selectedOperationChange();

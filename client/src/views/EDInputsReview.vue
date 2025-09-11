@@ -1085,12 +1085,12 @@
                             <h3>Static Priority?</h3>
                             <label class="switch">
                                 <input type="checkbox" name="static-priority-toggle" :checked="this.priorityData.find(e => e.priority_id == this.selectedPriority).static_priority"
-                                    @input="e => this.demandSettings.default = e.target.checked">
+                                    @input="e => this.priorityData.find(e => e.priority_id == this.selectedPriority).static_priority == e.target.checked">
                                 <span class="slider round"></span>
                             </label>
                             <div v-if="this.priorityData.find(e => e.priority_id == this.selectedPriority).static_priority">
                                 <h4>Priority Value</h4>
-                                <input type="number"/>
+                                <input type="number" :value="this.priorityData.find(e => e.priority_id == this.selectedPriority).priority"/>
                             </div>
                             <div v-else>
                                 <h4>Dynamic Priority</h4>

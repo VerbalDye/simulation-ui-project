@@ -1341,7 +1341,7 @@ export default {
             downtimeData: null,
             coreModelData: null,
             jobListData: null,
-            selectedOperation: 0,
+            selectedOperation: 2,
             selectedAssets: null,
             jobDropdownData: null,
             hoursOfOperationData: null,
@@ -1455,7 +1455,7 @@ export default {
             this.taskSequenceData = data.filter(e => e.iteration_number == 0);
             this.formattedTaskSequenceData = this.formatTaskSequenceData(this.taskSequenceData);
             // console.log(this.formattedTaskSequenceData);
-            this.selectedOperation = 0;
+            this.selectedOperation = 2;
         },
         async getPriorityData() {
             let data = await dataRequest("/api/priority", "GET");

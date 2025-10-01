@@ -108,6 +108,7 @@ export default {
         },
         async getAPIKey() {
             let data = await dataRequest("/api/experiment/simulation/key", "GET");
+            console.log(data);
             this.apiKey = data.key;
         },
         runAnimation() {

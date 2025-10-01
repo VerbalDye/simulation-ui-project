@@ -131,7 +131,7 @@ export default {
         this.$loadScript("https://cloud.anylogic.com/assets/js-client-8.5.0/cloud-client.js")
             .then(async () => {
                 await this.getAPIKey();
-                this.cloudClient = CloudClient.create(this.apiKey, "http://172.28.0.56:3306");
+                this.cloudClient = CloudClient.create(this.apiKey, "http://172.28.0.56");
             })
             .catch(() => {
                 // Failed to fetch script

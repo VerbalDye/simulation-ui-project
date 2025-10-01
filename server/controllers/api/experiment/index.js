@@ -25,9 +25,11 @@ const productionScheduleRoutes = require('./productionScheduleRoutes');
 const resourceUtilizationRoutes = require('./resourceUtilizationRoutes');
 const routingRoutes = require('./routingRoutes');
 const simulationRoutes = require('./simulationRoutes');
+const shiftRoutes = require('./shiftRoutes');
 const siteRoutes = require('./siteRoutes');
 const taskSequenceRoutes = require('./taskSequenceRoutes');
 const throughputRoutes = require('./throughputRoutes');
+const workerShiftRoutes = require('./workerShiftRoutes');
 
 router.use('/', experimentRoutes);
 router.use('/arrival', arrivalRoutes);
@@ -53,9 +55,11 @@ router.use('/process-time-type', processTimeTypeRoutes);
 router.use('/production-schedule', productionScheduleRoutes);
 router.use('/resource-util', resourceUtilizationRoutes);
 router.use('/routing', routingRoutes);
+router.use('/shift', shiftRoutes);
 router.use('/simulation', simulationRoutes);
 router.use('/site', siteRoutes);
 router.use('/task-sequence', taskSequenceRoutes);
 router.use('/throughput', throughputRoutes);
+router.use('/worker-shift', workerShiftRoutes)
 
 module.exports = router;

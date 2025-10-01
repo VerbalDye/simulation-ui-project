@@ -1570,7 +1570,7 @@ export default {
             // console.log(this.closingData);
         },
         async getWorkerData() {
-            let data = await dataRequest("/api/worker", "GET");
+            let data = await dataRequest("/api/experiment/worker/" + this.experimentID, "GET");
             console.log(data);
             this.workerData = data;
         },
@@ -1610,9 +1610,9 @@ export default {
             }
         },
         async getShiftData() {
-            let data = await dataRequest("/api/shift", "GET");
+            let data = await dataRequest("/api/experiment/shift/" + this.experimentID, "GET");
             console.log(data);
-            this.shiftData = data;
+            this.shiftData = data.map(shift => shift.shift);
         },
         async getRoutingData() {
             let data = await dataRequest("/api/experiment/routing/" + this.experimentID, "GET");

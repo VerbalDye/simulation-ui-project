@@ -990,7 +990,7 @@
                         TBD
                     </Collapsable>
                     <Collapsable @toggle-collapse="collapsableToggleChange" title="Shifts" name="shifts" next="labor"
-                        back="materials" :heading="3" :reset="collapsableStatus['labor']">
+                        back="materials" :heading="3" :reset="collapsableStatus['shifts']" v-if="experimentData && experimentData.scenario.scenario_id == 4">
                         <div>
                             <table class="grid-less">
                                 <tr>
@@ -1814,7 +1814,7 @@ export default {
             window.open('/api/experiment/backlog/template');
         },
         async saveNewShift() {
-            await this.dataRequest('/api/experiment/shift/' + this.experimentID, "POST", this.newShiftData);
+            await dataRequest('/api/experiment/shift/' + this.experimentID, "POST", this.newShiftData);
             this.getShiftData();
         },
         async saveAllChanges() {

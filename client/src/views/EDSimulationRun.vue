@@ -115,6 +115,7 @@ export default {
             // runButton = document.getElementById("run-button");
             // runButton.disabled = true;
             let models = await this.cloudClient.getModels();
+            console.log(models);
             let version = await this.cloudClient.getModelVersionById(models[0], "a9152feb-bde5-4260-ae2d-11e3dcb4d5b8");
             let inputs = this.cloudClient.createDefaultInputs(version);
             inputs.setInput("EXPERIMENT_ID", this.experimentID);

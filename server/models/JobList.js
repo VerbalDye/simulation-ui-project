@@ -26,6 +26,10 @@ JobList.init(
             type: DataTypes.INTEGER,
             allowNull: false,
         },
+        replication: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
         model_number: {
             type: DataTypes.INTEGER,
             allowNull: false,

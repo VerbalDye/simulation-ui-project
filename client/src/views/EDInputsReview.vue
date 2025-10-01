@@ -124,19 +124,19 @@
                                             <th>Phase:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.phase.display_name
-                                                }}</td>
+                                            }}</td>
                                         </tr>
                                         <tr>
                                             <th>Cell:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.cell.display_name
-                                                }}</td>
+                                            }}</td>
                                         </tr>
                                         <tr>
                                             <th>Operation:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.operation.display_name
-                                                }}</td>
+                                            }}</td>
                                         </tr>
                                     </table>
                                     <p>Location(s):</p>
@@ -999,9 +999,8 @@
                             <option v-for="(shift) in this.shiftData">{{ shift.begin + "-" + shift.end }}</option>
                         </select>
                         <h3>Skills:</h3>
-                        <VueMultiselect v-model="this.selectedSkills"
-                            :options="this.assetNames" :multiple="true" :close-on-select="false"
-                            placeholder="Select at least one model"
+                        <VueMultiselect v-model="this.selectedSkills" :options="this.assetNames" :multiple="true"
+                            :close-on-select="false" placeholder="Select at least one model"
                             @update:model-value="handleModelSelectChange(asset_id)" :preselect-first="true">
                             <template slot="selection" slot-scope="{ values, search, isOpen }"><span
                                     class="multiselect__single" v-show="!isOpen">
@@ -1054,36 +1053,6 @@
                                 :selectedOperation="taskSequenceData[selectedOperation]"
                                 @selection-change="operationMapSelectionChange" id="2" />
                         </div>
-                        <div v-if="taskSequenceData" class="card">
-                            <div>
-                                <button @click="clickPreviousOperation"><i class="bi bi-arrow-left"></i></button>
-                                <button @click="clickNextOperation"><i class="bi bi-arrow-right"></i></button>
-                            </div>
-                            <h4>Current</h4>
-                            <p>{{ this.taskSequenceData[this.selectedOperation].task_sequence.phase.display_name }} | {{
-                                this.taskSequenceData[this.selectedOperation].task_sequence.cell.display_name }} | {{
-                                    this.taskSequenceData[this.selectedOperation].task_sequence.operation.display_name }}
-                            </p>
-                            <h4>Next</h4>
-                            <p v-if="this.taskSequenceData[this.findNextOperation(this.selectedOperation)]">
-                                {{
-                                    this.taskSequenceData[this.findNextOperation(this.selectedOperation)].task_sequence.phase.display_name
-                                }} | {{
-                                    this.taskSequenceData[this.findNextOperation(this.selectedOperation)].task_sequence.cell.display_name
-                                }} | {{
-                                    this.taskSequenceData[this.findNextOperation(this.selectedOperation)].task_sequence.operation.display_name
-                                }}</p>
-                            <p v-else> - | - | - </p>
-                            <h4>Following</h4>
-                            <p v-if="this.taskSequenceData[this.findNextOperation(this.selectedOperation, 2)]">
-                                {{ this.taskSequenceData[this.findNextOperation(this.selectedOperation,
-                                    2)].task_sequence.phase.display_name }} | {{
-                                    this.taskSequenceData[this.findNextOperation(this.selectedOperation,
-                                        2)].task_sequence.cell.display_name }} | {{
-                                    this.taskSequenceData[this.findNextOperation(this.selectedOperation,
-                                        2)].task_sequence.operation.display_name }}</p>
-                            <p v-else> - | - | - </p>
-                        </div>
                     </div>
                     <div>
                         <Collapsable @toggle-collapse="collapsableToggleChange" title="Routing" name="routing"
@@ -1099,6 +1068,40 @@
                         <Collapsable @toggle-collapse="collapsableToggleChange" title="Priority" name="priority"
                             back="queuing" next="transportation" :reset="collapsableStatus['priority']">
                             <div v-if="this.priorityData.find(e => e.operation_id == this.selectedOperation)">
+                                <div v-if="taskSequenceData" class="card">
+                                    <div>
+                                        <button @click="clickPreviousOperation"><i
+                                                class="bi bi-arrow-left"></i></button>
+                                        <button @click="clickNextOperation"><i class="bi bi-arrow-right"></i></button>
+                                    </div>
+                                    <h4>Current</h4>
+                                    <p>{{ this.taskSequenceData[this.selectedOperation].task_sequence.phase.display_name
+                                        }} | {{
+                                            this.taskSequenceData[this.selectedOperation].task_sequence.cell.display_name }}
+                                        | {{
+                                            this.taskSequenceData[this.selectedOperation].task_sequence.operation.display_name
+                                        }}
+                                    </p>
+                                    <h4>Next</h4>
+                                    <p v-if="this.taskSequenceData[this.findNextOperation(this.selectedOperation)]">
+                                        {{
+                                            this.taskSequenceData[this.findNextOperation(this.selectedOperation)].task_sequence.phase.display_name
+                                        }} | {{
+                                            this.taskSequenceData[this.findNextOperation(this.selectedOperation)].task_sequence.cell.display_name
+                                        }} | {{
+                                            this.taskSequenceData[this.findNextOperation(this.selectedOperation)].task_sequence.operation.display_name
+                                        }}</p>
+                                    <p v-else> - | - | - </p>
+                                    <h4>Following</h4>
+                                    <p v-if="this.taskSequenceData[this.findNextOperation(this.selectedOperation, 2)]">
+                                        {{ this.taskSequenceData[this.findNextOperation(this.selectedOperation,
+                                            2)].task_sequence.phase.display_name }} | {{
+                                            this.taskSequenceData[this.findNextOperation(this.selectedOperation,
+                                                2)].task_sequence.cell.display_name }} | {{
+                                            this.taskSequenceData[this.findNextOperation(this.selectedOperation,
+                                                2)].task_sequence.operation.display_name }}</p>
+                                    <p v-else> - | - | - </p>
+                                </div>
                                 <h3>Static Priority?</h3>
                                 <label class="switch">
                                     <input type="checkbox" name="static-priority-toggle"

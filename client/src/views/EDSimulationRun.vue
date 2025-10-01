@@ -120,7 +120,9 @@ export default {
             inputs.setInput("ITERATION_ID", 0);
             inputs.setInput("NUM_REPLICATION", 3);
             inputs.setInput("DATABASE_CONNECTION_URL", "jdbc:mysql://address=(host=172.28.0.56)(port=3306)(user=PVFAdmin)(password=1)/pvfluid_test");
-            inputs.setInput("RUN_ID", Math.floor(Math.random() * 1000));
+            let runID = Math.floor(Math.random() * 1000);
+            console.log(runID)
+            inputs.setInput("RUN_ID", runID);
             await this.cloudClient.startAnimation(inputs, "animation-container");
             return animation.waitForCompletion();
         }

@@ -995,15 +995,15 @@
                             <table class="grid-less">
                                 <tr>
                                     <thead><label for="shift-crew">Crew:</label></thead>
-                                    <td><input type="text" id="shift-crew" name="shift-crew" @change="e => this.newShiftData.crew = e.target.value"></input></td>
+                                    <td><input type="text" id="shift-crew" name="shift-crew" @change="e => this.newShiftData.crew = e.target.value"/></td>
                                 </tr>
                                 <tr>
                                     <thead><label for="shift-start">Start Time:</label></thead>
-                                    <td><input type="time" id="shift-start" name="shift-start" @change="e => this.newShiftData.begin = e.target.value"></input></td>
+                                    <td><input type="time" id="shift-start" name="shift-start" @change="e => this.newShiftData.begin = e.target.value"/></td>
                                 </tr>
                                 <tr>
                                     <thead><label for="shift-end">End Time:</label></thead>
-                                    <td><input type="time" id="shift-end" name="shift-end" @change="e => this.newShiftData.end = e.target.value"></input></td>
+                                    <td><input type="time" id="shift-end" name="shift-end" @change="e => this.newShiftData.end = e.target.value"/></td>
                                 </tr>
                             </table>
                             <button @click="saveNewShift">Save</button>

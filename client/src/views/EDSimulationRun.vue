@@ -39,6 +39,7 @@ import Sidebar from '@/components/Sidebar.vue';
 import ExperimentDesignerSidebar from '@/components/ExperimentDesignerSidebar.vue';
 import dataRequest from '@/utils/dataRequest';
 import dayjs from 'dayjs';
+import CloudClient from '../utils/anyLogic';
 export default {
     data() {
         return {
@@ -128,15 +129,7 @@ export default {
         }
     },
     async mounted() {
-        this.$loadScript("https://cloud.anylogic.com/assets/js-client-8.5.0/cloud-client.js")
-            .then(async () => {
-                await this.getAPIKey();
-                this.cloudClient = CloudClient.create(this.apiKey, "http(s)://172.28.0.56:3306");
-            })
-            .catch(() => {
-                // Failed to fetch script
-                console.log("Oops");
-            });
+        this.cloudClient = this.CloudClient.create(this.apiKey, "http(s)://172.28.0.56:3306");
         this.getExperimentID();
         await this.getRunning();
         if (this.status == 'Running') {

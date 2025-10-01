@@ -131,7 +131,7 @@ export default {
         }
     },
     async mounted() {
-        this.$loadScript("http(s)://172.28.0.56:3306/assets/js-client-8.5.0/cloud-client.js")
+        this.$loadScript("https://cloud.anylogic.com/assets/js-client-8.5.0/cloud-client.js")
             .then(async () => {
                 await this.getAPIKey();
                 this.cloudClient = CloudClient.create(apiKey, "http(s)://172.28.0.56:3306");

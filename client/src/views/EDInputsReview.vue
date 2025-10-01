@@ -124,19 +124,19 @@
                                             <th>Phase:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.phase.display_name
-                                            }}</td>
+                                                }}</td>
                                         </tr>
                                         <tr>
                                             <th>Cell:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.cell.display_name
-                                            }}</td>
+                                                }}</td>
                                         </tr>
                                         <tr>
                                             <th>Operation:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.operation.display_name
-                                            }}</td>
+                                                }}</td>
                                         </tr>
                                     </table>
                                     <p>Location(s):</p>
@@ -990,20 +990,24 @@
                         TBD
                     </Collapsable>
                     <Collapsable @toggle-collapse="collapsableToggleChange" title="Shifts" name="shifts" next="labor"
-                        back="materials" :heading="3" :reset="collapsableStatus['shifts']" v-if="experimentData && experimentData.scenario.scenario_id == 4">
+                        back="materials" :heading="3" :reset="collapsableStatus['shifts']"
+                        v-if="experimentData && experimentData.scenario.scenario_id == 4">
                         <div>
                             <table class="grid-less">
                                 <tr>
                                     <thead><label for="shift-crew">Crew:</label></thead>
-                                    <td><input type="text" id="shift-crew" name="shift-crew" @change="e => this.newShiftData.crew = e.target.value"/></td>
+                                    <td><input type="text" id="shift-crew" name="shift-crew"
+                                            @change="e => this.newShiftData.crew = e.target.value" /></td>
                                 </tr>
                                 <tr>
                                     <thead><label for="shift-start">Start Time:</label></thead>
-                                    <td><input type="time" id="shift-start" name="shift-start" @change="e => this.newShiftData.begin = e.target.value"/></td>
+                                    <td><input type="time" id="shift-start" name="shift-start"
+                                            @change="e => this.newShiftData.begin = e.target.value" /></td>
                                 </tr>
                                 <tr>
                                     <thead><label for="shift-end">End Time:</label></thead>
-                                    <td><input type="time" id="shift-end" name="shift-end" @change="e => this.newShiftData.end = e.target.value"/></td>
+                                    <td><input type="time" id="shift-end" name="shift-end"
+                                            @change="e => this.newShiftData.end = e.target.value" /></td>
                                 </tr>
                             </table>
                             <button @click="saveNewShift">Save</button>
@@ -1090,14 +1094,14 @@
                         <Collapsable @toggle-collapse="collapsableToggleChange" title="Priority" name="priority"
                             back="queuing" next="transportation" :reset="collapsableStatus['priority']"
                             v-if="experimentData && experimentData.scenario.scenario_id == 4">
-                            <div v-if="taskSequenceData" class="card">
+                            <div v-if="taskSequenceData" class="card space">
                                 <div>
                                     <button @click="clickPreviousOperation"><i class="bi bi-arrow-left"></i></button>
                                     <button @click="clickNextOperation"><i class="bi bi-arrow-right"></i></button>
                                 </div>
                                 <h4>Current</h4>
                                 <p>{{ this.taskSequenceData[this.selectedOperation].task_sequence.phase.display_name
-                                    }} | {{
+                                }} | {{
                                         this.taskSequenceData[this.selectedOperation].task_sequence.cell.display_name }}
                                     | {{
                                         this.taskSequenceData[this.selectedOperation].task_sequence.operation.display_name
@@ -1133,9 +1137,15 @@
                                 </label>
                                 <div
                                     v-if="this.priorityData.find(e => e.operation_id == this.selectedOperation).static_priority">
-                                    <h4>Priority Value</h4>
-                                    <input type="number"
-                                        :value="this.priorityData.find(e => e.operation_id == this.selectedOperation).priority" />
+                                    <table>
+                                        <tr>
+                                            <thead><label for="priority-static-value">Priority Value:</label></thead>
+                                            <td>
+                                                <input type="number"
+                                                    :value="this.priorityData.find(e => e.operation_id == this.selectedOperation).priority" @change="e => this.priorityData.find(e => e.operation_id == this.selectedOperation).priority = e.target.value"/>
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </div>
                                 <div v-else>
                                     <h4>Dynamic Priority</h4>

@@ -1814,7 +1814,7 @@ export default {
             window.open('/api/experiment/backlog/template');
         },
         async saveNewShift() {
-            await dataRequest('/api/experiment/shift/' + this.experimentID, "POST", this.newShiftData);
+            await dataRequest('/api/experiment/shift/' + this.experimentID, "POST", JSON.stringify(this.newShiftData));
             this.getShiftData();
         },
         async saveAllChanges() {

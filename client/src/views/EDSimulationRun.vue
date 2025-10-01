@@ -117,7 +117,11 @@ export default {
             this.cloudClient.getLatestModelVersion("PV Fluid V1")
                 .then(version => {
                     let inputs = this.cloudClient.createDefaultInputs(version);
-                    inputs.setInput("Contact Rate", 30);
+                    inputs.setInput("EXPERIMENT_ID", this.experimentID);
+                    inputs.setInput("ITERATION_ID", 0);
+                    inputs.setInput("NUM_REPLICATIONS", 3);
+                    inputs.setInput("DATABASE_CONNECTION_URL", "jdbc:mysql://address=(host=172.28.0.56)(port=3306)(user=PVFAdmin)(password=1)/pvfluid_test");
+                    inputs.setInput("RUN_ID", Math.floor(Math.random()*1000));
                     return this.cloudClient.startAnimation(inputs, "animation-container");
                 })
                 .then(animation => {

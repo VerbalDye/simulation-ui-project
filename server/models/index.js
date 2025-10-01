@@ -698,10 +698,10 @@ ExperimentWorkerShift.belongsTo(Experiment, {
     onDelete: 'CASCADE'
 });
 WorkerShift.hasMany(ExperimentWorkerShift, {
-    foreignKey: 'shift_id'
+    foreignKey: 'worker_shift_id'
 });
 ExperimentWorkerShift.belongsTo(WorkerShift, {
-    foreignKey: 'shift_id'
+    foreignKey: 'worker_shift_id'
 });
 
 module.exports = { 

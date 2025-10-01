@@ -35,6 +35,7 @@ router.post('/:id', (req, res) => {
         crew: req.body.crew,
         begin: req.body.begin,
         end: req.body.end,
+        iteration_number: 0,
         is_default: false
     }).then(dbShiftData => {
         ExperimentShift.create({

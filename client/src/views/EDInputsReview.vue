@@ -2261,7 +2261,7 @@ export default {
             }
         },
         handleModelSelectChange(asset_id) {
-            if (this.processTimeSettings.selectedModels[asset_id].length == 1) {
+            if (this.processTimeSettings.selectedModels && this.processTimeSettings.selectedModels[asset_id].length == 1) {
                 this.processTimeElementChange();
             };
         },

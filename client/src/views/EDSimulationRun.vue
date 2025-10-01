@@ -111,9 +111,9 @@ export default {
             this.apiKey = data.key;
         },
         runAnimation() {
-            runButton = document.getElementById("run-button");
-            runButton.disabled = true;
-            this.cloudClient.getLatestModelVersion("Bass Diffusion Demo 8.5.0")
+            // runButton = document.getElementById("run-button");
+            // runButton.disabled = true;
+            this.cloudClient.getLatestModelVersion("PV_Fluid v1_02 (p_db config in cloud)")
                 .then(version => {
                     let inputs = this.cloudClient.createDefaultInputs(version);
                     inputs.setInput("Contact Rate", 30);
@@ -126,14 +126,14 @@ export default {
                     console.error(error);
                 })
                 .finally(() => {
-                    runButton.disabled = false;
+                    // runButton.disabled = false;
                 });
         }
     },
     async mounted() {
         let anylogicAPIEl = document.createElement('script');
         anylogicAPIEl.setAttribute('src', 'http(s)://172.28.0.56:3306/assets/js-client-8.5.0/cloud-client.js');
-        this.getAPIKey();
+        await this.getAPIKey();
         this.cloudClient = CloudClient.create(apiKey, "http(s)://172.28.0.56:3306");
         this.getExperimentID();
         await this.getRunning();

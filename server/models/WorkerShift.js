@@ -36,7 +36,7 @@ WorkerShift.init(
             allowNull: false,
             defaultValue: DataTypes.NOW
         },
-        last_modified: {
+        modified: {
             type: DataTypes.DATE,
             allowNull: false,
             defaultValue: DataTypes.NOW

@@ -1022,7 +1022,7 @@
                         </select>
                         <h3>Shift:</h3>
                         <select>
-                            <option v-for="(shift) in this.shiftData" :selected="worker.worker_shifts[0].shift_id == shift.shift_id">{{ shift.begin + "-" + shift.end }}</option>
+                            <option v-for="(shift) in this.shiftData" :selected="workerData.find(e => e.worker_id == selectedWorker).worker_shifts[0].shift_id == shift.shift_id">{{ shift.begin + "-" + shift.end }}</option>
                         </select>
                         <h3>Skills:</h3>
                         <VueMultiselect v-model="this.selectedSkills" :options="this.assetNames" :multiple="true"

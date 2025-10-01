@@ -989,7 +989,7 @@
                         TBD
                     </Collapsable>
                     <Collapsable @toggle-collapse="collapsableToggleChange" title="Labor" name="labor" next="routing"
-                        back="materials" :heading="3" :reset="collapsableStatus['labor']" v-if="experimentData.scenario.scenario_id == 4">
+                        back="materials" :heading="3" :reset="collapsableStatus['labor']" v-if="experimentData && experimentData.scenario.scenario_id == 4">
                         <h3>Worker:</h3>
                         <select>
                             <option v-for="(worker) in this.workerData">{{ worker.name }}</option>
@@ -1066,7 +1066,7 @@
                             back="routing" next="priority" :reset="collapsableStatus['queuing']" tbd="true">TBD
                         </Collapsable>
                         <Collapsable @toggle-collapse="collapsableToggleChange" title="Priority" name="priority"
-                            back="queuing" next="transportation" :reset="collapsableStatus['priority']" v-if="experimentData.scenario.scenario_id == 4">
+                            back="queuing" next="transportation" :reset="collapsableStatus['priority']" v-if="experimentData && experimentData.scenario.scenario_id == 4">
                             <div v-if="taskSequenceData" class="card">
                                 <div>
                                     <button @click="clickPreviousOperation"><i class="bi bi-arrow-left"></i></button>

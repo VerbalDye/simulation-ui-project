@@ -1066,8 +1066,8 @@
                             back="routing" next="priority" :reset="collapsableStatus['queuing']" tbd="true">TBD
                         </Collapsable>
                         <Collapsable @toggle-collapse="collapsableToggleChange" title="Priority" name="priority"
-                            back="queuing" next="transportation" :reset="collapsableStatus['priority']">
-                            <div v-if="taskSequenceData && experimentData.scenario.scenario_id == 4" class="card">
+                            back="queuing" next="transportation" :reset="collapsableStatus['priority']" v-if="experimentData.scenario.scenario_id == 4">
+                            <div v-if="taskSequenceData" class="card">
                                 <div>
                                     <button @click="clickPreviousOperation"><i class="bi bi-arrow-left"></i></button>
                                     <button @click="clickNextOperation"><i class="bi bi-arrow-right"></i></button>
@@ -1522,9 +1522,11 @@ export default {
             this.selectedOperation = 2;
         },
         async getPriorityData() {
-            let data = await dataRequest("/api/priority", "GET");
+            let data = await dataRequest("/api/experiment/priority", "GET");
             console.log(data);
-            this.priorityData = data;
+            this.priorityData = data.map(priority => {
+                return priority.priority;
+            });
         },
         async getAssetData() {
             let data = await dataRequest("/api/experiment/asset/with-op-to-loc/" + this.experimentID, "GET");

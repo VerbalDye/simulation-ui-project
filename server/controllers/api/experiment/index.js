@@ -60,6 +60,6 @@ router.use('/simulation', simulationRoutes);
 router.use('/site', siteRoutes);
 router.use('/task-sequence', taskSequenceRoutes);
 router.use('/throughput', throughputRoutes);
-router.use('/worker-shift', workerShiftRoutes)
+router.use('/worker-shift', workerShiftRoutes);
 
 module.exports = router;

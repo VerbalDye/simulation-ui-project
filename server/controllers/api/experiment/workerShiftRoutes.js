@@ -35,16 +35,20 @@ router.get('/:id', (req, res) => {
         where: {
             is_default: true
         },
-        include: [{ 
+        include: [{
             model: WorkerShift,
-            // include: [{
-            //     model: ExperimentWorkerShift,
-            //     where: {
-            //         experiment_id: req.params.id
-            //     }
-            // }]
+            include: [{
+                model: ExperimentWorkerShift,
+                where: {
+                    experiment_id: req.params.id
+                }
+            }]
         }]
-    })
+    }).then(dbExperimentWorkerShiftData => res.json(dbExperimentWorkerShiftData))
+        .catch(err => {
+            console.log(err);
+            res.status(400).json(err);
+        });
 });
 
 module.exports = router;

@@ -17,6 +17,7 @@ const {
     ExperimentRouting,
     ExperimentShift,
     ExperimentSite,
+    ExperimentSkills,
     ExperimentTaskSequence,
     ExperimentTimeDistribution,
     ExperimentTimeType,
@@ -358,6 +359,11 @@ router.post('/from/:id', (req, res) => {
                     model: ExperimentSite,
                     foreignKey: { experiment_id: req.params.id },
                     attributes: ['site_id']
+                },
+                {
+                    model: ExperimentSkills,
+                    foreignKey: { experiment_id: req.params.id },
+                    attributes: ['iteration_number', 'skills_id']
                 },
                 {
                     model: ExperimentTaskSequence,

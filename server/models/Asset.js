@@ -18,9 +18,6 @@ Asset.init(
             type: DataTypes.STRING,
             allowNull: false
         },
-        asset_id_pv: {
-            type: DataTypes.STRING
-        },
         asset_type: {
             type: DataTypes.STRING
         },

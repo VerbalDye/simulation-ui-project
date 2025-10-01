@@ -124,19 +124,19 @@
                                             <th>Phase:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.phase.display_name
-                                                }}</td>
+                                            }}</td>
                                         </tr>
                                         <tr>
                                             <th>Cell:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.cell.display_name
-                                                }}</td>
+                                            }}</td>
                                         </tr>
                                         <tr>
                                             <th>Operation:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.operation.display_name
-                                                }}</td>
+                                            }}</td>
                                         </tr>
                                     </table>
                                     <p>Location(s):</p>
@@ -985,11 +985,33 @@
                         </div>
                     </Collapsable>
                     <Collapsable @toggle-collapse="collapsableToggleChange" title="Materials" name="materials"
-                        next="labor" back="cores-tools" :heading="3" :reset="collapsableStatus['materials']" tbd="true">
+                        next="shifts" back="cores-tools" :heading="3" :reset="collapsableStatus['materials']"
+                        tbd="true">
                         TBD
                     </Collapsable>
+                    <Collapsable @toggle-collapse="collapsableToggleChange" title="Shifts" name="shifts" next="labor"
+                        back="materials" :heading="3" :reset="collapsableStatus['labor']">
+                        <div>
+                            <table class="grid-less">
+                                <tr>
+                                    <thead><label for="shift-crew">Crew:</label></thead>
+                                    <td><input type="text" id="shift-crew" name="shift-crew" @change="e => this.newShiftData.crew = e.target.value"></input></td>
+                                </tr>
+                                <tr>
+                                    <thead><label for="shift-start">Start Time:</label></thead>
+                                    <td><input type="time" id="shift-start" name="shift-start" @change="e => this.newShiftData.begin = e.target.value"></input></td>
+                                </tr>
+                                <tr>
+                                    <thead><label for="shift-end">End Time:</label></thead>
+                                    <td><input type="time" id="shift-end" name="shift-end" @change="e => this.newShiftData.end = e.target.value"></input></td>
+                                </tr>
+                            </table>
+                            <button @click="saveNewShift">Save</button>
+                        </div>
+                    </Collapsable>
                     <Collapsable @toggle-collapse="collapsableToggleChange" title="Labor" name="labor" next="routing"
-                        back="materials" :heading="3" :reset="collapsableStatus['labor']" v-if="experimentData && experimentData.scenario.scenario_id == 4">
+                        back="shifts" :heading="3" :reset="collapsableStatus['labor']"
+                        v-if="experimentData && experimentData.scenario.scenario_id == 4">
                         <h3>Worker:</h3>
                         <select>
                             <option v-for="(worker) in this.workerData">{{ worker.name }}</option>
@@ -1066,7 +1088,8 @@
                             back="routing" next="priority" :reset="collapsableStatus['queuing']" tbd="true">TBD
                         </Collapsable>
                         <Collapsable @toggle-collapse="collapsableToggleChange" title="Priority" name="priority"
-                            back="queuing" next="transportation" :reset="collapsableStatus['priority']" v-if="experimentData && experimentData.scenario.scenario_id == 4">
+                            back="queuing" next="transportation" :reset="collapsableStatus['priority']"
+                            v-if="experimentData && experimentData.scenario.scenario_id == 4">
                             <div v-if="taskSequenceData" class="card">
                                 <div>
                                     <button @click="clickPreviousOperation"><i class="bi bi-arrow-left"></i></button>
@@ -1074,7 +1097,7 @@
                                 </div>
                                 <h4>Current</h4>
                                 <p>{{ this.taskSequenceData[this.selectedOperation].task_sequence.phase.display_name
-                                }} | {{
+                                    }} | {{
                                         this.taskSequenceData[this.selectedOperation].task_sequence.cell.display_name }}
                                     | {{
                                         this.taskSequenceData[this.selectedOperation].task_sequence.operation.display_name
@@ -1152,7 +1175,7 @@
                                                     type="number" />
                                             </td>
                                         </tr>
-                                    </table>               
+                                    </table>
                                 </div>
                                 <button class="space">Save</button>
                             </div>
@@ -1484,6 +1507,11 @@ export default {
             },
             defaultHOO: true,
             operationList: [],
+            newShiftData: {
+                crew: null,
+                begin: null,
+                end: null
+            }
         }
     },
     mixins: [titleMixin],
@@ -1784,6 +1812,10 @@ export default {
         },
         downloadTemplate() {
             window.open('/api/experiment/backlog/template');
+        },
+        async saveNewShift() {
+            await this.dataRequest('/api/experiment/shift/' + this.experimentID, "POST", this.newShiftData);
+            this.getShiftData();
         },
         async saveAllChanges() {
             this.loading = true;

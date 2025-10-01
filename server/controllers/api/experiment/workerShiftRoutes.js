@@ -41,7 +41,8 @@ router.get('/:id', (req, res) => {
                 model: ExperimentWorkerShift,
                 where: {
                     experiment_id: req.params.id
-                }
+                },
+                required: true
             }]
         }]
     }).then(dbExperimentWorkerShiftData => res.json(dbExperimentWorkerShiftData))

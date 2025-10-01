@@ -30,4 +30,22 @@ router.get('/:id', (req, res) => {
         });
 });
 
+router.post('/:id', (req, res) => {
+    Shift.create({
+        crew: req.body.crew,
+        begin: req.body.begin,
+        end: req.body.end,
+        is_default: false
+    }).then(dbShiftData => {
+        ExperimentShift.create({
+            shift_id: dbShiftData.shift_id,
+            experiment_id: req.params.id
+        }).then(dbExperimentShiftData => res.json(dbExperimentShiftData))
+        .catch(err => {
+            console.log(err);
+            res.status(400).json(err);
+        })
+    })
+});
+
 module.exports = router;

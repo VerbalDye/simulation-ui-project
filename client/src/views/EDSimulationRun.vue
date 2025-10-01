@@ -131,11 +131,15 @@ export default {
         }
     },
     async mounted() {
-        let anylogicAPIEl = document.createElement('script');
-        anylogicAPIEl.setAttribute('src', 'http(s)://172.28.0.56:3306/assets/js-client-8.5.0/cloud-client.js');
-        document.head.appendChild(anylogicAPIEl);
-        await this.getAPIKey();
-        this.cloudClient = CloudClient.create(apiKey, "http(s)://172.28.0.56:3306");
+        this.$loadScript("http(s)://172.28.0.56:3306/assets/js-client-8.5.0/cloud-client.js")
+            .then(async () => {
+                await this.getAPIKey();
+                this.cloudClient = CloudClient.create(apiKey, "http(s)://172.28.0.56:3306");
+            })
+            .catch(() => {
+                // Failed to fetch script
+                console.log("Oops");
+            });
         this.getExperimentID();
         await this.getRunning();
         if (this.status == 'Running') {

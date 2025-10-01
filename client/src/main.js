@@ -1,5 +1,7 @@
-import { createApp } from 'vue'
+import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
+import LoadScript from 'vue-plugin-load-script';
 
-createApp(App).use(router).mount('#app')
+Vue.use(LoadScript);
+Vue.createApp(App).use(router).mount('#app')

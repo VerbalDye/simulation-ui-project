@@ -37,12 +37,12 @@ router.get('/:id', (req, res) => {
         },
         include: [{ 
             model: WorkerShift,
-            include: [{
-                model: ExperimentWorkerShift,
-                where: {
-                    experiment_id: req.params.id
-                }
-            }]
+            // include: [{
+            //     model: ExperimentWorkerShift,
+            //     where: {
+            //         experiment_id: req.params.id
+            //     }
+            // }]
         }]
     })
 });

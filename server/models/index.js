@@ -310,11 +310,11 @@ Skills.belongsTo(Worker, {
     foreignKey: 'worker_id',
     onDelete: 'cascade'
 });
-Asset.hasMany(Skills, {
-    foreignKey: 'asset_id'
+Operation.hasMany(Skills, {
+    foreignKey: 'operation_id'
 });
-Skills.belongsTo(Asset, {
-    foreignKey: 'asset_id',
+Skills.belongsTo(Operation, {
+    foreignKey: 'operation_id',
     onDelete: 'cascade'
 });
 

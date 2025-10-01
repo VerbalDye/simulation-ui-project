@@ -114,7 +114,7 @@ export default {
         runAnimation() {
             // runButton = document.getElementById("run-button");
             // runButton.disabled = true;
-            this.cloudClient.getLatestModelVersion("PV_Fluid v1_02 (p_db config in cloud)")
+            this.cloudClient.getLatestModelVersion("85f6f499-1ff2-452e-878d-c487575c96bf")
                 .then(version => {
                     let inputs = this.cloudClient.createDefaultInputs(version);
                     inputs.setInput("Contact Rate", 30);

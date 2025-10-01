@@ -114,9 +114,7 @@ export default {
         async runAnimation() {
             // runButton = document.getElementById("run-button");
             // runButton.disabled = true;
-            let models = await this.cloudClient.getModels();
-            console.log(models);
-            let version = await this.cloudClient.getModelVersionById(models[0], "a9152feb-bde5-4260-ae2d-11e3dcb4d5b8");
+            let version = await this.cloudClient.getLatestModelVersion("PV Fluid V1");
             let inputs = this.cloudClient.createDefaultInputs(version);
             inputs.setInput("EXPERIMENT_ID", this.experimentID);
             inputs.setInput("ITERATION_ID", 0);
@@ -131,7 +129,7 @@ export default {
         this.$loadScript("https://cloud.anylogic.com/assets/js-client-8.5.0/cloud-client.js")
             .then(async () => {
                 await this.getAPIKey();
-                this.cloudClient = CloudClient.create(this.apiKey, "http://172.28.0.56");
+                this.cloudClient = CloudClient.create(this.apiKey, "http://172.28.0.58");
             })
             .catch(() => {
                 // Failed to fetch script

@@ -1570,7 +1570,7 @@ export default {
             // console.log(this.closingData);
         },
         async getWorkerData() {
-            let data = await dataRequest("/api/experiment/worker/" + this.experimentID, "GET");
+            let data = await dataRequest("/api/experiment/worker-shift/" + this.experimentID, "GET");
             console.log(data);
             this.workerData = data;
         },

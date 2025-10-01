@@ -1548,6 +1548,10 @@ export default {
             this.siteData = data;
             return data;
         },
+        // async getSkillsData() {
+        //     let data = await dataRequest("/api/experiment/skills/" + this.experimentID, "GET");
+        //     this.skillsData;
+        // },
         async getBacklogData() {
             let data = await dataRequest("/api/experiment/backlog/" + this.experimentID, "GET");
             this.backlogData = data;

@@ -23,6 +23,7 @@ const ExperimentProcessTime = require('./ExperimentProcessTime');
 const ExperimentRouting = require('./ExperimentRouting');
 const ExperimentShift = require('./ExperimentShift');
 const ExperimentSite = require('./ExperimentSite');
+const ExperimentSkills = require('./ExperimentSkills');
 const ExperimentTaskSequence = require('./ExperimentTaskSequence');
 const ExperimentTimeDistribution = require('./ExperimentTimeDistribution');
 const ExperimentTimeType = require('./ExperimentTimeType');
@@ -627,6 +628,21 @@ ExperimentSite.belongsTo(Site, {
     foreignKey: 'site_id'
 });
 
+// Experiment-Skills
+Experiment.hasOne(ExperimentSkills, {
+    foreignKey: 'experiment_id'
+});
+ExperimentSkills.belongsTo(Experiment, {
+    foreignKey: 'experiment_id',
+    onDelete: 'CASCADE'
+});
+Skills.hasMany(ExperimentSkills, {
+    foreignKey: 'skills_id'
+});
+ExperimentSkills.belongsTo(Skills, {
+    foreignKey: 'skills_id'
+});
+
 // Experiment-TaskSequence
 Experiment.hasMany(ExperimentTaskSequence, {
     foreignKey: 'experiment_id'
@@ -730,6 +746,7 @@ module.exports = {
     ExperimentRouting,
     ExperimentShift,
     ExperimentSite,
+    ExperimentSkills,
     ExperimentTaskSequence,
     ExperimentTimeDistribution,
     ExperimentTimeType,

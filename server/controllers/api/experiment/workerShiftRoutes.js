@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const sequelize = require('../../../config/connection');
-const { ExperimentWorkerShift, WorkerShift, Worker } = require('../../../models');
+const { ExperimentSkills, ExperimentWorkerShift, Skills, WorkerShift, Worker } = require('../../../models');
 
 router.get('/', (req, res) => {
     ExperimentWorkerShift.findAll()
@@ -44,7 +44,18 @@ router.get('/:id', (req, res) => {
                 },
                 required: true
             }]
-        }]
+        },
+        {
+            model: Skills,
+            include: [{
+                model:ExperimentSkills,
+                where: {
+                    experiment_id: req.params.id
+                },
+                required: true
+            }]
+        }
+    ]
     }).then(dbExperimentWorkerShiftData => res.json(dbExperimentWorkerShiftData))
         .catch(err => {
             console.log(err);

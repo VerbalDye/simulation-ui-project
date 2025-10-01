@@ -1116,17 +1116,43 @@
                                 </div>
                                 <div v-else>
                                     <h4>Dynamic Priority</h4>
-                                    <label for="priority-max-tubes">Max Tubes:</label>
-                                    <input id="priority-max-tubes" name="priority-max-tubes" type="number" />
-                                    <br />
-                                    <label for="priority-max-priority">Max Priority:</label>
-                                    <input id="priority-max-priority" name="priority-max-priority" type="number" />
-                                    <br />
-                                    <label for="priority-n-growth">N Growth:</label>
-                                    <input id="priority-n-growth" name="priority-n-growth" type="number" />
-                                    <br />
-                                    <label for="priority-time-growth">Time Growth:</label>
-                                    <input id="priority-time-growth" name="priority-time-growth" type="number" />
+                                    <table class="grid-less">
+                                        <tr>
+                                            <thead>
+                                                <label for="priority-max-tubes">Max Tubes:</label>
+                                            </thead>
+                                            <td>
+                                                <input id="priority-max-tubes" name="priority-max-tubes"
+                                                    type="number" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <thead>
+                                                <label for="priority-max-priority">Max Priority:</label>
+                                            </thead>
+                                            <td>
+                                                <input id="priority-max-priority" name="priority-max-priority"
+                                                    type="number" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <thead>
+                                                <label for="priority-n-growth">N Growth:</label>
+                                            </thead>
+                                            <td>
+                                                <input id="priority-n-growth" name="priority-n-growth" type="number" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <thead>
+                                                <label for="priority-time-growth">Time Growth:</label>
+                                            </thead>
+                                            <td>
+                                                <input id="priority-time-growth" name="priority-time-growth"
+                                                    type="number" />
+                                            </td>
+                                        </tr>
+                                    </table>               
                                 </div>
                                 <button class="space">Save</button>
                             </div>

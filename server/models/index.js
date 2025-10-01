@@ -18,12 +18,15 @@ const ExperimentHoo = require('./ExperimentHoo');
 const ExperimentInfo = require('./ExperimentInfo');
 const ExperimentJobMix = require('./ExperimentJobMix');
 const ExperimentOpToLoc = require('./ExperimentOpToLoc');
+const ExperimentPriority = require('./ExperimentPriority');
 const ExperimentProcessTime = require('./ExperimentProcessTime');
 const ExperimentRouting = require('./ExperimentRouting');
+const ExperimentShift = require('./ExperimentShift');
 const ExperimentSite = require('./ExperimentSite');
 const ExperimentTaskSequence = require('./ExperimentTaskSequence');
 const ExperimentTimeDistribution = require('./ExperimentTimeDistribution');
 const ExperimentTimeType = require('./ExperimentTimeType');
+const ExperimentWorkerShift = require('./ExperimentWorkerShift');
 const HoursOfOperation = require('./HoursOfOperation');
 const JobCore = require('./JobCore');
 const JobList = require('./JobList');
@@ -524,6 +527,21 @@ ExperimentOpToLoc.belongsTo(OperationToLocation, {
     foreignKey: 'operation_to_location_id'
 });
 
+// Experiment-Priority
+Experiment.hasMany(ExperimentPriority, {
+    foreignKey: 'experiment_id'
+});
+ExperimentPriority.belongsTo(Experiment, {
+    foreignKey: 'experiment_id',
+    onDelete: 'CASCADE'
+});
+Priority.hasMany(ExperimentPriority, {
+    foreignKey: 'priority_id'
+});
+ExperimentPriority.belongsTo(Priority, {
+    foreignKey: 'priority_id'
+});
+
 // Experiment-ProcessTime
 Experiment.hasMany(ExperimentProcessTime, {
     foreignKey: 'experiment_id'
@@ -577,6 +595,21 @@ Experiment.belongsTo(Scenario, {
 Scenario.hasMany(Experiment, {
     foreignKey: 'scenario_id',
     onDelete: 'CASCADE'
+});
+
+// Experiment-Shift
+Experiment.hasOne(ExperimentShift, {
+    foreignKey: 'experiment_id'
+});
+ExperimentShift.belongsTo(Experiment, {
+    foreignKey: 'experiment_id',
+    onDelete: 'CASCADE'
+});
+Shift.hasMany(ExperimentShift, {
+    foreignKey: 'shift_id'
+});
+ExperimentShift.belongsTo(Shift, {
+    foreignKey: 'shift_id'
 });
 
 // Experiment-Site
@@ -656,6 +689,21 @@ ExperimentTimeType.belongsTo(Operation, {
     onDelete: 'CASCADE'
 });
 
+// Experiment-WorkerShift
+Experiment.hasMany(ExperimentWorkerShift, {
+    foreignKey: 'experiment_id'
+});
+ExperimentWorkerShift.belongsTo(Experiment, {
+    foreignKey: 'experiment_id',
+    onDelete: 'CASCADE'
+});
+WorkerShift.hasMany(ExperimentWorkerShift, {
+    foreignKey: 'shift_id'
+});
+ExperimentWorkerShift.belongsTo(WorkerShift, {
+    foreignKey: 'shift_id'
+});
+
 module.exports = { 
     Arrival,
     Asset,
@@ -677,12 +725,15 @@ module.exports = {
     ExperimentInfo,
     ExperimentJobMix,
     ExperimentOpToLoc,
+    ExperimentPriority,
     ExperimentProcessTime,
     ExperimentRouting,
+    ExperimentShift,
     ExperimentSite,
     ExperimentTaskSequence,
     ExperimentTimeDistribution,
     ExperimentTimeType,
+    ExperimentWorkerShift,
     HoursOfOperation,
     JobCore,
     JobList,

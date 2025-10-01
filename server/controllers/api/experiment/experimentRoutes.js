@@ -12,12 +12,15 @@ const {
     ExperimentHoo,
     ExperimentJobMix,
     ExperimentOpToLoc,
+    ExperimentPriority,
     ExperimentProcessTime,
     ExperimentRouting,
+    ExperimentShift,
     ExperimentSite,
     ExperimentTaskSequence,
     ExperimentTimeDistribution,
     ExperimentTimeType,
+    ExperimentWorkerShift,
     JobList,
     Log,
     OperationToLocation,
@@ -332,6 +335,11 @@ router.post('/from/:id', (req, res) => {
                     attributes: ['iteration_number', 'operation_to_location_id']
                 },
                 {
+                    model: ExperimentPriority,
+                    foreignKey: { experiment_id: req.params.id },
+                    attributes: ['iteration_number', 'priority_id']
+                },
+                {
                     model: ExperimentProcessTime,
                     foreignKey: { experiment_id: req.params.id },
                     attributes: ['iteration_number', 'process_time_id']
@@ -340,6 +348,11 @@ router.post('/from/:id', (req, res) => {
                     model: ExperimentRouting,
                     foreignKey: { experiment_id: req.params.id },
                     attributes: ['iteration_number', 'routing_id']
+                },
+                {
+                    model: ExperimentShift,
+                    foreignKey: { experiment_id: req.params.id },
+                    attributes: ['iteration_number', 'shift_id']
                 },
                 {
                     model: ExperimentSite,
@@ -365,6 +378,11 @@ router.post('/from/:id', (req, res) => {
                         'operation_id',
                         'discrete'
                     ]
+                },
+                {
+                    model: ExperimentWorkerShift,
+                    foreignKey: { experiment_id: req.params.id },
+                    attributes: ['iteration_number', 'worker_shift_id']
                 },
                 {
                     model: JobList,

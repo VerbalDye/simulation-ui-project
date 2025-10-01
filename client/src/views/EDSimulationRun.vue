@@ -15,17 +15,17 @@
                     <td>{{ dayjs(startTime).format("YYYY-MM-DD hh:mm:ss") }}</td>
                 </tr>
             </table>
-            <!-- <div v-else>
+            <div v-else>
                 <button @click="startSimulation">Run Simulation</button>
             </div>
             <div v-if="status == 'Finished'">
                 <button @click="startSimulation">Rerun Simulation</button>
-            </div> -->
-            <div id="animation-container"
+            </div>
+            <!-- <div id="animation-container"
                 style="width: 1200px; height: 700px; border: 1px solid blue; position: relative;"></div>
             <div>
                 <button id="run-button" @click="runAnimation">Start?</button>
-            </div>
+            </div> -->
             <div class="flex-right space"><button @click="clickBack">Back</button><button
                     @click="clickNext">Next</button></div>
         </div>

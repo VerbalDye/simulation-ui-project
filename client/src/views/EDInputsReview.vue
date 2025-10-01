@@ -1018,11 +1018,11 @@
                         v-if="experimentData && experimentData.scenario.scenario_id == 4">
                         <h3>Worker:</h3>
                         <select>
-                            <option v-for="(worker) in this.workerData">{{ worker.name }}</option>
+                            <option v-for="(worker) in this.workerData" :selected="worker.worker_id == selectedWorker" :value="worker_id">{{ worker.name }}</option>
                         </select>
                         <h3>Shift:</h3>
                         <select>
-                            <option v-for="(shift) in this.shiftData">{{ shift.begin + "-" + shift.end }}</option>
+                            <option v-for="(shift) in this.shiftData" :selected="worker.worker_shifts[0].shift_id == shift.shift_id">{{ shift.begin + "-" + shift.end }}</option>
                         </select>
                         <h3>Skills:</h3>
                         <VueMultiselect v-model="this.selectedSkills" :options="this.assetNames" :multiple="true"
@@ -1521,7 +1521,8 @@ export default {
                 crew: null,
                 begin: null,
                 end: null
-            }
+            },
+            selectedWorker: null
         }
     },
     mixins: [titleMixin],
@@ -1614,6 +1615,7 @@ export default {
         async getWorkerData() {
             let data = await dataRequest("/api/experiment/worker-shift/" + this.experimentID, "GET");
             console.log(data);
+            this.selectedWorker = data[0].worker_id;
             this.workerData = data;
         },
         async getProcessTimeData() {

@@ -15,11 +15,16 @@
                     <td>{{ dayjs(startTime).format("YYYY-MM-DD hh:mm:ss") }}</td>
                 </tr>
             </table>
-            <div v-else>
+            <!-- <div v-else>
                 <button @click="startSimulation">Run Simulation</button>
             </div>
             <div v-if="status == 'Finished'">
                 <button @click="startSimulation">Rerun Simulation</button>
+            </div> -->
+            <div id="animation-container"
+                style="width: 1200px; height: 700px; border: 1px solid blue; position: relative;"></div>
+            <div>
+                <button id="run-button" @click="runAnimation">Start?</button>
             </div>
             <div class="flex-right space"><button @click="clickBack">Back</button><button
                     @click="clickNext">Next</button></div>
@@ -44,7 +49,9 @@ export default {
             dayjs: dayjs,
             status: null,
             wasRunning: false,
-            interval: null
+            interval: null,
+            apiKey: null,
+            cloudClient: null
         }
     },
     mixins: [titleMixin],
@@ -78,6 +85,12 @@ export default {
         clickNext() {
             this.$router.push("/experiments/design/results-review/" + this.experimentID);
         },
+        // async startSimulation() {
+        //     this.status = 'Running';
+        //     this.startTime = dayjs();
+        //     await dataRequest("/api/experiment/simulation/start/" + this.experimentID, "POST", JSON.stringify({ num_replications: 5 }));
+        //     this.statusInterval();
+        // },
         async startSimulation() {
             this.status = 'Running';
             this.startTime = dayjs();
@@ -92,9 +105,36 @@ export default {
                     window.alert("Simulation Run Complete!");
                 }
             }, 10000)
+        },
+        async getAPIKey() {
+            let data = await dataRequest("/api/experiment/simulation/key", "GET");
+            this.apiKey = data.key;
+        },
+        runAnimation() {
+            runButton = document.getElementById("run-button");
+            runButton.disabled = true;
+            this.cloudClient.getLatestModelVersion("Bass Diffusion Demo 8.5.0")
+                .then(version => {
+                    let inputs = this.cloudClient.createDefaultInputs(version);
+                    inputs.setInput("Contact Rate", 30);
+                    return this.cloudClient.startAnimation(inputs, "animation-container");
+                })
+                .then(animation => {
+                    return animation.waitForCompletion();
+                })
+                .catch(error => {
+                    console.error(error);
+                })
+                .finally(() => {
+                    runButton.disabled = false;
+                });
         }
     },
     async mounted() {
+        let anylogicAPIEl = document.createElement('script');
+        anylogicAPIEl.setAttribute('src', 'http(s)://172.28.0.56:3306/assets/js-client-8.5.0/cloud-client.js');
+        this.getAPIKey();
+        this.cloudClient = CloudClient.create(apiKey, "http(s)://172.28.0.56:3306");
         this.getExperimentID();
         await this.getRunning();
         if (this.status == 'Running') {

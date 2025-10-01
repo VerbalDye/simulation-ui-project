@@ -53,6 +53,10 @@ const { Experiment, Throughput, AssetAvailability, ResourceUtilization } = requi
 //             res.status(400).json(err);
 //         });
 // })
+router.get('/key', async (req, res) => {
+    res.json({key: process.env.ANYLOGIC_CLOUD_KEY});
+})
+
 router.get('/status/:id', async (req, res) => {
     const experimentData = await Experiment.findOne({
         where: {

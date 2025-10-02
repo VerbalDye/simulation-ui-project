@@ -2274,7 +2274,7 @@ export default {
         },
         handleWorkerShiftChange(e) {
             this.workerData.find(f => f.worker_id == this.selectedWorker).worker_shifts[0].shift_id = e.target.value;
-            this.workerChanges.shifts.push({ worker: this.selectedWorker, shift: e.target.value })
+            this.workerChanges.shifts.push({ worker_id: this.selectedWorker, shift_id: e.target.value })
             console.log(this.workerChanges);
         },
         handleWorkerSkillsChange() {

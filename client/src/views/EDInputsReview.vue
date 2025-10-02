@@ -2260,9 +2260,11 @@ export default {
             console.log(workerID);
             let worker = this.workerData.find(e => e.worker_id == workerID);
             console.log(this.operationToLocationData);
+            this.selectedSkills = [];
             worker.skills.forEach(skill => {
-                // this.operationToLocationData
-            })
+                this.selectedSkills.push(this.operationToLocationData.find(e => e.operation_to_location.operation_id == skill.operation_id).operation_to_location.operation.display_name);
+            });
+            
         },
         handleAdvanceModeChange(e) {
             this.advancedMode = e.target.checked;

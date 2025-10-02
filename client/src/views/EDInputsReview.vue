@@ -2261,14 +2261,11 @@ export default {
             // console.log(this.processTimeSettings.elements[this.selectedAssets[0].asset_id]);
         },
         handleWorkerChange(e) {
-            let workerID = e.target.value;
+            this.selectedWorker = e.target.value;
             // console.log(workerID);
-            let worker = this.workerData.find(e => e.worker_id == workerID);
+            let worker = this.workerData.find(e => e.worker_id == this.selectedWorker);
             this.selectedSkills = [];
             worker.skills.forEach(skill => {
-                // console.log(this.operationToLocationData);
-                // console.log(this.operationToLocationData.find(e => e.operation_to_location.operation_id == skill.operation_id));
-                // console.log(skill);
                 this.selectedSkills.push(this.operationToLocationData.find(e => e.operation_to_location.operation_id == skill.operation_id).operation_to_location.operation.display_name);
             });
             this.selectedShift = worker.worker_shifts[0].shift_id;

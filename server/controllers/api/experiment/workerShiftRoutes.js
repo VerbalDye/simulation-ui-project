@@ -148,8 +148,8 @@ router.put('/skills/:id', async (req, res) => {
                 iteration_number: 0
             }
         })
-        let dbNewExperimentWorkerShiftData = await ExperimentWorkerShift.bulkCreate(dbNewWorkerShiftData);
-        res.json(dbNewExperimentWorkerShiftData);
+        let dbNewExperimentSkillsData = await ExperimentWorkerShift.bulkCreate(dbNewSkillsData);
+        res.json(dbNewExperimentSkillsData);
     } catch (err) {
         console.log(err);
         res.status(400).json(err);

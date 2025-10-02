@@ -1140,8 +1140,8 @@
                                         <tr>
                                             <thead><label for="priority-static-value">Priority Value:</label></thead>
                                             <td>
-                                                <input type="number"
-                                                    :value="this.priorityData.find(e => e.operation_id == this.selectedOperation).priority" @change="e => this.priorityData.find(e => e.operation_id == this.selectedOperation).priority = e.target.value"/>
+                                                <input type="number" id="priority-static-value" name="priority-static-value"
+                                                    :value="this.priorityData.find(e => e.operation_id == this.selectedOperation).priority" @change="handlePriorityChange"/>
                                             </td>
                                         </tr>
                                     </table>
@@ -1155,7 +1155,7 @@
                                             </thead>
                                             <td>
                                                 <input id="priority-max-tubes" name="priority-max-tubes"
-                                                    type="number" />
+                                                    type="number" @change="handleDynamicPriorityChange($event, 'max_tubes')"/>
                                             </td>
                                         </tr>
                                         <tr>
@@ -1164,7 +1164,7 @@
                                             </thead>
                                             <td>
                                                 <input id="priority-max-priority" name="priority-max-priority"
-                                                    type="number" />
+                                                    type="number" @change="handleDynamicPriorityChange($event, 'max_priority')"/>
                                             </td>
                                         </tr>
                                         <tr>
@@ -1172,7 +1172,7 @@
                                                 <label for="priority-n-growth">N Growth:</label>
                                             </thead>
                                             <td>
-                                                <input id="priority-n-growth" name="priority-n-growth" type="number" />
+                                                <input id="priority-n-growth" name="priority-n-growth" type="number" @change="handleDynamicPriorityChange($event, 'n_growth')"/>
                                             </td>
                                         </tr>
                                         <tr>
@@ -1181,7 +1181,7 @@
                                             </thead>
                                             <td>
                                                 <input id="priority-time-growth" name="priority-time-growth"
-                                                    type="number" />
+                                                    type="number" @change="handleDynamicPriorityChange($event, 'time_growth')"/>
                                             </td>
                                         </tr>
                                     </table>
@@ -1526,6 +1526,13 @@ export default {
             workerChanges: {
                 skills: [],
                 shifts: []
+            },
+            priorityChanges: [],
+            dynamicPriority: {
+                max_tubes: null,
+                max_priority: null,
+                n_growth: null,
+                time_growth: null,
             }
         }
     },
@@ -1959,6 +1966,7 @@ export default {
                 dataRequest("/api/experiment/continuous-process-time/" + this.experimentID, "PUT", JSON.stringify(this.continuousProcessTimeData)),
                 dataRequest("/api/experiment/worker-shift/shifts/" + this.experimentID, "PUT", JSON.stringify({ shifts: this.workerChanges.shifts })),
                 dataRequest("/api/experiment/worker-shift/skills/" + this.experimentID, "PUT", JSON.stringify({ skills: this.workerChanges.skills })),
+                dataRequest("/api/experiment/priority/" + this.experimentID, "PUT", JSON.stringify({ priority: this.priorityChanges })),
                 this.saveJobChanges()
             ])
         },
@@ -2261,6 +2269,24 @@ export default {
             })
             // console.log(this.processTimeSettings.elements[this.selectedAssets[0].asset_id].values);
             // console.log(this.processTimeSettings.elements[this.selectedAssets[0].asset_id]);
+        },
+        handlePriorityChange(e) {
+            this.priorityData.find(e => e.operation_id == this.selectedOperation).priority = e.target.value;
+            this.priorityChanges = this.priorityChanges.filter(e => e.operation_id !== this.selectedOperation);
+            this.priorityChanges.push({ priority: e.target.value, operation_id: this.selectedOperation, static_priority: 1 });
+        },
+        handleDynamicPriorityChange(e, column) {
+            this.priorityData.find(e => e.operation_id == this.selectedOperation)[column] = e.target.value;
+            this.dynamicPriority[column] = e.target.value;
+            this.priorityChanges = this.priorityChanges.filter(e => e.operation_id !== this.selectedOperation);
+            this.priorityChanges.push({ 
+                operation_id: this.selectedOperation,
+                static_priority: 0,
+                max_tubes: this.dynamicPriority.max_tubes,
+                max_priority: this.dynamicPriority.max_priority,
+                n_growth: this.dynamicPriority.n_growth,
+                time_growth: this.dynamicPriority.time_growth 
+            });
         },
         handleWorkerChange(e) {
             this.selectedWorker = parseInt(e.target.value);

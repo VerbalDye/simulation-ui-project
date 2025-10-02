@@ -110,7 +110,6 @@ router.put('/shifts/:id', async (req, res) => {
 })
 
 router.put('/skills/:id', async (req, res) => {
-    res.status(200);
     try {
         let workerIDs = [];
         req.body.skills.forEach(skill => {

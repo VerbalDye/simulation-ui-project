@@ -67,8 +67,8 @@ router.put('/shifts/:id', async (req, res) => {
     try {
         let workerIDs = [];
         req.body.shifts.forEach(shift => {
-            if (workerIDs.filter(id => id == shift.worker).length < 1) {
-                workerIDs.push(shift.worker);
+            if (workerIDs.filter(id => id == shift.worker_id).length < 1) {
+                workerIDs.push(shift.worker_id);
             }
         })
         let dbWorkerShiftData = await ExperimentWorkerShift.findAll({
@@ -113,9 +113,9 @@ router.put('/skills/:id', async (req, res) => {
     res.status(200);
     try {
         let workerIDs = [];
-        req.body.skills.forEach(shift => {
-            if (workerIDs.filter(id => id == shift.worker).length < 1) {
-                workerIDs.push(shift.worker);
+        req.body.skills.forEach(skill => {
+            if (workerIDs.filter(id => id == skill.worker_id).length < 1) {
+                workerIDs.push(skill.worker);
             }
         })
         let dbSkillsData = await ExperimentSkills.findAll({
@@ -148,7 +148,7 @@ router.put('/skills/:id', async (req, res) => {
                 iteration_number: 0
             }
         })
-        let dbNewExperimentSkillsData = await ExperimentWorkerShift.bulkCreate(dbNewSkillsData);
+        let dbNewExperimentSkillsData = await ExperimentSkills.bulkCreate(dbNewSkillsData);
         res.json(dbNewExperimentSkillsData);
     } catch (err) {
         console.log(err);

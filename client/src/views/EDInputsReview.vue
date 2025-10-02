@@ -2266,9 +2266,9 @@ export default {
             let worker = this.workerData.find(e => e.worker_id == workerID);
             this.selectedSkills = [];
             worker.skills.forEach(skill => {
-                console.log(this.operationToLocationData);
-                console.log(this.operationToLocationData.find(e => e.operation_to_location.operation_id == skill.operation_id));
-                console.log(skill);
+                // console.log(this.operationToLocationData);
+                // console.log(this.operationToLocationData.find(e => e.operation_to_location.operation_id == skill.operation_id));
+                // console.log(skill);
                 this.selectedSkills.push(this.operationToLocationData.find(e => e.operation_to_location.operation_id == skill.operation_id).operation_to_location.operation.display_name);
             });
             this.selectedShift = worker.worker_shifts[0].shift_id;
@@ -2283,8 +2283,9 @@ export default {
             worker.skills = [];
             this.workerChanges.skills = this.workerChanges.skills.filter(e => e.worker !== this.selectedWorker);
             this.selectedSkills.forEach(skill => {
-                this.workerChanges.skills.push({ worker: this.selectedWorker, skill: this.operationToLocationData.find(e => e.operation_to_location.operation.display_name == skill).operation_to_location.operation_id });
-                worker.skills.push({ operation_id: skill });
+                let skillID = this.operationToLocationData.find(e => e.operation_to_location.operation.display_name == skill).operation_to_location.operation_id
+                this.workerChanges.skills.push({ worker: this.selectedWorker, skill: skillID });
+                worker.skills.push({ operation_id: skillID });
             })
             console.log(this.workerChanges);
         },

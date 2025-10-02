@@ -115,7 +115,7 @@ router.put('/skills/:id', async (req, res) => {
         let workerIDs = [];
         req.body.skills.forEach(skill => {
             if (workerIDs.filter(id => id == skill.worker_id).length < 1) {
-                workerIDs.push(skill.worker);
+                workerIDs.push(skill.worker_id);
             }
         })
         let dbSkillsData = await ExperimentSkills.findAll({

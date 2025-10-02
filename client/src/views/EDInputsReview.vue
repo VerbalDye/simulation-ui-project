@@ -2274,14 +2274,14 @@ export default {
         },
         handleWorkerShiftChange(e) {
             this.workerData.find(f => f.worker_id == this.selectedWorker).worker_shifts[0].shift_id = e.target.value;
-            this.workerChanges.shifts = this.workerChanges.shifts.filter(e => e.worker !== this.selectedWorker);
+            this.workerChanges.shifts = this.workerChanges.shifts.filter(e => e.worker_id !== this.selectedWorker);
             this.workerChanges.shifts.push({ worker_id: this.selectedWorker, shift_id: e.target.value })
             console.log(this.workerChanges);
         },
         handleWorkerSkillsChange() {
             let worker = this.workerData.find(e => e.worker_id == this.selectedWorker);
             worker.skills = [];
-            this.workerChanges.skills = this.workerChanges.skills.filter(e => e.worker !== this.selectedWorker);
+            this.workerChanges.skills = this.workerChanges.skills.filter(e => e.worker_id !== this.selectedWorker);
             this.selectedSkills.forEach(skill => {
                 let operationID = this.operationToLocationData.find(e => e.operation_to_location.operation.display_name == skill).operation_to_location.operation_id
                 this.workerChanges.skills.push({ worker_id: this.selectedWorker, operation_id: operationID });

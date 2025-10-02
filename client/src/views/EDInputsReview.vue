@@ -1017,7 +1017,7 @@
                         back="shifts" :heading="3" :reset="collapsableStatus['labor']"
                         v-if="experimentData && experimentData.scenario.scenario_id == 4">
                         <h3>Worker:</h3>
-                        <select>
+                        <select @change="handleWorkerChange">
                             <option v-for="(worker) in this.workerData" :selected="worker.worker_id == this.selectedWorker" :value="worker.worker_id">{{ worker.name }}</option>
                         </select>
                         <h3>Shift:</h3>
@@ -2254,6 +2254,10 @@ export default {
             })
             // console.log(this.processTimeSettings.elements[this.selectedAssets[0].asset_id].values);
             // console.log(this.processTimeSettings.elements[this.selectedAssets[0].asset_id]);
+        },
+        handleWorkerChange(e) {
+            let worker = e.target.value;
+            console.log(worker);
         },
         handleAdvanceModeChange(e) {
             this.advancedMode = e.target.checked;

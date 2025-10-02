@@ -2273,7 +2273,12 @@ export default {
             this.selectedShift = worker.worker_shifts[0].shift_id;
         },
         handleWorkerShiftChange(e) {
-            this.workerData.find(f => f.worker_id == this.selectedWorker).worker_shifts[0].shift_id = e.target.value;
+            let workerShifts = this.workerData.find(f => f.worker_id == this.selectedWorker).worker_shifts
+            if (workerShifts.length > 0) {
+                workerShifts[0].shift_id = e.target.value
+            } else {
+                workerShifts.push({ shift_id: e.target.value });
+            }
             this.workerChanges.shifts = this.workerChanges.shifts.filter(e => e.worker_id !== this.selectedWorker);
             this.workerChanges.shifts.push({ worker_id: this.selectedWorker, shift_id: e.target.value })
             console.log(this.workerChanges);

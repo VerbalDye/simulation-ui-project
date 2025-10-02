@@ -113,7 +113,7 @@ router.put('/skills/:id', async (req, res) => {
     res.status(200);
     try {
         let workerIDs = [];
-        req.body.shifts.forEach(shift => {
+        req.body.skills.forEach(shift => {
             if (workerIDs.filter(id => id == shift.worker).length < 1) {
                 workerIDs.push(shift.worker);
             }

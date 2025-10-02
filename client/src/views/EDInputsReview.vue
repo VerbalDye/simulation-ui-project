@@ -1803,7 +1803,7 @@ export default {
                 this.getShiftData(),
                 this.getWorkerData(),
             ])
-            this.handleWorkerChange();
+            this.handleWorkerChange({ target: { value: this.selectedWorker } });
             this.excludedAssets = this.assetData.filter(e => e.asset.capacity == 0).map(e => e.asset.asset_id);
             this.selectedOperationChange();
             if (this.experimentData.scenario.scenario_id == 8) {

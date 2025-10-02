@@ -2288,7 +2288,7 @@ export default {
             worker.skills = [];
             this.workerChanges.skills = this.workerChanges.skills.filter(e => e.worker_id !== this.selectedWorker);
             this.selectedSkills.forEach(skill => {
-                this.operationToLocationData.find(e => e.operation_to_location.operation.display_name == skill ).operation_to_location.operation_id;
+                let operationID = this.operationToLocationData.find(e => e.operation_to_location.operation.display_name == skill ).operation_to_location.operation_id;
                 this.workerChanges.skills.push({ worker_id: this.selectedWorker, operation_id: operationID });
                 worker.skills.push({ operation_id: operationID });
             })

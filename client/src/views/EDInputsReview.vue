@@ -1957,6 +1957,8 @@ export default {
                 dataRequest("/api/experiment/hours-of-operation/update/" + this.experimentID, "PUT", JSON.stringify(hooData)),
                 dataRequest("/api/experiment/process-time-type/" + this.experimentID, "PUT", JSON.stringify(this.processTimeTypeData)),
                 dataRequest("/api/experiment/continuous-process-time/" + this.experimentID, "PUT", JSON.stringify(this.continuousProcessTimeData)),
+                dataRequest("/api/experiment/worker-shift/shifts/" + this.experimentID, "PUT", JSON.stringify({ shifts: this.workerChanges.shifts })),
+                dataRequest("/api/experiment/worker-shift/skills/" + this.experimentID, "PUT", JSON.stringify({ skills: this.workerChanges.skills })),
                 this.saveJobChanges()
             ])
         },
@@ -2261,7 +2263,7 @@ export default {
             // console.log(this.processTimeSettings.elements[this.selectedAssets[0].asset_id]);
         },
         handleWorkerChange(e) {
-            this.selectedWorker = e.target.value;
+            this.selectedWorker = parseInt(e.target.value);
             // console.log(workerID);
             let worker = this.workerData.find(e => e.worker_id == this.selectedWorker);
             this.selectedSkills = [];

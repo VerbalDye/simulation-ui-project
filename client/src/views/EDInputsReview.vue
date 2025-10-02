@@ -1021,13 +1021,13 @@
                             <option v-for="(worker) in this.workerData" :selected="worker.worker_id == this.selectedWorker" :value="worker.worker_id">{{ worker.name }}</option>
                         </select>
                         <h3>Shift:</h3>
-                        <select>
-                            <option v-for="(shift) in this.shiftData" :selected="shift.shift_id == this.selectedShift">{{ shift.begin + "-" + shift.end }}</option>
+                        <select @change="handleWorkerShiftChange">
+                            <option v-for="(shift) in this.shiftData" :selected="shift.shift_id == this.selectedShift" :value="shift.shift_id">{{ shift.begin + "-" + shift.end }}</option>
                         </select>
                         <h3>Skills:</h3>
                         <VueMultiselect v-model="this.selectedSkills" :options="this.assetNames" :multiple="true"
                             :close-on-select="false" placeholder="Select at least one model"
-                            @update:model-value="handleModelSelectChange(asset_id)" :preselect-first="true">
+                            @update:model-value="handleWorkerSkillsChange" :preselect-first="true">
                             <template slot="selection" slot-scope="{ values, search, isOpen }"><span
                                     class="multiselect__single" v-show="!isOpen">
                                     options
@@ -1523,7 +1523,11 @@ export default {
                 end: null
             },
             selectedWorker: null,
-            selectedShift: null
+            selectedShift: null,
+            workerChanges: {
+                skills: [],
+                shifts: []
+            }
         }
     },
     mixins: [titleMixin],
@@ -2266,6 +2270,18 @@ export default {
                 this.selectedSkills.push(this.operationToLocationData.find(e => e.operation_to_location.operation_id == skill.operation_id).operation_to_location.operation.display_name);
             });
             this.selectedShift = worker.worker_shifts[0].shift_id;
+        },
+        handleWorkerShiftChange(e) {
+            this.workerData.find(f => f.worker_id == this.selectedWorker).worker_shifts[0].shift_id = e.target.value;
+            this.workerChanges.shifts.push({ worker: this.selectedWorker, shift: e.target.value })
+            console.log(this.workerChanges);
+        },
+        handleWorkerSkillsChange() {
+            this.workerChanges.skills = this.workerChanges.skills.filter(e => e.worker !== this.selectedWorker);
+            this.selectedSkills.forEach(skill => {
+                this.workerChanges.skills.push({ worker: this.selectedWorker, skill: this.operationToLocationData.find(e => e.operation_to_location.operation.display_name == skill).operation_to_location.operation_id })
+            })
+            console.log(this.workerChanges);
         },
         handleAdvanceModeChange(e) {
             this.advancedMode = e.target.checked;

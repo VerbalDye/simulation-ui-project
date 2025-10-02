@@ -1033,7 +1033,6 @@
                                     options
                                     selected</span></template>
                         </VueMultiselect>
-                        <button class="space">Save</button>
                     </Collapsable>
                 </Collapsable>
                 <Collapsable @toggle-collapse="collapsableToggleChange" title="Routing, Queuing, and Prioritization"
@@ -2277,9 +2276,12 @@ export default {
             console.log(this.workerChanges);
         },
         handleWorkerSkillsChange() {
+            let worker = this.workerData.find(e => e.worker_id == this.selectedWorker);
+            worker.skills = [];
             this.workerChanges.skills = this.workerChanges.skills.filter(e => e.worker !== this.selectedWorker);
             this.selectedSkills.forEach(skill => {
-                this.workerChanges.skills.push({ worker: this.selectedWorker, skill: this.operationToLocationData.find(e => e.operation_to_location.operation.display_name == skill).operation_to_location.operation_id })
+                this.workerChanges.skills.push({ worker: this.selectedWorker, skill: this.operationToLocationData.find(e => e.operation_to_location.operation.display_name == skill).operation_to_location.operation_id });
+                worker.skills.push({ operation_id: skill });
             })
             console.log(this.workerChanges);
         },

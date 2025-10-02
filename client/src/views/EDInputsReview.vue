@@ -1025,7 +1025,7 @@
                             <option v-for="(shift) in this.shiftData" :selected="shift.shift_id == this.selectedShift" :value="shift.shift_id">{{ shift.begin + "-" + shift.end }}</option>
                         </select>
                         <h3>Skills:</h3>
-                        <VueMultiselect v-model="this.selectedSkills" :options="this.assetNames" :multiple="true"
+                        <VueMultiselect v-model="this.selectedSkills" :options="this.operationNames" :multiple="true"
                             :close-on-select="false" placeholder="Select at least one model"
                             @update:model-value="handleWorkerSkillsChange" :preselect-first="true">
                             <template slot="selection" slot-scope="{ values, search, isOpen }"><span
@@ -1438,7 +1438,7 @@ export default {
             selectedOperation: 2,
             selectedAssets: null,
             jobDropdownData: null,
-            assetNames: null,
+            operationNames: null,
             selectedSkills: null,
             hoursOfOperationData: null,
             continuousProcessTimeData: null,
@@ -1584,7 +1584,6 @@ export default {
             } else {
                 this.assetData = data;
             }
-            this.assetNames = this.assetData.map(e => e.asset.display_name);
             // console.log(data);
             // console.log(this.assetData);
         },
@@ -1592,6 +1591,7 @@ export default {
             let data = await dataRequest("/api/experiment/operation-to-location/" + this.experimentID, "GET");
             console.log(data);
             this.operationToLocationData = data;
+            this.operationNames = data.map(e => e.operation_to_location.operation.display_name);
         },
         async getHoursOfOperationData() {
             let data = await dataRequest("/api/experiment/hours-of-operation/" + this.experimentID, "GET");
@@ -2288,11 +2288,7 @@ export default {
             worker.skills = [];
             this.workerChanges.skills = this.workerChanges.skills.filter(e => e.worker_id !== this.selectedWorker);
             this.selectedSkills.forEach(skill => {
-                console.log(skill);
-                let operationID = this.operationToLocationData.find(e => {
-                    console.log(e.operation_to_location.operation.display_name);
-                    return e.operation_to_location.operation.display_name == skill
-            }).operation_to_location.operation_id
+                this.operationToLocationData.find(e => e.operation_to_location.operation.display_name == skill ).operation_to_location.operation_id;
                 this.workerChanges.skills.push({ worker_id: this.selectedWorker, operation_id: operationID });
                 worker.skills.push({ operation_id: operationID });
             })

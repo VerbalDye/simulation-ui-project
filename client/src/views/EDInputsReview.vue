@@ -2256,8 +2256,13 @@ export default {
             // console.log(this.processTimeSettings.elements[this.selectedAssets[0].asset_id]);
         },
         handleWorkerChange(e) {
-            let worker = e.target.value;
-            console.log(worker);
+            let workerID = e.target.value;
+            console.log(workerID);
+            let worker = this.workerData.find(e => e.worker_id == workerID);
+            console.log(this.operationToLocationData);
+            worker.skills.forEach(skill => {
+                // this.operationToLocationData
+            })
         },
         handleAdvanceModeChange(e) {
             this.advancedMode = e.target.checked;

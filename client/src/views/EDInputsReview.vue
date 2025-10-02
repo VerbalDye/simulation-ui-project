@@ -1022,7 +1022,7 @@
                         </select>
                         <h3>Shift:</h3>
                         <select>
-                            <option v-for="(shift) in this.shiftData" :selected="this.workerData.find(e => e.worker_id == this.selectedWorker).worker_shifts[0].shift_id == shift.shift_id">{{ shift.begin + "-" + shift.end }}</option>
+                            <option v-for="(shift) in this.shiftData" :selected="shift.shift_id == this.selectedShift">{{ shift.begin + "-" + shift.end }}</option>
                         </select>
                         <h3>Skills:</h3>
                         <VueMultiselect v-model="this.selectedSkills" :options="this.assetNames" :multiple="true"
@@ -1522,7 +1522,8 @@ export default {
                 begin: null,
                 end: null
             },
-            selectedWorker: null
+            selectedWorker: null,
+            selectedShift: null
         }
     },
     mixins: [titleMixin],
@@ -1802,6 +1803,7 @@ export default {
                 this.getShiftData(),
                 this.getWorkerData(),
             ])
+            this.handleWorkerChange();
             this.excludedAssets = this.assetData.filter(e => e.asset.capacity == 0).map(e => e.asset.asset_id);
             this.selectedOperationChange();
             if (this.experimentData.scenario.scenario_id == 8) {
@@ -2257,14 +2259,13 @@ export default {
         },
         handleWorkerChange(e) {
             let workerID = e.target.value;
-            console.log(workerID);
+            // console.log(workerID);
             let worker = this.workerData.find(e => e.worker_id == workerID);
-            console.log(this.operationToLocationData);
             this.selectedSkills = [];
             worker.skills.forEach(skill => {
                 this.selectedSkills.push(this.operationToLocationData.find(e => e.operation_to_location.operation_id == skill.operation_id).operation_to_location.operation.display_name);
             });
-            
+            this.selectedShift = worker.worker_shifts[0].shift_id;
         },
         handleAdvanceModeChange(e) {
             this.advancedMode = e.target.checked;

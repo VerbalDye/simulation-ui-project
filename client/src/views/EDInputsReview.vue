@@ -1194,7 +1194,6 @@
                                         </tr>
                                     </table>
                                 </div>
-                                <button class="space">Save</button>
                             </div>
                             <div v-else>
                                 <h3>This Operation Does Not Support Priority At This Time</h3>
@@ -1822,7 +1821,9 @@ export default {
                 this.getShiftData(),
                 this.getWorkerData(),
             ])
-            this.handleWorkerChange({ target: { value: this.selectedWorker } });
+            if (this.experimentData.scenario.scenario_id == 4) {
+                this.handleWorkerChange({ target: { value: this.selectedWorker } });
+            }
             this.excludedAssets = this.assetData.filter(e => e.asset.capacity == 0).map(e => e.asset.asset_id);
             this.selectedOperationChange();
             if (this.experimentData.scenario.scenario_id == 8) {

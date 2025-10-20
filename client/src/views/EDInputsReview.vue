@@ -124,19 +124,19 @@
                                             <th>Phase:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.phase.display_name
-                                            }}</td>
+                                                }}</td>
                                         </tr>
                                         <tr>
                                             <th>Cell:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.cell.display_name
-                                            }}</td>
+                                                }}</td>
                                         </tr>
                                         <tr>
                                             <th>Operation:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.operation.display_name
-                                            }}</td>
+                                                }}</td>
                                         </tr>
                                     </table>
                                     <p>Location(s):</p>
@@ -1020,7 +1020,7 @@
                         <select @change="handleWorkerChange">
                             <option v-for="(worker) in this.workerData"
                                 :selected="worker.worker_id == this.selectedWorker" :value="worker.worker_id">{{
-                                worker.name }}</option>
+                                    worker.name }}</option>
                         </select>
                         <h3>Shift:</h3>
                         <select @change="handleWorkerShiftChange">
@@ -1103,7 +1103,7 @@
                                 </div>
                                 <h4>Current</h4>
                                 <p>{{ this.taskSequenceData[this.selectedOperation].task_sequence.phase.display_name
-                                    }} | {{
+                                }} | {{
                                         this.taskSequenceData[this.selectedOperation].task_sequence.cell.display_name }}
                                     | {{
                                         this.taskSequenceData[this.selectedOperation].task_sequence.operation.display_name
@@ -1178,7 +1178,8 @@
                                                 <label for="priority-n-growth">N Growth:</label>
                                             </thead>
                                             <td>
-                                                <input id="priority-n-growth" name="priority-n-growth" type="number" :value="dynamicPriority.n_growth"
+                                                <input id="priority-n-growth" name="priority-n-growth" type="number"
+                                                    :value="dynamicPriority.n_growth"
                                                     @change="handleDynamicPriorityChange($event, 'n_growth')" />
                                             </td>
                                         </tr>
@@ -1187,8 +1188,8 @@
                                                 <label for="priority-time-growth">Time Growth:</label>
                                             </thead>
                                             <td>
-                                                <input id="priority-time-growth" name="priority-time-growth" :value="dynamicPriority.time_growth"
-                                                    type="number"
+                                                <input id="priority-time-growth" name="priority-time-growth"
+                                                    :value="dynamicPriority.time_growth" type="number"
                                                     @change="handleDynamicPriorityChange($event, 'time_growth')" />
                                             </td>
                                         </tr>
@@ -2235,12 +2236,14 @@ export default {
                 this.processTimeSettings.discrete = false;
             }
             this.processTimeElementChange();
-            let priority = this.priorityData.find(e => e.operation_id == this.selectedOperation);
-            this.dynamicPriority.max_tubes = priority.max_tubes;
-            this.dynamicPriority.max_priority = priority.max_priority;
-            this.dynamicPriority.n_growth = priority.n_growth;
-            this.dynamicPriority.time_growth = priority.time_growth;
-            this.priority = priority.priority;
+            if (this.experimentData.scenario.scenario_id == 4) {
+                let priority = this.priorityData.find(e => e.operation_id == this.selectedOperation);
+                this.dynamicPriority.max_tubes = priority.max_tubes;
+                this.dynamicPriority.max_priority = priority.max_priority;
+                this.dynamicPriority.n_growth = priority.n_growth;
+                this.dynamicPriority.time_growth = priority.time_growth;
+                this.priority = priority.priority;
+            }
         },
         applyToAllChange(e) {
             this.processTimeSettings.applyToAll = e.target.checked;

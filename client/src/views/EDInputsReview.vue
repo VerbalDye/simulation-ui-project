@@ -1044,7 +1044,7 @@
                                     <th v-for="operation in this.operationNames">{{ operation }}</th>
                                 </thead>
                                 <tr v-for="(worker) in this.workerData">
-                                    <td>{{ worker.name }}</td>
+                                    <td class="sticky">{{ worker.name }}</td>
                                     <td>
                                         <select @change="handleWorkerShiftChange">
                                             <option v-for="(shift) in this.shiftData"

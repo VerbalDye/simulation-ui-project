@@ -348,3 +348,7 @@ input:checked+.slider:before {
     height: 50vh;
     outline: 2px black solid;
 }
+
+.sticky {
+    position: sticky;
+}

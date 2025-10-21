@@ -1013,7 +1013,7 @@
                             <button @click="saveNewShift">Save</button>
                         </div>
                     </Collapsable>
-                    <Collapsable @toggle-collapse="collapsableToggleChange" title="Labor" name="labor" next="routing"
+                    <Collapsable @toggle-collapse="collapsableToggleChange" title="Labor" name="labor" next="priority"
                         back="shifts" :heading="3" :reset="collapsableStatus['labor']"
                         v-if="experimentData && experimentData.scenario.scenario_id == 4">
                         <h3>Worker:</h3>
@@ -1094,22 +1094,18 @@
                             back="routing" next="priority" :reset="collapsableStatus['queuing']" tbd="true">TBD
                         </Collapsable> -->
                         <Collapsable @toggle-collapse="collapsableToggleChange" title="Priority" name="priority"
-                            back="queuing" next="transportation" :reset="collapsableStatus['priority']"
+                            back="labor" next="transportation" :reset="collapsableStatus['priority']"
                             v-if="experimentData && experimentData.scenario.scenario_id == 4">
                             <div v-if="taskSequenceData" class="card space">
                                 <div>
                                     <button @click="clickPreviousOperation"><i class="bi bi-arrow-left"></i></button>
                                     <button @click="clickNextOperation"><i class="bi bi-arrow-right"></i></button>
                                 </div>
-                                <h4>Current</h4>
-                                <p>{{
-                                        this.taskSequenceData[this.selectedOperation].task_sequence.operation.display_name
-                                    }}
-                                </p>
+                                <h4 class="space">Current: {{ this.taskSequenceData[this.selectedOperation].task_sequence.operation.display_name }}</h4>
                             </div>
                             <div v-if="this.priorityData.find(e => e.operation_id == this.selectedOperation)">
                                 <h3>Static Priority?</h3>
-                                <label class="switch">
+                                <label class="switch card">
                                     <input type="checkbox" name="static-priority-toggle"
                                         :checked="this.priorityData.find(e => e.operation_id == this.selectedOperation).static_priority"
                                         @input="e => this.priorityData.find(e => e.operation_id == this.selectedOperation).static_priority = e.target.checked">

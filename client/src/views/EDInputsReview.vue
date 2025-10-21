@@ -1044,7 +1044,7 @@
                             </tr></thead>
                             <tr v-for="(worker) in this.workerData">
                                 <td>{{ worker.name }}</td>
-                                <td>{{ this.shiftData.find(e => e.shift_id == this.selectedShift) }}</td>
+                                <td>{{ this.shiftData.find(e => e.shift_id == this.selectedShift).crew }}</td>
                             </tr>
                         </table>
                     </Collapsable>

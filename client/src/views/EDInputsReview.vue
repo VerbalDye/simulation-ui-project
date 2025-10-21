@@ -1037,7 +1037,7 @@
                                     selected</span></template>
                         </VueMultiselect> -->
                         <div class="overflow-x">
-                            <table class="full-table overflow-x">
+                            <table class="full-table">
                                 <thead>
                                     <th>Worker</th>
                                     <th>Shift</th>
@@ -2315,9 +2315,9 @@ export default {
             });
             this.selectedShift = worker.worker_shifts[0].shift_id;
             
-            this.workerData.forEach(worker => {
-                console.log(worker.worker_shifts[0].shift_id ? worker.name + ": TRUE" : worker.name + "FALSE")
-            })
+            // this.workerData.forEach(worker => {
+            //     console.log(worker.worker_shifts[0].shift_id ? worker.name + ": TRUE" : worker.name + "FALSE")
+            // })
         },
         handleWorkerShiftChange(e) {
             let workerShifts = this.workerData.find(f => f.worker_id == this.selectedWorker).worker_shifts

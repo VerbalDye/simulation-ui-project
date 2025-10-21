@@ -344,4 +344,5 @@ input:checked+.slider:before {
 
 .overflow-x {
     overflow-x: scroll;
+    width: 50vw;
 }

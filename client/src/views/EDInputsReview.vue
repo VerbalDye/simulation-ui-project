@@ -1037,7 +1037,7 @@
                                     selected</span></template>
                         </VueMultiselect> -->
                         <div class="overflow-x">
-                            <table class="full-table">
+                            <table class="full-table overflow-x">
                                 <thead>
                                     <th>Worker</th>
                                     <th>Shift</th>

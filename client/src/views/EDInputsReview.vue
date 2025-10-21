@@ -124,19 +124,19 @@
                                             <th>Phase:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.phase.display_name
-                                                }}</td>
+                                            }}</td>
                                         </tr>
                                         <tr>
                                             <th>Cell:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.cell.display_name
-                                                }}</td>
+                                            }}</td>
                                         </tr>
                                         <tr>
                                             <th>Operation:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.operation.display_name
-                                                }}</td>
+                                            }}</td>
                                         </tr>
                                     </table>
                                     <p>Location(s):</p>
@@ -1101,16 +1101,20 @@
                                     <button @click="clickPreviousOperation"><i class="bi bi-arrow-left"></i></button>
                                     <button @click="clickNextOperation"><i class="bi bi-arrow-right"></i></button>
                                 </div>
-                                <h4 class="space">Current: {{ this.taskSequenceData[this.selectedOperation].task_sequence.operation.display_name }}</h4>
+                                <h4 class="space">Current: {{
+                                    this.taskSequenceData[this.selectedOperation].task_sequence.operation.display_name
+                                    }}</h4>
                             </div>
                             <div v-if="this.priorityData.find(e => e.operation_id == this.selectedOperation)">
-                                <h3>Static Priority?</h3>
-                                <label class="switch card">
-                                    <input type="checkbox" name="static-priority-toggle"
-                                        :checked="this.priorityData.find(e => e.operation_id == this.selectedOperation).static_priority"
-                                        @input="e => this.priorityData.find(e => e.operation_id == this.selectedOperation).static_priority = e.target.checked">
-                                    <span class="slider round"></span>
-                                </label>
+                                <div class="card">
+                                    <h3>Static Priority?</h3>
+                                    <label class="switch">
+                                        <input type="checkbox" name="static-priority-toggle"
+                                            :checked="this.priorityData.find(e => e.operation_id == this.selectedOperation).static_priority"
+                                            @input="e => this.priorityData.find(e => e.operation_id == this.selectedOperation).static_priority = e.target.checked">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
                                 <div
                                     v-if="this.priorityData.find(e => e.operation_id == this.selectedOperation).static_priority">
                                     <table>

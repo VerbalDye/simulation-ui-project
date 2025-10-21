@@ -1037,23 +1037,23 @@
                                     selected</span></template>
                         </VueMultiselect> -->
                         <div class="overflow-x">
-                        <table class="full-table">
-                            <thead>
-                                <th>Worker</th>
-                                <th>Shift</th>
-                                <th v-for="operation in this.operationNames">{{ operation }}</th>
-                            </thead>
-                            <tr v-for="(worker) in this.workerData">
-                                <td>{{ worker.name }}</td>
-                                <td>
-                                    <select @change="handleWorkerShiftChange">
-                                        <option v-for="(shift) in this.shiftData"
-                                            :selected="shift.shift_id == worker.worker_shifts[0].shift_id" :value="shift.shift_id">{{
-                                            shift.begin + "-" + shift.end }}</option>
-                                    </select>
-                                </td>
-                            </tr>
-                        </table>
+                            <table class="full-table">
+                                <thead>
+                                    <th>Worker</th>
+                                    <th>Shift</th>
+                                    <th v-for="operation in this.operationNames">{{ operation }}</th>
+                                </thead>
+                                <tr v-for="(worker) in this.workerData">
+                                    <td>{{ worker.name }}</td>
+                                    <td>
+                                        <select @change="handleWorkerShiftChange">
+                                            <option v-for="(shift) in this.shiftData"
+                                                :selected="shift.shift_id == worker.worker_shifts[0].shift_id" :value="shift.shift_id">{{
+                                                shift.begin + "-" + shift.end }}</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                         
                     </Collapsable>

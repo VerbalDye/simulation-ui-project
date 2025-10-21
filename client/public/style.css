@@ -343,5 +343,5 @@ input:checked+.slider:before {
 }
 
 .overflow-x {
-    overflow-x:auto;
+    overflow-x: scroll;
 }

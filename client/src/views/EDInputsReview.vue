@@ -1633,7 +1633,7 @@ export default {
             let data = await dataRequest("/api/experiment/worker-shift/" + this.experimentID, "GET");
             console.log(data);
             data.forEach(worker => {
-                console.log(worker.name + ":" + worker.worker_shifts[0] ? "TRUE" : "FALSE")
+                console.log(worker.worker_shifts[0].shift_id ? worker.name + ": TRUE" : worker.name + "FALSE")
             })
             this.selectedWorker = data[0].worker_id;
             this.workerData = data;

@@ -1036,6 +1036,7 @@
                                     options
                                     selected</span></template>
                         </VueMultiselect> -->
+                        <div class="overflow-x">
                         <table class="full-table">
                             <thead>
                                 <th>Worker</th>
@@ -1053,6 +1054,8 @@
                                 </td>
                             </tr>
                         </table>
+                        </div>
+                        
                     </Collapsable>
                 </Collapsable>
                 <Collapsable @toggle-collapse="collapsableToggleChange" title="Routing, Queuing, and Prioritization"

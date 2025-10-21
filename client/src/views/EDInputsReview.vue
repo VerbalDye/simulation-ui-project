@@ -1017,7 +1017,7 @@
                         back="shifts" :heading="3" :reset="collapsableStatus['labor']"
                         v-if="experimentData && experimentData.scenario.scenario_id == 4">
                         <h3>Worker:</h3>
-                        <select @change="handleWorkerChange">
+                        <!-- <select @change="handleWorkerChange">
                             <option v-for="(worker) in this.workerData"
                                 :selected="worker.worker_id == this.selectedWorker" :value="worker.worker_id">{{
                                     worker.name }}</option>
@@ -1035,7 +1035,18 @@
                                     class="multiselect__single" v-show="!isOpen">
                                     options
                                     selected</span></template>
-                        </VueMultiselect>
+                        </VueMultiselect> -->
+                        <table>
+                            <thead><tr>
+                                <td>Worker</td>
+                                <td>Shift</td>
+                                <td v-for="operation in this.operationNames">{{ operation }}</td>
+                            </tr></thead>
+                            <tr v-for="(worker) in this.workerData">
+                                <td>{{ worker.name }}</td>
+                                <td>{{ this.shiftData.find(e => e.shift_id == this.selectedShift) }}</td>
+                            </tr>
+                        </table>
                     </Collapsable>
                 </Collapsable>
                 <Collapsable @toggle-collapse="collapsableToggleChange" title="Routing, Queuing, and Prioritization"

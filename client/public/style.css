@@ -349,6 +349,15 @@ input:checked+.slider:before {
     outline: 2px black solid;
 }
 
-.sticky {
-    position: sticky;
+.table-sticky {
+    position: absolute;
+    width: 100px;
+    left: 0;
+    top: auto;
+    border-top-width: 1px;
+    /* margin-top: -1px; */
+}
+
+.nowrap {
+    text-wrap: nowrap;
 }

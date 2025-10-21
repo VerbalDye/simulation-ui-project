@@ -1039,12 +1039,12 @@
                         <div class="overflow-x">
                             <table class="full-table">
                                 <thead>
-                                    <th>Worker</th>
-                                    <th>Shift</th>
-                                    <th v-for="operation in this.operationNames">{{ operation }}</th>
+                                    <th class="nowrap">Worker</th>
+                                    <th class="nowrap">Shift</th>
+                                    <th class="nowrap" v-for="operation in this.operationNames">{{ operation }}</th>
                                 </thead>
                                 <tr v-for="(worker) in this.workerData">
-                                    <td class="sticky">{{ worker.name }}</td>
+                                    <td class="table-sticky">{{ worker.name }}</td>
                                     <td>
                                         <select @change="handleWorkerShiftChange">
                                             <option v-for="(shift) in this.shiftData"

@@ -1632,9 +1632,6 @@ export default {
         async getWorkerData() {
             let data = await dataRequest("/api/experiment/worker-shift/" + this.experimentID, "GET");
             console.log(data);
-            data.forEach(worker => {
-                console.log(worker.worker_shifts[0].shift_id ? worker.name + ": TRUE" : worker.name + "FALSE")
-            })
             this.selectedWorker = data[0].worker_id;
             this.workerData = data;
         },
@@ -2316,6 +2313,10 @@ export default {
                 this.selectedSkills.push(this.operationToLocationData.find(e => e.operation_to_location.operation_id == skill.operation_id).operation_to_location.operation.display_name);
             });
             this.selectedShift = worker.worker_shifts[0].shift_id;
+            
+            this.workerData.forEach(worker => {
+                console.log(worker.worker_shifts[0].shift_id ? worker.name + ": TRUE" : worker.name + "FALSE")
+            })
         },
         handleWorkerShiftChange(e) {
             let workerShifts = this.workerData.find(f => f.worker_id == this.selectedWorker).worker_shifts

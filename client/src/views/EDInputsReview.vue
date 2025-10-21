@@ -1046,11 +1046,13 @@
                             </thead>
                             <tr v-for="(worker) in this.workerData">
                                 <td>{{ worker.name }}</td>
-                                <td><select @change="handleWorkerShiftChange">
+                                <td>
+                                    <select @change="handleWorkerShiftChange">
                                         <option v-for="(shift) in this.shiftData"
                                             :selected="shift.shift_id == worker.worker_shifts[0].shift_id" :value="shift.shift_id">{{
                                             shift.begin + "-" + shift.end }}</option>
-                                    </select></td>
+                                    </select>
+                                </td>
                             </tr>
                         </table>
                     </Collapsable>
@@ -1630,6 +1632,9 @@ export default {
         async getWorkerData() {
             let data = await dataRequest("/api/experiment/worker-shift/" + this.experimentID, "GET");
             console.log(data);
+            data.forEach(worker => {
+                console.log(worker.name + ":" + worker.worker_shifts[0] ? "TRUE" : "FALSE")
+            })
             this.selectedWorker = data[0].worker_id;
             this.workerData = data;
         },

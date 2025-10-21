@@ -1036,7 +1036,7 @@
                                     options
                                     selected</span></template>
                         </VueMultiselect> -->
-                        <table>
+                        <table class="full-table">
                             <thead><tr>
                                 <td>Worker</td>
                                 <td>Shift</td>

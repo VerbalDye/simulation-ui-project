@@ -346,7 +346,7 @@ input:checked+.slider:before {
     overflow-x: scroll;
     width: 50vw;
     height: 50vh;
-    outline: 2px black solid;
+    outline: 1px black solid;
 }
 
 .table-sticky {

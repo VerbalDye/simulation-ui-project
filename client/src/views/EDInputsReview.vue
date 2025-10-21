@@ -1052,6 +1052,7 @@
                                                 shift.begin + "-" + shift.end }}</option>
                                         </select>
                                     </td>
+                                    <td v-for="operation in this.operationNames"><input type="checkbox"/></td>
                                 </tr>
                             </table>
                         </div>

@@ -1052,7 +1052,7 @@
                                                 shift.begin + "-" + shift.end }}</option>
                                         </select>
                                     </td>
-                                    <td v-for="operation in this.operationNames"><input type="checkbox"/></td>
+                                    <td v-for="operation in this.operationNames"><input :value="worker.skills.find(e => this.operationToLocationData.find(f => f.operation_id == e.operation_id).operation.display == operation)" type="checkbox"/></td>
                                 </tr>
                             </table>
                         </div>

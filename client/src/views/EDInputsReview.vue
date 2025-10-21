@@ -1083,7 +1083,7 @@
                         </div>
                     </div>
                     <div>
-                        <Collapsable @toggle-collapse="collapsableToggleChange" title="Routing" name="routing"
+                        <!-- <Collapsable @toggle-collapse="collapsableToggleChange" title="Routing" name="routing"
                             back="labor" next="queuing" :reset="collapsableStatus['routing']" tbd="true">
                             <div v-if="routingData" class="limit-width">
                                 <SmartTable :jsonData="routingDisplayData" :advancedSearchEnabled="false"
@@ -1092,7 +1092,7 @@
                         </Collapsable>
                         <Collapsable @toggle-collapse="collapsableToggleChange" title="Queuing" name="queuing"
                             back="routing" next="priority" :reset="collapsableStatus['queuing']" tbd="true">TBD
-                        </Collapsable>
+                        </Collapsable> -->
                         <Collapsable @toggle-collapse="collapsableToggleChange" title="Priority" name="priority"
                             back="queuing" next="transportation" :reset="collapsableStatus['priority']"
                             v-if="experimentData && experimentData.scenario.scenario_id == 4">
@@ -1102,32 +1102,10 @@
                                     <button @click="clickNextOperation"><i class="bi bi-arrow-right"></i></button>
                                 </div>
                                 <h4>Current</h4>
-                                <p>{{ this.taskSequenceData[this.selectedOperation].task_sequence.phase.display_name
-                                }} | {{
-                                        this.taskSequenceData[this.selectedOperation].task_sequence.cell.display_name }}
-                                    | {{
+                                <p>{{
                                         this.taskSequenceData[this.selectedOperation].task_sequence.operation.display_name
                                     }}
                                 </p>
-                                <h4>Next</h4>
-                                <p v-if="this.taskSequenceData[this.findNextOperation(this.selectedOperation)]">
-                                    {{
-                                        this.taskSequenceData[this.findNextOperation(this.selectedOperation)].task_sequence.phase.display_name
-                                    }} | {{
-                                        this.taskSequenceData[this.findNextOperation(this.selectedOperation)].task_sequence.cell.display_name
-                                    }} | {{
-                                        this.taskSequenceData[this.findNextOperation(this.selectedOperation)].task_sequence.operation.display_name
-                                    }}</p>
-                                <p v-else> - | - | - </p>
-                                <h4>Following</h4>
-                                <p v-if="this.taskSequenceData[this.findNextOperation(this.selectedOperation, 2)]">
-                                    {{ this.taskSequenceData[this.findNextOperation(this.selectedOperation,
-                                        2)].task_sequence.phase.display_name }} | {{
-                                        this.taskSequenceData[this.findNextOperation(this.selectedOperation,
-                                            2)].task_sequence.cell.display_name }} | {{
-                                        this.taskSequenceData[this.findNextOperation(this.selectedOperation,
-                                            2)].task_sequence.operation.display_name }}</p>
-                                <p v-else> - | - | - </p>
                             </div>
                             <div v-if="this.priorityData.find(e => e.operation_id == this.selectedOperation)">
                                 <h3>Static Priority?</h3>

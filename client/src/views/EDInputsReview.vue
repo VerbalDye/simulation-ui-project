@@ -124,19 +124,19 @@
                                             <th>Phase:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.phase.display_name
-                                            }}</td>
+                                                }}</td>
                                         </tr>
                                         <tr>
                                             <th>Cell:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.cell.display_name
-                                            }}</td>
+                                                }}</td>
                                         </tr>
                                         <tr>
                                             <th>Operation:</th>
                                             <td>{{
                                                 this.taskSequenceData[this.selectedOperation].task_sequence.operation.display_name
-                                            }}</td>
+                                                }}</td>
                                         </tr>
                                     </table>
                                     <p>Location(s):</p>
@@ -1037,14 +1037,20 @@
                                     selected</span></template>
                         </VueMultiselect> -->
                         <table class="full-table">
-                            <thead><tr>
-                                <td>Worker</td>
-                                <td>Shift</td>
-                                <td v-for="operation in this.operationNames">{{ operation }}</td>
-                            </tr></thead>
+                            <thead>
+                                <tr>
+                                    <td>Worker</td>
+                                    <td>Shift</td>
+                                    <td v-for="operation in this.operationNames">{{ operation }}</td>
+                                </tr>
+                            </thead>
                             <tr v-for="(worker) in this.workerData">
                                 <td>{{ worker.name }}</td>
-                                <td>{{ this.shiftData.find(e => e.shift_id == this.selectedShift).crew }}</td>
+                                <td><select @change="handleWorkerShiftChange">
+                                        <option v-for="(shift) in this.shiftData"
+                                            :selected="shift.shift_id == worker.worker_shifts[0].shift_id" :value="shift.shift_id">{{
+                                            shift.begin + "-" + shift.end }}</option>
+                                    </select></td>
                             </tr>
                         </table>
                     </Collapsable>
@@ -1114,7 +1120,7 @@
                                 </div>
                                 <h4 class="space">Current: {{
                                     this.taskSequenceData[this.selectedOperation].task_sequence.operation.display_name
-                                    }}</h4>
+                                }}</h4>
                             </div>
                             <div v-if="this.priorityData.find(e => e.operation_id == this.selectedOperation)">
                                 <div class="card">

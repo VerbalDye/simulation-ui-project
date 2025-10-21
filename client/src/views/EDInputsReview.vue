@@ -1038,9 +1038,9 @@
                         </VueMultiselect> -->
                         <table class="full-table">
                             <thead>
-                                <td>Worker</td>
-                                <td>Shift</td>
-                                <td v-for="operation in this.operationNames">{{ operation }}</td>
+                                <th>Worker</th>
+                                <th>Shift</th>
+                                <th v-for="operation in this.operationNames">{{ operation }}</th>
                             </thead>
                             <tr v-for="(worker) in this.workerData">
                                 <td>{{ worker.name }}</td>

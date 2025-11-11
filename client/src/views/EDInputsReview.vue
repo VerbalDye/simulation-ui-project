@@ -1046,14 +1046,14 @@
                                 <tr v-for="(worker) in this.workerData">
                                     <td>{{ worker.name }}</td>
                                     <td>
-                                        <select @change="handleWorkerShiftChange">
+                                        <select @change="handleWorkerShiftChange(worker.worker_id)">
                                             <option v-for="(shift) in this.shiftData"
                                                 :selected="shift.shift_id == worker.worker_shifts[0].shift_id" :value="shift.shift_id">{{
                                                 shift.begin + "-" + shift.end }}</option>
                                         </select>
                                     </td>
                                     <!-- <td v-for="operation in this.operationNames"><input :value="worker.skills.find(e => this.operationToLocationData.find(f => f.operation_to_location.operation_id == e.operation_id))" type="checkbox"/></td> -->
-                                    <td v-for="operation in this.operationNames"><input :checked="worker.skills.find(f => f.operation_id == this.operationToLocationData.find(e => e.operation_to_location.operation.display_name == operation).operation_to_location.operation_id)" type="checkbox"/></td>
+                                    <td v-for="operation in this.operationNames"><input @change="handleWorkerSkillsChange(worker.worker_id, operation)" :checked="worker.skills.find(f => f.operation_id == this.operationToLocationData.find(e => e.operation_to_location.operation.display_name == operation).operation_to_location.operation_id)" type="checkbox"/></td>
                                 </tr>
                             </table>
                         </div>
@@ -1529,8 +1529,6 @@ export default {
                 begin: null,
                 end: null
             },
-            selectedWorker: null,
-            selectedShift: null,
             workerChanges: {
                 skills: [],
                 shifts: []
@@ -1853,8 +1851,13 @@ export default {
             window.open('/api/experiment/backlog/template');
         },
         async saveNewShift() {
-            await dataRequest('/api/experiment/shift/' + this.experimentID, "POST", JSON.stringify(this.newShiftData));
-            this.getShiftData();
+            if (this.newShiftData.crew !== null) {
+                await dataRequest('/api/experiment/shift/' + this.experimentID, "POST", JSON.stringify(this.newShiftData));
+                this.getShiftData();
+                window.alert("Shift Saved");
+            } else {
+                window.alert("Please add a crew name before saving.");
+            }
         },
         async saveAllChanges() {
             this.loading = true;
@@ -2332,8 +2335,8 @@ export default {
             this.workerChanges.shifts.push({ worker_id: this.selectedWorker, shift_id: e.target.value })
             console.log(this.workerChanges);
         },
-        handleWorkerSkillsChange() {
-            let worker = this.workerData.find(e => e.worker_id == this.selectedWorker);
+        handleWorkerSkillsChange(w, skill) {
+            let worker = this.workerData.find(e => e.worker_id == w);
             worker.skills = [];
             this.workerChanges.skills = this.workerChanges.skills.filter(e => e.worker_id !== this.selectedWorker);
             this.selectedSkills.forEach(skill => {

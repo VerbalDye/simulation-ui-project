@@ -1584,10 +1584,10 @@ export default {
         },
         async getPriorityData() {
             let data = await dataRequest("/api/experiment/priority/" + this.experimentID, "GET");
-            console.log(data);
             this.priorityData = data.map(priority => {
                 return priority.priority;
             });
+            console.log(this.priorityData);
         },
         async getAssetData() {
             let data = await dataRequest("/api/experiment/asset/with-op-to-loc/" + this.experimentID, "GET");
@@ -2786,11 +2786,12 @@ export default {
     position: sticky;
     top: 0;
     background: var(--secondary-blue);
+    z-index: 1000;
 }
 
 .sticky-column {
     position: sticky;
-    top: 0;
+    left: 0;
     background: white;
 }
 </style>

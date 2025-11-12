@@ -2242,6 +2242,9 @@ export default {
             this.processTimeElementChange();
             if (this.experimentData.scenario.scenario_id == 4) {
                 let priority = this.priorityData.find(e => e.operation_id == this.selectedOperation);
+                console.log(priority);
+                console.log(this.dynamicPriority);
+                console.log(this.priority);
                 this.dynamicPriority.max_tubes = priority.max_tubes;
                 this.dynamicPriority.max_priority = priority.max_priority;
                 this.dynamicPriority.n_growth = priority.n_growth;

@@ -845,7 +845,7 @@
                                     </tr>
                                 </table>
                                 <table v-if="hoursOfOperationData" class="full-table">
-                                    <thead class="sticky-row">
+                                    <thead>
                                         <th>Day</th>
                                         <th>Open</th>
                                         <th>Close</th>
@@ -1038,13 +1038,13 @@
                         </VueMultiselect> -->
                         <div class="overflow-x">
                             <table class="full-table">
-                                <thead>
+                                <thead class="sticky-row">
                                     <th class="nowrap">Worker</th>
                                     <th class="nowrap">Shift</th>
                                     <th class="nowrap" v-for="operation in this.operationNames">{{ operation }}</th>
                                 </thead>
                                 <tr v-for="(worker) in this.workerData">
-                                    <td>{{ worker.name }}</td>
+                                    <td class="sticky-column">{{ worker.name }}</td>
                                     <td>
                                         <select @change="handleWorkerShiftChange(worker.worker_id)">
                                             <option v-for="(shift) in this.shiftData"
@@ -2785,5 +2785,12 @@ export default {
 .sticky-row th {
     position: sticky;
     top: 0;
+    background: var(--secondary-blue);
+}
+
+.sticky-column {
+    position: sticky;
+    top: 0;
+    background: white;
 }
 </style>

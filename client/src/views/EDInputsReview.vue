@@ -845,7 +845,7 @@
                                     </tr>
                                 </table>
                                 <table v-if="hoursOfOperationData" class="full-table">
-                                    <thead>
+                                    <thead class="sticky-row">
                                         <th>Day</th>
                                         <th>Open</th>
                                         <th>Close</th>
@@ -1851,12 +1851,12 @@ export default {
             window.open('/api/experiment/backlog/template');
         },
         async saveNewShift() {
-            if (this.newShiftData.crew !== null) {
+            if (this.newShiftData.crew !== null && this.newShiftData.begin !== null && this.newShiftData.end !== null) {
                 await dataRequest('/api/experiment/shift/' + this.experimentID, "POST", JSON.stringify(this.newShiftData));
                 this.getShiftData();
                 window.alert("Shift Saved");
             } else {
-                window.alert("Please add a crew name before saving.");
+                window.alert("Please fill out each field before saving.");
             }
         },
         async saveAllChanges() {
@@ -2780,5 +2780,10 @@ export default {
     border: none;
     margin: 4px;
     width: 50px;
+}
+
+.sticky-row th {
+    position: sticky;
+    top: 0;
 }
 </style>

@@ -1584,6 +1584,7 @@ export default {
         },
         async getPriorityData() {
             let data = await dataRequest("/api/experiment/priority/" + this.experimentID, "GET");
+            console.log(data);
             this.priorityData = data.map(priority => {
                 return priority.priority;
             });

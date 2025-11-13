@@ -2347,14 +2347,17 @@ export default {
             console.log(this.workerChanges);
         },
         handleWorkerSkillsChange(e, w, skill) {
-            console.log(e);
+            console.log(e.target.checked);
             let worker = this.workerData.find(e => e.worker_id == w);
-            worker.skills = [];
-            this.workerChanges.skills = this.workerChanges.skills.filter(e => e.worker_id !== this.selectedWorker);
-            this.selectedSkills.forEach(skill => {
-                let operationID = this.operationToLocationData.find(e => e.operation_to_location.operation.display_name == skill).operation_to_location.operation_id;
-                this.workerChanges.skills.push({ worker_id: this.selectedWorker, operation_id: operationID });
-                worker.skills.push({ operation_id: operationID });
+            let operationID = this.operationToLocationData.find(e => e.operation_to_location.operation.display_name == skill).operation_to_location.operation_id;
+            if(e.target.checked) {
+                worker.skills.push({ operation_id: operationID })
+            } else {
+                worker.skills = worker.skills.filter(e => e.operation !== operationID);
+            }
+            this.workerChanges.skills = this.workerChanges.skills.filter(e => e.worker_id !== w);
+            worker.skills.forEach(skill => {
+                this.workerChanges.skills.push({ worker_id: w, operation_id: skill.operation_id });
             })
             console.log(this.workerChanges);
         },

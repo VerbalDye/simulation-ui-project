@@ -1608,6 +1608,7 @@ export default {
             this.operationToLocationData = data;
             // this.operationNames = data.map(e => e.operation_to_location.operation.display_name);
             this.operationToLocationData.forEach(operation => {
+                console.log("HELP")
                 let name = operation.operation_to_location.operation.display_name
                 if (this.operationNames.find(e => e == name)) {
                     

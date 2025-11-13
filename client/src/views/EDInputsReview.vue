@@ -2354,6 +2354,7 @@ export default {
                 worker.skills.push({ operation_id: operationID })
             } else {
                 let index = this.workerData.indexOf(e => e.worker_id == w);
+                this.workerData[index].skills = [];
                 this.workerData[index].skills = worker.skills.filter(e => e.operation !== operationID);
             }
             this.workerChanges.skills = this.workerChanges.skills.filter(e => e.worker_id !== w);

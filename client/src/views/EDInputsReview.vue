@@ -1127,18 +1127,18 @@
                                     this.taskSequenceData[this.selectedOperation].task_sequence.operation.display_name
                                 }}</h4>
                             </div>
-                            <div v-if="this.priorityData.find(e => e.operation_id == this.selectedOperation)">
+                            <div v-if="this.priorityData.find(e => e.operation_id == this.taskSequenceData[this.selectedOperation].task_sequence.operation.operation_id)">
                                 <div class="card">
                                     <h3>Static Priority?</h3>
                                     <label class="switch">
                                         <input type="checkbox" name="static-priority-toggle"
-                                            :checked="this.priorityData.find(e => e.operation_id == this.selectedOperation).static_priority"
-                                            @input="e => this.priorityData.find(e => e.operation_id == this.selectedOperation).static_priority = e.target.checked">
+                                            :checked="this.priorityData.find(e => e.operation_id == this.taskSequenceData[this.selectedOperation].task_sequence.operation.operation_id).static_priority"
+                                            @input="e => this.priorityData.find(e => e.operation_id == this.taskSequenceData[this.selectedOperation].task_sequence.operation.operation_id).static_priority = e.target.checked">
                                         <span class="slider round"></span>
                                     </label>
                                 </div>
                                 <div
-                                    v-if="this.priorityData.find(e => e.operation_id == this.selectedOperation).static_priority">
+                                    v-if="this.priorityData.find(e => e.operation_id == this.taskSequenceData[this.selectedOperation].task_sequence.operation.operation_id).static_priority">
                                     <table>
                                         <tr>
                                             <thead><label for="priority-static-value">Priority Value:</label></thead>

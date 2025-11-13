@@ -1607,6 +1607,12 @@ export default {
             console.log(data);
             this.operationToLocationData = data;
             this.operationNames = data.map(e => e.operation_to_location.operation.display_name);
+            data.forEach(operation => {
+                let name = operation.operation_to_location.operation.display_name
+                if (!this.operationNames.find(e => e == name)) {
+                    this.operationNames.push(name);
+                }
+            })
         },
         async getHoursOfOperationData() {
             let data = await dataRequest("/api/experiment/hours-of-operation/" + this.experimentID, "GET");

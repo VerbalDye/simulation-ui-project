@@ -2304,16 +2304,17 @@ export default {
             // console.log(this.processTimeSettings.elements[this.selectedAssets[0].asset_id]);
         },
         handlePriorityChange(e) {
-            this.priorityData.find(e => e.operation_id == this.selectedOperation).priority = e.target.value;
-            this.priorityChanges = this.priorityChanges.filter(e => e.operation_id !== this.selectedOperation);
-            this.priorityChanges.push({ priority: e.target.value, operation_id: this.selectedOperation, static_priority: 1 });
+            let operationID = this.taskSequenceData[this.selectedOperation].task_sequence.operation.operation_id;
+            this.priorityData.find(e => e.operation_id == operationID).priority = e.target.value;
+            this.priorityChanges = this.priorityChanges.filter(e => e.operation_id !== operationID);
+            this.priorityChanges.push({ priority: e.target.value, operation_id: operationID, static_priority: 1 });
         },
         handleDynamicPriorityChange(e, column) {
-            this.priorityData.find(e => e.operation_id == this.selectedOperation)[column] = e.target.value;
+            this.priorityData.find(e => e.operation_id == operationID)[column] = e.target.value;
             this.dynamicPriority[column] = e.target.value;
-            this.priorityChanges = this.priorityChanges.filter(e => e.operation_id !== this.selectedOperation);
+            this.priorityChanges = this.priorityChanges.filter(e => e.operation_id !== operationID);
             this.priorityChanges.push({
-                operation_id: this.selectedOperation,
+                operation_id: operationID,
                 static_priority: 0,
                 max_tubes: this.dynamicPriority.max_tubes,
                 max_priority: this.dynamicPriority.max_priority,

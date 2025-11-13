@@ -1053,7 +1053,7 @@
                                         </select>
                                     </td>
                                     <!-- <td v-for="operation in this.operationNames"><input :value="worker.skills.find(e => this.operationToLocationData.find(f => f.operation_to_location.operation_id == e.operation_id))" type="checkbox"/></td> -->
-                                    <td v-for="operation in this.operationNames"><input @change="handleWorkerSkillsChange(worker.worker_id, operation)" :checked="worker.skills.find(f => f.operation_id == this.operationToLocationData.find(e => e.operation_to_location.operation.display_name == operation).operation_to_location.operation_id)" type="checkbox"/></td>
+                                    <td v-for="operation in this.operationNames"><input @change="handleWorkerSkillsChange($event, worker.worker_id, operation)" :checked="worker.skills.find(f => f.operation_id == this.operationToLocationData.find(e => e.operation_to_location.operation.display_name == operation).operation_to_location.operation_id)" type="checkbox"/></td>
                                 </tr>
                             </table>
                         </div>
@@ -1608,17 +1608,11 @@ export default {
             this.operationToLocationData = data;
             // this.operationNames = data.map(e => e.operation_to_location.operation.display_name);
             this.operationToLocationData.forEach(operation => {
-                console.log("HELP")
                 let name = operation.operation_to_location.operation.display_name
-                console.log("HELP1")
                 if (this.operationNames.find(e => e == name)) {
-                console.log("HELP2")
-                    
                 } else {
-                console.log("HELP3")
                     this.operationNames.push(name);
                 }
-                console.log("HELP4")
             })
             console.log(this.operationNames);
         },
@@ -2352,7 +2346,8 @@ export default {
             this.workerChanges.shifts.push({ worker_id: this.selectedWorker, shift_id: e.target.value })
             console.log(this.workerChanges);
         },
-        handleWorkerSkillsChange(w, skill) {
+        handleWorkerSkillsChange(e, w, skill) {
+            console.log(e);
             let worker = this.workerData.find(e => e.worker_id == w);
             worker.skills = [];
             this.workerChanges.skills = this.workerChanges.skills.filter(e => e.worker_id !== this.selectedWorker);

@@ -1610,11 +1610,15 @@ export default {
             this.operationToLocationData.forEach(operation => {
                 console.log("HELP")
                 let name = operation.operation_to_location.operation.display_name
+                console.log("HELP1")
                 if (this.operationNames.find(e => e == name)) {
+                console.log("HELP2")
                     
                 } else {
+                console.log("HELP3")
                     this.operationNames.push(name);
                 }
+                console.log("HELP4")
             })
             console.log(this.operationNames);
         },

@@ -1446,7 +1446,7 @@ export default {
             selectedOperation: 2,
             selectedAssets: null,
             jobDropdownData: null,
-            operationNames: null,
+            operationNames: [],
             selectedSkills: null,
             hoursOfOperationData: null,
             continuousProcessTimeData: null,

@@ -2353,7 +2353,8 @@ export default {
             if(e.target.checked) {
                 worker.skills.push({ operation_id: operationID })
             } else {
-                worker.skills = worker.skills.filter(e => e.operation !== operationID);
+                let index = this.workerData.indexOf(e => e.worker_id == w);
+                this.workerData[index].skills = worker.skills.filter(e => e.operation !== operationID);
             }
             this.workerChanges.skills = this.workerChanges.skills.filter(e => e.worker_id !== w);
             worker.skills.forEach(skill => {

@@ -54,11 +54,17 @@ router.put('/update/:id', async (req, res) => {
             let promises = [];
             let hooEntries = await HoursOfOperation.bulkCreate(req.body);
             hooEntries.forEach((entry, index) => {
-                promises.push(ExperimentHoo.update({ hours_of_operation_id: entry.hours_of_operation_id }, {
-                    where: {
-                        experiment_hoo_id: dbExperimentHooData[index].experiment_hoo_id
-                    }
-                }))
+                promises.push(ExperimentHoo.create({ 
+                    hours_of_operation_id: entry.hours_of_operation_id,
+                    experiment_id: req.params.id,
+                    iteration_number: 1 
+                }
+                // , {
+                //     where: {
+                //         experiment_hoo_id: dbExperimentHooData[index].experiment_hoo_id
+                //     }
+                // }
+            ))
             })
             let response = await Promise.all(promises);
             res.status(200).json(response);
@@ -67,7 +73,8 @@ router.put('/update/:id', async (req, res) => {
             req.body.forEach((entry, index) => {
                 promises.push(HoursOfOperation.update(entry, {
                     where: {
-                        hours_of_operation_id: dbExperimentHooData[index].hours_of_operation_id
+                        hours_of_operation_id: dbExperimentHooData[index].hours_of_operation_id,
+                        iteration_number: 1
                     }
                 }))
             })

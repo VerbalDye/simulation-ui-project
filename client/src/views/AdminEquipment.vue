@@ -531,6 +531,8 @@ export default {
             }
             let selectedFrom = this.routingData.filter(f => f.destination == e.target.value && f.travel_allowed == true);
             let selectedTo = this.routingData.filter(f => f.origin == e.target.value && f.travel_allowed == true);
+            console.log(selectedFrom);
+            console.log(selectedTo);
             this.selectedEditFromRoutes = null;
             this.selectedEditToRoutes = null;
             // console.log(this.editToRoutes);

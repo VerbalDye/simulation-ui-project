@@ -286,7 +286,7 @@ export default {
             operationToLocationData: null,
             taskSequenceData: null,
             processTimeData: null,
-            routingData: null,
+            routingData: [],
             experimentID: 2,
             selectedOperation: null,
             fromRoutes: null,

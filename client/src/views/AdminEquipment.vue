@@ -529,12 +529,12 @@ export default {
             } else {
                 this.editFromRoutes = null;
             }
-            let selectedFrom = this.routingData.filter(f => f.destination == e.target.value && f.travel_allowed == true);
-            let selectedTo = this.routingData.filter(f => f.origin == e.target.value && f.travel_allowed == true);
+            let selectedFrom = this.routingData.filter(f => f.destination == e.target.value && f.travel_allowed == true).map(f => f.origin);
+            let selectedTo = this.routingData.filter(f => f.origin == e.target.value && f.travel_allowed == true).map(f => f.destination);
             console.log(selectedFrom);
             console.log(selectedTo);
-            this.selectedEditFromRoutes = null;
-            this.selectedEditToRoutes = null;
+            this.selectedEditFromRoutes = this.operationToLocationData.filter(e => selectedFrom.includes(e.operation_id)).map(e => e.asset.display_name);;
+            this.selectedEditToRoutes = this.operationToLocationData.filter(e => selectedTo.includes(e.operation_id)).map(e => e.asset.display_name);;
             // console.log(this.editToRoutes);
             // console.log(this.editFromRoutes);
         },

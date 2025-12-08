@@ -286,6 +286,7 @@ export default {
             operationToLocationData: null,
             taskSequenceData: null,
             processTimeData: null,
+            routingData: null,
             experimentID: 2,
             selectedOperation: null,
             fromRoutes: null,
@@ -343,10 +344,16 @@ export default {
             // console.log(data);
             this.operationToLocationData = data.map(e => e.operation_to_location);
         },
+        async getRoutingData() {
+            let data = await dataRequest("/api/routing", "GET");
+            console.log(data);
+            this.routingData = data;
+        },
         async getData() {
             await this.getOperationToLocationData();
             await this.getTaskSequenceData();
             await this.getAssetData();
+            await this.getRoutingData();
             // await Promise.allSettled([
             //     this.getAssetData(),
             //     this.getTaskSequenceData(),

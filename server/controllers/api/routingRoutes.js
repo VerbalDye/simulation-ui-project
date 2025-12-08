@@ -3,7 +3,11 @@ const sequelize = require('../../config/connection');
 const { Routing } = require('../../models');
 
 router.get('/', (req, res) => {
-    Routing.findAll()
+    Routing.findAll({
+        where: {
+            is_default: 1
+        }
+    })
         .then(dbRoutingData => res.json(dbRoutingData))
         .catch(err => {
             console.log(err);

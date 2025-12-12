@@ -27,6 +27,7 @@ const ExperimentSkills = require('./ExperimentSkills');
 const ExperimentTaskSequence = require('./ExperimentTaskSequence');
 const ExperimentTimeDistribution = require('./ExperimentTimeDistribution');
 const ExperimentTimeType = require('./ExperimentTimeType');
+const ExperimentWorker = require('./ExperimentWorker');
 const ExperimentWorkerShift = require('./ExperimentWorkerShift');
 const HoursOfOperation = require('./HoursOfOperation');
 const JobCore = require('./JobCore');
@@ -705,6 +706,20 @@ ExperimentTimeType.belongsTo(Operation, {
     onDelete: 'CASCADE'
 });
 
+Experiment.hasMany(ExperimentWorker, {
+    foreignKey: 'experiment_id'
+});
+ExperimentWorker.belongsTo(Experiment, {
+    foreignKey: 'experiment_id',
+    onDelete: 'CASCADE'
+});
+Worker.hasMany(ExperimentWorker, {
+    foreignKey: 'worker_id'
+});
+ExperimentWorker.belongsTo(Worker, {
+    foreignKey: 'worker_id'
+});
+
 // Experiment-WorkerShift
 Experiment.hasMany(ExperimentWorkerShift, {
     foreignKey: 'experiment_id'
@@ -750,6 +765,7 @@ module.exports = {
     ExperimentTaskSequence,
     ExperimentTimeDistribution,
     ExperimentTimeType,
+    ExperimentWorker,
     ExperimentWorkerShift,
     HoursOfOperation,
     JobCore,

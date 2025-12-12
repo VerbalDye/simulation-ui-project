@@ -21,6 +21,7 @@ const {
     ExperimentTaskSequence,
     ExperimentTimeDistribution,
     ExperimentTimeType,
+    ExperimentWorker,
     ExperimentWorkerShift,
     JobList,
     Log,
@@ -384,6 +385,11 @@ router.post('/from/:id', (req, res) => {
                         'operation_id',
                         'discrete'
                     ]
+                },
+                {
+                    model: ExperimentWorker,
+                    foreignKey: { experiment_id: req.params.id },
+                    attributes: ['iteration_number', 'worker_id']
                 },
                 {
                     model: ExperimentWorkerShift,

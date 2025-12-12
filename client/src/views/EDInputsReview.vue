@@ -1643,6 +1643,12 @@ export default {
             let data = await dataRequest("/api/experiment/worker-shift/" + this.experimentID, "GET");
             console.log(data);
             this.selectedWorker = data[0].worker_id;
+            if (data[0].skills.filter(e => e.experiment_skills[0].iteration_number == 1).length > 0) {
+                data = data.map(e => {
+                    e.skills = e.skills.filter(f => f.experiment_skills[0].iteration_number == 1)
+                    return e
+                })
+            }
             this.workerData = data;
         },
         async getProcessTimeData() {
@@ -1980,6 +1986,24 @@ export default {
                     total_hours: total_hours
                 })
             }
+            let workerSkills = [];
+            this.workerData.forEach(e => {
+                e.skills.forEach(f => {
+                    workerSkills.push({
+                        worker_id: f.worker_id,
+                        operation_id: f.operation_id
+                    })
+                })
+            })
+            let workerShifts = [];
+            this.workerData.forEach(e => {
+                e.worker_shifts.forEach(f => {
+                    workerShifts.push({
+                        worker_id: f.worker_id,
+                        shift_id: f.shift_id
+                    })
+                })
+            })
             await Promise.allSettled([
                 dataRequest("/api/experiment/site/" + this.experimentID, "PUT", JSON.stringify({ site_id: this.selectedSite })),
                 dataRequest("/api/experiment/core/bulk/" + this.experimentID, "PUT", JSON.stringify({ data: coreData })),
@@ -1987,8 +2011,8 @@ export default {
                 dataRequest("/api/experiment/hours-of-operation/update/" + this.experimentID, "PUT", JSON.stringify(hooData)),
                 dataRequest("/api/experiment/process-time-type/" + this.experimentID, "PUT", JSON.stringify(this.processTimeTypeData)),
                 dataRequest("/api/experiment/continuous-process-time/" + this.experimentID, "PUT", JSON.stringify(this.continuousProcessTimeData)),
-                dataRequest("/api/experiment/worker-shift/shifts/" + this.experimentID, "PUT", JSON.stringify({ shifts: this.workerChanges.shifts })),
-                dataRequest("/api/experiment/worker-shift/skills/" + this.experimentID, "PUT", JSON.stringify({ skills: this.workerChanges.skills })),
+                dataRequest("/api/experiment/worker-shift/shifts/" + this.experimentID, "PUT", JSON.stringify({ shifts: workerShifts })),
+                dataRequest("/api/experiment/worker-shift/skills/" + this.experimentID, "PUT", JSON.stringify({ skills: workerSkills })),
                 dataRequest("/api/experiment/priority/" + this.experimentID, "PUT", JSON.stringify({ priority: this.priorityChanges })),
                 this.saveJobChanges()
             ])
@@ -2343,9 +2367,9 @@ export default {
             } else {
                 workerShifts.push({ shift_id: e.target.value });
             }
-            this.workerChanges.shifts = this.workerChanges.shifts.filter(e => e.worker_id !== this.selectedWorker);
-            this.workerChanges.shifts.push({ worker_id: this.selectedWorker, shift_id: e.target.value })
-            console.log(this.workerChanges);
+            // this.workerChanges.shifts = this.workerChanges.shifts.filter(e => e.worker_id !== this.selectedWorker);
+            // this.workerChanges.shifts.push({ worker_id: this.selectedWorker, shift_id: e.target.value })
+            // console.log(this.workerChanges);
         },
         handleWorkerSkillsChange(e, w, skill) {
             console.log(e.target.checked);
@@ -2359,11 +2383,11 @@ export default {
                 // console.log(this.workerData[index]);
                 worker.skills = worker.skills.filter(e => e.operation_id !== operationID);
             }
-            this.workerChanges.skills = this.workerChanges.skills.filter(e => e.worker_id !== w);
-            worker.skills.forEach(skill => {
-                this.workerChanges.skills.push({ worker_id: w, operation_id: skill.operation_id });
-            })
-            console.log(this.workerChanges);
+            // this.workerChanges.skills = this.workerChanges.skills.filter(e => e.worker_id !== w);
+            // worker.skills.forEach(skill => {
+            //     this.workerChanges.skills.push({ worker_id: w, operation_id: skill.operation_id });
+            // })
+            // console.log(this.workerChanges);
         },
         handleAdvanceModeChange(e) {
             this.advancedMode = e.target.checked;

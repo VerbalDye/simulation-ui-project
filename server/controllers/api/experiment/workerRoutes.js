@@ -65,33 +65,35 @@ router.get('/:id', (req, res) => {
 
 router.put('/shifts/:id', async (req, res) => {
     try {
-        let workerIDs = [];
-        req.body.shifts.forEach(shift => {
-            if (workerIDs.filter(id => id == shift.worker_id).length < 1) {
-                workerIDs.push(shift.worker_id);
-            }
-        })
-        let dbWorkerShiftData = await ExperimentWorkerShift.findAll({
-            where: {
-                experiment_id: req.params.id,
-                iteration_number: 1
-            },
-            include: [{
-                model: WorkerShift,
-                where: {
-                    worker_id: workerIDs
-                },
-                required: true
-            }]
-        })
-        // console.log(dbWorkerShiftData);
-        dbWorkerShiftData = dbWorkerShiftData.map(e => {
-            return e.experiment_worker_shift_id
-        })
+        // let workerIDs = [];
+        // req.body.shifts.forEach(shift => {
+        //     if (workerIDs.filter(id => id == shift.worker_id).length < 1) {
+        //         workerIDs.push(shift.worker_id);
+        //     }
+        // })
+        // let dbWorkerShiftData = await ExperimentWorkerShift.findAll({
+        //     where: {
+        //         experiment_id: req.params.id,
+        //         iteration_number: 1
+        //     },
+        //     include: [{
+        //         model: WorkerShift,
+        //         where: {
+        //             worker_id: workerIDs
+        //         },
+        //         required: true
+        //     }]
+        // })
+        // // console.log(dbWorkerShiftData);
+        // dbWorkerShiftData = dbWorkerShiftData.map(e => {
+        //     return e.experiment_worker_shift_id
+        // })
         // console.log(dbWorkerShiftData);
         await ExperimentWorkerShift.destroy({
             where: {
-                experiment_worker_shift_id: dbWorkerShiftData
+                // experiment_worker_shift_id: dbWorkerShiftData
+                experiment_id: req.params.id,
+                iteration_number: 1
             }
         })
         let dbNewWorkerShiftData = await WorkerShift.bulkCreate(req.body.shifts);
@@ -112,33 +114,36 @@ router.put('/shifts/:id', async (req, res) => {
 
 router.put('/skills/:id', async (req, res) => {
     try {
-        let workerIDs = [];
-        req.body.skills.forEach(skill => {
-            if (workerIDs.filter(id => id == skill.worker_id).length < 1) {
-                workerIDs.push(skill.worker_id);
-            }
-        })
-        let dbSkillsData = await ExperimentSkills.findAll({
-            where: {
-                experiment_id: req.params.id,
-                iteration_number: 1
-            },
-            include: [{
-                model: Skills,
-                where: {
-                    worker_id: workerIDs
-                },
-                required: true
-            }]
-        })
-        // console.log(dbSkillsData);
-        dbSkillsData = dbSkillsData.map(e => {
-            return e.experiment_skills_id
-        })
+        // let workerIDs = [];
+        // req.body.skills.forEach(skill => {
+        //     if (workerIDs.filter(id => id == skill.worker_id).length < 1) {
+        //         workerIDs.push(skill.worker_id);
+        //     }
+        // })
+        // let dbSkillsData = await ExperimentSkills.findAll({
+        //     where: {
+        //         experiment_id: req.params.id,
+        //         iteration_number: 1
+        //     },
+        //     include: [{
+        //         model: Skills,
+        //         where: {
+        //             worker_id: workerIDs
+        //         },
+        //         required: true
+        //     }]
+        // })
+        // // console.log(dbSkillsData);
+        // dbSkillsData = dbSkillsData.map(e => {
+        //     return e.experiment_skills_id
+        // })
         // console.log(dbWorkerShiftData);
         await ExperimentSkills.destroy({
             where: {
-                experiment_skills_id: dbSkillsData
+                // experiment_skills_id: dbSkillsData,
+                experiment_id: req.params.id,
+                iteration_number: 1
+                
             }
         })
         let dbNewSkillsData = await Skills.bulkCreate(req.body.skills);

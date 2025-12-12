@@ -30,7 +30,7 @@ const siteRoutes = require('./siteRoutes');
 const skillsRoutes = require('./skillsRoutes');
 const taskSequenceRoutes = require('./taskSequenceRoutes');
 const throughputRoutes = require('./throughputRoutes');
-const workerShiftRoutes = require('./workerShiftRoutes');
+const workerShiftRoutes = require('./workerRoutes');
 
 router.use('/', experimentRoutes);
 router.use('/arrival', arrivalRoutes);

@@ -73,7 +73,8 @@ router.put('/shifts/:id', async (req, res) => {
         })
         let dbWorkerShiftData = await ExperimentWorkerShift.findAll({
             where: {
-                experiment_id: req.params.id
+                experiment_id: req.params.id,
+                iteration_number: 1
             },
             include: [{
                 model: WorkerShift,
@@ -98,7 +99,7 @@ router.put('/shifts/:id', async (req, res) => {
             return {
                 worker_shift_id: e.worker_shift_id,
                 experiment_id: req.params.id,
-                iteration_number: 0
+                iteration_number: 1
             }
         })
         let dbNewExperimentWorkerShiftData = await ExperimentWorkerShift.bulkCreate(dbNewWorkerShiftData);
@@ -119,7 +120,8 @@ router.put('/skills/:id', async (req, res) => {
         })
         let dbSkillsData = await ExperimentSkills.findAll({
             where: {
-                experiment_id: req.params.id
+                experiment_id: req.params.id,
+                iteration_number: 1
             },
             include: [{
                 model: Skills,
@@ -144,7 +146,7 @@ router.put('/skills/:id', async (req, res) => {
             return {
                 skills_id: e.skills_id,
                 experiment_id: req.params.id,
-                iteration_number: 0
+                iteration_number: 1
             }
         })
         let dbNewExperimentSkillsData = await ExperimentSkills.bulkCreate(dbNewSkillsData);

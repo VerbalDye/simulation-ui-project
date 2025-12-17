@@ -1579,16 +1579,16 @@ export default {
             let data = await dataRequest("/api/experiment/task-sequence/" + this.experimentID, "GET");
             this.taskSequenceData = data.filter(e => e.iteration_number == 0);
             this.formattedTaskSequenceData = this.formatTaskSequenceData(this.taskSequenceData);
-            // console.log(this.formattedTaskSequenceData);
+            console.log(this.formattedTaskSequenceData);
             this.selectedOperation = 2;
         },
         async getPriorityData() {
             let data = await dataRequest("/api/experiment/priority/" + this.experimentID, "GET");
-            console.log(data);
+            // console.log(data);
             this.priorityData = data.map(priority => {
                 return priority.priority;
             });
-            console.log(this.priorityData);
+            // console.log(this.priorityData);
         },
         async getAssetData() {
             let data = await dataRequest("/api/experiment/asset/with-op-to-loc/" + this.experimentID, "GET");
@@ -1604,7 +1604,7 @@ export default {
         },
         async getOperationToLocationData() {
             let data = await dataRequest("/api/experiment/operation-to-location/" + this.experimentID, "GET");
-            console.log(data);
+            // console.log(data);
             this.operationToLocationData = data;
             // this.operationNames = data.map(e => e.operation_to_location.operation.display_name);
             this.operationToLocationData.forEach(operation => {
@@ -1614,7 +1614,7 @@ export default {
                     this.operationNames.push(name);
                 }
             })
-            console.log(this.operationNames);
+            // console.log(this.operationNames);
         },
         async getHoursOfOperationData() {
             let data = await dataRequest("/api/experiment/hours-of-operation/" + this.experimentID, "GET");
@@ -1641,7 +1641,7 @@ export default {
         },
         async getWorkerData() {
             let data = await dataRequest("/api/experiment/worker-shift/" + this.experimentID, "GET");
-            console.log(data);
+            // console.log(data);
             this.selectedWorker = data[0].worker_id;
             let iterationOnePresent = false
             data.forEach(worker => {
@@ -1694,7 +1694,7 @@ export default {
         },
         async getShiftData() {
             let data = await dataRequest("/api/experiment/shift/" + this.experimentID, "GET");
-            console.log(data);
+            // console.log(data);
             let iterationOneData = data.filter(e => e.iteration_number == 1);
             if (iterationOneData.length > 0) {
                 data = iterationOneData;
@@ -1736,16 +1736,8 @@ export default {
         async getCoreModelData() {
             let data = await dataRequest("/api/experiment/core/" + this.experimentID, "GET");
             this.coreUsage = data.map(e => e.available);
-            console.log(data);
+            // console.log(data);
             let coreModelData = data.map(({ experiment_core_id, available, core, ...rest }) => {
-                // console.log(experiment_core_id);
-                // console.log(available);
-                // console.log(core.core_model.core_model_id);
-                // console.log(core.core_model.core_number);
-                // console.log(core.core_model.model_number);
-                // console.log(core.core_model.status);
-                // console.log(core.core_model.created);
-                // console.log(core.core_model.last_modified);
                 return {
                     experiment_core_id: experiment_core_id,
                     available: available,
@@ -1758,9 +1750,6 @@ export default {
                 }
             });
             this.coreModelData = coreModelData;
-            console.log("B");
-            console.log(this.coreModelData);
-            console.log("C");
         },
         async getJobData() {
             let results = await Promise.allSettled([
@@ -1967,7 +1956,7 @@ export default {
                 }),
                 downtime: downtime
             }
-            console.log(this.coreModelData);
+            // console.log(this.coreModelData);
             let coreData = this.coreModelData.map(({ experiment_core_id, available, ...rest }) => { return { experiment_core_id, available } })
             // console.log(coreData);
             let hooData = [];
@@ -2005,7 +1994,7 @@ export default {
                     })
                 })
             })
-            console.log(workerSkills);
+            // console.log(workerSkills);
             let workerShifts = [];
             this.workerData.forEach(e => {
                 e.worker_shifts.forEach(f => {
@@ -2035,7 +2024,7 @@ export default {
             let jsonData = await csvJson.CSVtoJson(backlogInput.files[0]);
             // console.log(jsonData);
             let backlogData = jsonData.map(e => {
-                console.log(e);
+                // console.log(e);
                 let obj = {
                     experiment_id: this.experimentID,
                     job_number: parseInt(e["Job"].match(/([0-9]+)[A-Z]*/, "")[1]),
@@ -2286,8 +2275,8 @@ export default {
             this.processTimeElementChange();
             if (this.experimentData.scenario.scenario_id == 4) {
                 let priority = this.priorityData.find(e => e.operation_id == this.selectedOperation);
-                console.log(this.selectedOperation);
-                console.log(priority);
+                // console.log(this.selectedOperation);
+                // console.log(priority);
                 this.dynamicPriority.max_tubes = priority.max_tubes;
                 this.dynamicPriority.max_priority = priority.max_priority;
                 this.dynamicPriority.n_growth = priority.n_growth;
@@ -2384,7 +2373,7 @@ export default {
             // console.log(this.workerChanges);
         },
         handleWorkerSkillsChange(e, w, skill) {
-            console.log(e.target.checked);
+            // console.log(e.target.checked);
             let worker = this.workerData.find(e => e.worker_id == w);
             let operationID = this.operationToLocationData.find(e => e.operation_to_location.operation.display_name == skill).operation_to_location.operation_id;
             if(e.target.checked) {
@@ -2683,8 +2672,8 @@ export default {
                     processTimes = this.continuousProcessTimeData.filter(f => f.process_time_distribution.asset_id == asset_id && this.processTimeSettings.selectedModels[asset_id].includes(f.process_time_distribution.model_number));
                 }
             }
-            console.log(processTimes);
-            console.log(e.target.value);
+            // console.log(processTimes);
+            // console.log(e.target.value);
             for (let i = 0; i < processTimes.length; i++) {
                 processTimes[i].process_time_distribution[type] = e.target.value;
             }

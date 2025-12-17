@@ -87,7 +87,8 @@ router.post('/worker/:id', async (req, res) => {
                 iteration_number: 1
             }
         })
-        ExperimentWorker.bulkCreate(postData);
+        let dbNewWorkerData = await ExperimentWorker.bulkCreate(postData);
+        res.json(dbNewWorkerData);
     } catch (err) {
         console.log(err);
         res.status(400).json(err);

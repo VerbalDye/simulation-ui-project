@@ -2025,7 +2025,6 @@ export default {
                 dataRequest("/api/experiment/worker-shift/shifts/" + this.experimentID, "PUT", JSON.stringify({ shifts: workerShifts })),
                 dataRequest("/api/experiment/worker-shift/skills/" + this.experimentID, "PUT", JSON.stringify({ skills: workerSkills })),
                 dataRequest("/api/experiment/worker-shift/worker/" + this.experimentID, "POST"),
-                dataRequest("/api/experiment/shift/" + this.experimentID, "POST"),
                 dataRequest("/api/experiment/priority/" + this.experimentID, "PUT", JSON.stringify({ priority: this.priorityChanges })),
                 this.saveJobChanges()
             ])

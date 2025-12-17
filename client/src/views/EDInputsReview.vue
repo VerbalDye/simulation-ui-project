@@ -1057,7 +1057,7 @@
                                 </tr>
                             </table>
                         </div>
-                        
+                        <button @click="deselectAllWorkerSkills">Deselect All Skills</button>
                     </Collapsable>
                 </Collapsable>
                 <Collapsable @toggle-collapse="collapsableToggleChange" title="Routing, Queuing, and Prioritization"
@@ -2677,6 +2677,11 @@ export default {
             for (let i = 0; i < processTimes.length; i++) {
                 processTimes[i].process_time_distribution[type] = e.target.value;
             }
+        },
+        deselectAllWorkerSkills() {
+            this.workerData.forEach(worker => {
+                worker.skills = [];
+            })
         }
     },
     mounted() {

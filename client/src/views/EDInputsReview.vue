@@ -2001,6 +2001,7 @@ export default {
                     })
                 })
             })
+            console.log(workerSkills);
             let workerShifts = [];
             this.workerData.forEach(e => {
                 e.worker_shifts.forEach(f => {

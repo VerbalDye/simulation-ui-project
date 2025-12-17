@@ -1053,7 +1053,7 @@
                                         </select>
                                     </td>
                                     <!-- <td v-for="operation in this.operationNames"><input :value="worker.skills.find(e => this.operationToLocationData.find(f => f.operation_to_location.operation_id == e.operation_id))" type="checkbox"/></td> -->
-                                    <td v-for="cell in this.cellNames"><input @change="handleWorkerSkillsChange($event, worker.worker_id, cell)" :checked="true" type="checkbox"/></td>
+                                    <td v-for="cell in this.cellNames"><input @change="handleWorkerSkillsChange($event, worker.worker_id, cell)" :checked="this.taskSequenceData.filter(e => e.task_sequence.cell.display_name == cell).map(e => e.task_sequence.operation_id).some(e => worker.skills.map(f => f.operation_id).includes(e))" type="checkbox"/></td>
                                 </tr>
                             </table>
                         </div>
@@ -1643,7 +1643,7 @@ export default {
         },
         async getWorkerData() {
             let data = await dataRequest("/api/experiment/worker-shift/" + this.experimentID, "GET");
-            // console.log(data);
+            console.log(data);
             this.selectedWorker = data[0].worker_id;
             let iterationOnePresent = false
             data.forEach(worker => {

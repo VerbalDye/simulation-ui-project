@@ -1053,7 +1053,7 @@
                                         </select>
                                     </td>
                                     <!-- <td v-for="operation in this.operationNames"><input :value="worker.skills.find(e => this.operationToLocationData.find(f => f.operation_to_location.operation_id == e.operation_id))" type="checkbox"/></td> -->
-                                    <td v-for="cell in this.cellNames"><input @change="handleWorkerSkillsChange($event, worker.worker_id, cell)" :checked="this.taskSequenceData.filter(e => e.task_sequence.cell.display_name == cell).map(e => e.task_sequence.operation_id).some(e => worker.skills.map(f => f.operation_id).includes(e))" type="checkbox"/></td>
+                                    <td v-for="cell in this.cellNames"><input @change="handleWorkerSkillsChange($event, worker.worker_id, cell)" :checked="getWorkerSkillsChecked(cell, worker)" type="checkbox"/></td>
                                 </tr>
                             </table>
                         </div>
@@ -1583,6 +1583,7 @@ export default {
             console.log(this.formattedTaskSequenceData);
             this.selectedOperation = 2;
             this.cellNames = this.formattedTaskSequenceData.filter(e => e.type == 'cell').map(e => e.displayName);
+            this.cellNames.push("Cutback");
         },
         async getPriorityData() {
             let data = await dataRequest("/api/experiment/priority/" + this.experimentID, "GET");
@@ -2377,7 +2378,14 @@ export default {
         handleWorkerSkillsChange(e, w, cell) {
             // console.log(e.target.checked);
             let worker = this.workerData.find(f => f.worker_id == w);
-            let operationIDs = this.taskSequenceData.filter(f => f.task_sequence.cell.display_name == cell).map(f => f.task_sequence.operation_id);
+            let operationIDs;
+            if (cell == "Disassembly") {
+                operationIDs = this.taskSequenceData.filter(f => f.task_sequence.cell.display_name == cell).map(f => f.task_sequence.operation_id).filter(e => e !== 19 || e !== 29);
+            } else if (cell == "Cutback") {
+                operationIDs = [ 19, 29 ];
+            } else {
+                operationIDs = this.taskSequenceData.filter(f => f.task_sequence.cell.display_name == cell).map(f => f.task_sequence.operation_id);
+            }
             if(e.target.checked) {
                 operationIDs.forEach(operationID => {
                     worker.skills.push({ operation_id: operationID })
@@ -2686,6 +2694,18 @@ export default {
             this.workerData.forEach(worker => {
                 worker.skills = [];
             })
+        },
+        getWorkerSkillsChecked(cell, worker) {
+            let cellOperationIDs;
+            if (cell == "Disassembly") {
+                cellOperationIDs = this.taskSequenceData.filter(e => e.task_sequence.cell.display_name == cell).map(e => e.task_sequence.operation_id).filter(e => e !== 19 || e !== 29);
+            } else if (cell == "Cutback") {
+                cellOperationIDs = [ 19, 29 ];
+            } else {
+                cellOperationIDs = this.taskSequenceData.filter(e => e.task_sequence.cell.display_name == cell).map(e => e.task_sequence.operation_id);
+            }
+            cellOperationIDs.some(e => worker.skills.map(f => f.operation_id).includes(e));
+            
         }
     },
     mounted() {

@@ -431,8 +431,8 @@ router.post('/from/:id', (req, res) => {
                 model: ExperimentShift
             }]
         })
-        // console.log(dbExperimentShiftData);
-        let newShiftData = dbExperimentShiftData[0].dataValues.experiment_shifts.dataValues.map(e => {
+        console.log(dbExperimentShiftData[0].experiment_shifts);
+        let newShiftData = dbExperimentShiftData[0].experiment_shifts.map(e => {
             return {
                 experiment_id: e.experiment_id,
                 shift_id: e.shift_id,

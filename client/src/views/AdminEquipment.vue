@@ -573,8 +573,8 @@ export default {
             // this.editAssetValues.toTime = ;
         },
         async handleDeleteAsset() {
-            let { status } = await dataRequest('/api/asset/' + this.selectedToDelete, "DELETE", { statusOnly: true });
-            if (status == 200) {
+            let result = await dataRequest('/api/asset/' + this.selectedToDelete, "DELETE", { statusOnly: true });
+            if (result.status == 200) {
                 window.alert("Asset Deleted Successfully")
                 window.location.reload();
             } else {

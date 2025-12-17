@@ -147,7 +147,7 @@ export default {
 </script>
 
 <style>
-.content h1 {
+/* .content h1 {
     text-align: left;
-}
+} */
 </style>

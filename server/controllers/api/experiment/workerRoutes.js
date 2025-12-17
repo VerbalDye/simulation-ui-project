@@ -75,7 +75,7 @@ router.post('/worker/:id', async (req, res) => {
             let deleteData = iterationOneData.map(e => e.experiment_worker_id);
             ExperimentWorker.destroy({
                 where: {
-                    experiment_worker_id: [Op.in]: deleteData
+                    experiment_worker_id: { [Op.in]: deleteData }
                 }
             })
         }

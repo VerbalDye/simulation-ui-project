@@ -79,7 +79,7 @@ router.post('/worker/:id', async (req, res) => {
                 }
             })
         }
-        let postData = dbExperimentData.filter(e => e.iteration_number == 0).map(e => {
+        let postData = dbExperimentWorkerData.filter(e => e.iteration_number == 0).map(e => {
             return {
                 worker_id: e.worker_id,
                 experiment_id: e.experiment_id,

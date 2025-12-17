@@ -574,6 +574,7 @@ export default {
         },
         async handleDeleteAsset() {
             let result = await dataRequest('/api/asset/' + this.selectedToDelete, "DELETE", { statusOnly: true });
+            console.log(result);
             if (result == 200) {
                 window.alert("Asset Deleted Successfully")
                 window.location.reload();

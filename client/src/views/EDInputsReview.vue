@@ -2374,17 +2374,19 @@ export default {
             // this.workerChanges.shifts.push({ worker_id: this.selectedWorker, shift_id: e.target.value })
             // console.log(this.workerChanges);
         },
-        handleWorkerSkillsChange(e, w, skill) {
+        handleWorkerSkillsChange(e, w, cell) {
             // console.log(e.target.checked);
-            let worker = this.workerData.find(e => e.worker_id == w);
-            let operationID = this.operationToLocationData.find(e => e.operation_to_location.operation.display_name == skill).operation_to_location.operation_id;
+            let worker = this.workerData.find(f => f.worker_id == w);
+            let operationIDs = this.taskSequenceData.filter(f => f.task_sequence.cell.display_name == cell).map(f => f.task_sequence.operation_id);
             if(e.target.checked) {
-                worker.skills.push({ operation_id: operationID })
+                operationIDs.forEach(operationID => {
+                    worker.skills.push({ operation_id: operationID })
+                })
             } else {
                 // let index = this.workerData.findIndex(e => e.worker_id == w);
                 // console.log(index);
                 // console.log(this.workerData[index]);
-                worker.skills = worker.skills.filter(e => e.operation_id !== operationID);
+                worker.skills = worker.skills.filter(f => !operationIDs.includes(f.operation_id));
             }
             // this.workerChanges.skills = this.workerChanges.skills.filter(e => e.worker_id !== w);
             // worker.skills.forEach(skill => {

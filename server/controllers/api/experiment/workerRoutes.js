@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const sequelize = require('../../../config/connection');
 const { ExperimentSkills, ExperimentWorker, ExperimentWorkerShift, Skills, WorkerShift, Worker } = require('../../../models');
-import Op from '@sequelize/core';
+const Op = require('sequelize').Op;
 
 router.get('/', (req, res) => {
     ExperimentWorkerShift.findAll()

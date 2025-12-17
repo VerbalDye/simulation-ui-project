@@ -1996,7 +1996,7 @@ export default {
             this.workerData.forEach(e => {
                 e.skills.forEach(f => {
                     workerSkills.push({
-                        worker_id: f.worker_id,
+                        worker_id: e.worker_id,
                         operation_id: f.operation_id
                     })
                 })
@@ -2006,7 +2006,7 @@ export default {
             this.workerData.forEach(e => {
                 e.worker_shifts.forEach(f => {
                     workerShifts.push({
-                        worker_id: f.worker_id,
+                        worker_id: e.worker_id,
                         shift_id: f.shift_id
                     })
                 })

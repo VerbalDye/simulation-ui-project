@@ -2013,6 +2013,7 @@ export default {
                 dataRequest("/api/experiment/continuous-process-time/" + this.experimentID, "PUT", JSON.stringify(this.continuousProcessTimeData)),
                 dataRequest("/api/experiment/worker-shift/shifts/" + this.experimentID, "PUT", JSON.stringify({ shifts: workerShifts })),
                 dataRequest("/api/experiment/worker-shift/skills/" + this.experimentID, "PUT", JSON.stringify({ skills: workerSkills })),
+                dataRequest("/api/experiment/worker-shift/worker/" + this.experimentID, "POST"),
                 dataRequest("/api/experiment/priority/" + this.experimentID, "PUT", JSON.stringify({ priority: this.priorityChanges })),
                 this.saveJobChanges()
             ])

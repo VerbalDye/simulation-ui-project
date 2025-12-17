@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const sequelize = require('../../../config/connection');
-const { ExperimentSkills, ExperimentWorkerShift, Skills, WorkerShift, Worker } = require('../../../models');
+const { ExperimentSkills, ExperimentWorker, ExperimentWorkerShift, Skills, WorkerShift, Worker } = require('../../../models');
 
 router.get('/', (req, res) => {
     ExperimentWorkerShift.findAll()
@@ -62,6 +62,36 @@ router.get('/:id', (req, res) => {
             res.status(400).json(err);
         });
 });
+
+router.post('/worker/:id', async (req, res) => {
+    try {
+        let dbExperimentWorkerData = await ExperimentWorker.findAll({
+            where: {
+                experiment_id: req.params.id
+            }
+        })
+        let iterationOneData = dbExperimentWorkerData.filter(e => e.iteration_number == 1)
+        if (iterationOneData.length > 0) {
+            let deleteData = iterationOneData.map(e => e.experiment_worker_id);
+            ExperimentWorker.destroy({
+                where: {
+                    experiment_worker_id: [Op.in]: deleteData
+                }
+            })
+        }
+        let postData = dbExperimentData.filter(e => e.iteration_number == 0).map(e => {
+            return {
+                worker_id: e.worker_id,
+                experiment_id: e.experiment_id,
+                iteration_number: 1
+            }
+        })
+        ExperimentWorker.bulkCreate(postData);
+    } catch (err) {
+        console.log(err);
+        res.status(400).json(err);
+    }
+})
 
 router.put('/shifts/:id', async (req, res) => {
     try {

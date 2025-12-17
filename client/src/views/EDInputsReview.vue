@@ -2704,8 +2704,7 @@ export default {
             } else {
                 cellOperationIDs = this.taskSequenceData.filter(e => e.task_sequence.cell.display_name == cell).map(e => e.task_sequence.operation_id);
             }
-            cellOperationIDs.some(e => worker.skills.map(f => f.operation_id).includes(e));
-            
+            return cellOperationIDs.some(e => worker.skills.map(f => f.operation_id).includes(e));
         }
     },
     mounted() {

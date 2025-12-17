@@ -600,7 +600,7 @@ Scenario.hasMany(Experiment, {
 });
 
 // Experiment-Shift
-Experiment.hasOne(ExperimentShift, {
+Experiment.hasMany(ExperimentShift, {
     foreignKey: 'experiment_id'
 });
 ExperimentShift.belongsTo(Experiment, {

@@ -423,7 +423,7 @@ router.post('/from/:id', (req, res) => {
             ]
         }
         let experimentData = await copyFromModel(target);
-        let dbExperimentShiftData = Experiment.findOne({
+        let dbExperimentShiftData = await Experiment.findOne({
             where: {
                 experiment_id: experimentData.experiment_id
             },

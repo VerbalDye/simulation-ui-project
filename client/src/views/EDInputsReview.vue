@@ -1695,6 +1695,10 @@ export default {
         async getShiftData() {
             let data = await dataRequest("/api/experiment/shift/" + this.experimentID, "GET");
             console.log(data);
+            let iterationOneData = data.filter(e => e.iteration_number == 1);
+            if (iterationOneData.length > 0) {
+                data = iterationOneData;
+            }
             this.shiftData = data.map(shift => shift.shift);
         },
         async getRoutingData() {

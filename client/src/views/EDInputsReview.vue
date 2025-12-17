@@ -1643,7 +1643,13 @@ export default {
             let data = await dataRequest("/api/experiment/worker-shift/" + this.experimentID, "GET");
             console.log(data);
             this.selectedWorker = data[0].worker_id;
-            if (data[0].skills.filter(e => e.experiment_skills[0].iteration_number == 1).length > 0) {
+            let iterationOnePresent = false
+            data.forEach(worker => {
+                worker.skills.forEach(skill => {
+                    if (skill.experiment_skills[0].iteration_number == 1) { iterationOnePresent = true }
+                })
+            })
+            if (iterationOnePresent) {
                 data = data.map(e => {
                     e.skills = e.skills.filter(f => f.experiment_skills[0].iteration_number == 1)
                     return e

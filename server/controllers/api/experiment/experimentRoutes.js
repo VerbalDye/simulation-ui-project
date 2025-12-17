@@ -423,7 +423,7 @@ router.post('/from/:id', (req, res) => {
             ]
         }
         let experimentData = await copyFromModel(target);
-        let dbExperimentShiftData = await Experiment.findOne({
+        let dbExperimentShiftData = await Experiment.findAll({
             where: {
                 experiment_id: experimentData.experiment_id
             },
@@ -431,7 +431,7 @@ router.post('/from/:id', (req, res) => {
                 model: ExperimentShift
             }]
         })
-        console.log(dbExperimentShiftData.dataValues.experiment_shift);
+        console.log(dbExperimentShiftData[0].dataValues.experiment_shift);
         let newShiftData = dbExperimentShiftData.dataValues.experiment_shift.dataValues.map(e => {
             return {
                 experiment_id: e.experiment_id,

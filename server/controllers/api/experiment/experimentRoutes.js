@@ -423,6 +423,22 @@ router.post('/from/:id', (req, res) => {
             ]
         }
         let experimentData = await copyFromModel(target);
+        let dbExperimentShiftData = Experiment.findOne({
+            where: {
+                experiment_id: experimentData.experiment_id
+            },
+            include: [{
+                model: ExperimentShift
+            }]
+        })
+        let newShiftData = dbExperimentShiftData.map(e => {
+            return {
+                experiment_id: e.experiment_id,
+                shift_id: e.shift_id,
+                iteration_number: 1
+            }
+        })
+        ExperimentShift.bulkCreate(newShiftData);
         res.json(experimentData);
     })
         .catch(err => {

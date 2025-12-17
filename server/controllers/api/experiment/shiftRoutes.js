@@ -40,7 +40,7 @@ router.post('/:id', (req, res) => {
         ExperimentShift.create({
             shift_id: dbShiftData.shift_id,
             experiment_id: req.params.id,
-            iteration_number: 0,
+            iteration_number: 1,
         }).then(dbExperimentShiftData => res.json(dbExperimentShiftData))
             .catch(err => {
                 console.log(err);

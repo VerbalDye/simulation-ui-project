@@ -1041,7 +1041,7 @@
                                 <thead class="sticky-row">
                                     <th class="nowrap">Worker</th>
                                     <th class="nowrap">Shift</th>
-                                    <th class="nowrap" v-for="operation in this.operationNames">{{ operation }}</th>
+                                    <th class="nowrap" v-for="cell in this.cellNames">{{ cell }}</th>
                                 </thead>
                                 <tr v-for="(worker) in this.workerData">
                                     <td class="sticky-column">{{ worker.name }}</td>
@@ -1053,7 +1053,7 @@
                                         </select>
                                     </td>
                                     <!-- <td v-for="operation in this.operationNames"><input :value="worker.skills.find(e => this.operationToLocationData.find(f => f.operation_to_location.operation_id == e.operation_id))" type="checkbox"/></td> -->
-                                    <td v-for="operation in this.operationNames"><input @change="handleWorkerSkillsChange($event, worker.worker_id, operation)" :checked="worker.skills.find(f => f.operation_id == this.operationToLocationData.find(e => e.operation_to_location.operation.display_name == operation).operation_to_location.operation_id)" type="checkbox"/></td>
+                                    <td v-for="cell in this.cellNames"><input @change="handleWorkerSkillsChange($event, worker.worker_id, cell)" :checked="true" type="checkbox"/></td>
                                 </tr>
                             </table>
                         </div>
@@ -1446,7 +1446,7 @@ export default {
             selectedOperation: 2,
             selectedAssets: null,
             jobDropdownData: null,
-            operationNames: [],
+            cellNames: [],
             selectedSkills: null,
             hoursOfOperationData: null,
             continuousProcessTimeData: null,
@@ -1578,9 +1578,11 @@ export default {
         async getTaskSequenceData() {
             let data = await dataRequest("/api/experiment/task-sequence/" + this.experimentID, "GET");
             this.taskSequenceData = data.filter(e => e.iteration_number == 0);
+            console.log(this.taskSequenceData);
             this.formattedTaskSequenceData = this.formatTaskSequenceData(this.taskSequenceData);
             console.log(this.formattedTaskSequenceData);
             this.selectedOperation = 2;
+            this.cellNames = this.formattedTaskSequenceData.filter(e => e.type == 'cell').map(e => e.displayName);
         },
         async getPriorityData() {
             let data = await dataRequest("/api/experiment/priority/" + this.experimentID, "GET");
@@ -1607,13 +1609,13 @@ export default {
             // console.log(data);
             this.operationToLocationData = data;
             // this.operationNames = data.map(e => e.operation_to_location.operation.display_name);
-            this.operationToLocationData.forEach(operation => {
-                let name = operation.operation_to_location.operation.display_name
-                if (this.operationNames.find(e => e == name)) {
-                } else {
-                    this.operationNames.push(name);
-                }
-            })
+            // this.operationToLocationData.forEach(operation => {
+            //     let name = operation.operation_to_location.operation.display_name
+            //     if (this.operationNames.find(e => e == name)) {
+            //     } else {
+            //         this.operationNames.push(name);
+            //     }
+            // })
             // console.log(this.operationNames);
         },
         async getHoursOfOperationData() {

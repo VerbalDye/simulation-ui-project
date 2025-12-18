@@ -2381,7 +2381,7 @@ export default {
             let worker = this.workerData.find(f => f.worker_id == w);
             let operationIDs;
             if (cell == "Disassembly") {
-                operationIDs = this.taskSequenceData.filter(f => f.task_sequence.cell.display_name == cell).map(f => f.task_sequence.operation_id).filter(e => e !== 19 || e !== 29);
+                operationIDs = this.taskSequenceData.filter(f => f.task_sequence.cell.display_name == cell).map(f => f.task_sequence.operation_id).filter(e => !(e == 19 || e == 29));
             } else if (cell == "Cutback") {
                 operationIDs = [ 19, 29 ];
             } else {

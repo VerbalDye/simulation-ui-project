@@ -2382,15 +2382,11 @@ export default {
             let operationIDs;
             if (cell == "Disassembly") {
                 operationIDs = this.taskSequenceData.filter(f => f.task_sequence.cell.display_name == cell).map(f => f.task_sequence.operation_id).filter(e => !(e == 19 || e == 29));
-                console.log("Disassembly");
             } else if (cell == "Cutback") {
                 operationIDs = [ 19, 29 ];
-                console.log("Cutback");
             } else {
                 operationIDs = this.taskSequenceData.filter(f => f.task_sequence.cell.display_name == cell).map(f => f.task_sequence.operation_id);
-                console.log("Other");
             }
-            console.log(operationIDs);
             if(e.target.checked) {
                 operationIDs.forEach(operationID => {
                     worker.skills.push({ operation_id: operationID })
@@ -2401,7 +2397,6 @@ export default {
                 // console.log(this.workerData[index]);
                 worker.skills = worker.skills.filter(f => !operationIDs.includes(f.operation_id));
             }
-            console.log(worker.skills);
             // this.workerChanges.skills = this.workerChanges.skills.filter(e => e.worker_id !== w);
             // worker.skills.forEach(skill => {
             //     this.workerChanges.skills.push({ worker_id: w, operation_id: skill.operation_id });
@@ -2704,7 +2699,7 @@ export default {
         getWorkerSkillsChecked(cell, worker) {
             let cellOperationIDs;
             if (cell == "Disassembly") {
-                cellOperationIDs = this.taskSequenceData.filter(e => e.task_sequence.cell.display_name == cell).map(e => e.task_sequence.operation_id).filter(e => e !== 19 || e !== 29);
+                cellOperationIDs = this.taskSequenceData.filter(e => e.task_sequence.cell.display_name == cell).map(e => e.task_sequence.operation_id).filter(e => !(e == 19 || e == 29));
             } else if (cell == "Cutback") {
                 cellOperationIDs = [ 19, 29 ];
             } else {

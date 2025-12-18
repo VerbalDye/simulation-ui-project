@@ -1583,7 +1583,7 @@ export default {
             console.log(this.formattedTaskSequenceData);
             this.selectedOperation = 2;
             this.cellNames = this.formattedTaskSequenceData.filter(e => e.type == 'cell').filter(e => !(e.displayName == 'Incoming-Outside' || e.displayName == 'Shipping/Delivery')).map(e => e.displayName);
-            this.cellNames.splice(this.cellNames.length-2, 0, "Cutback");
+            this.cellNames.splice(this.cellNames.length - 1, 0, "Cutback");
             console.log(this.cellNames);
         },
         async getPriorityData() {

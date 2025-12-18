@@ -1582,7 +1582,7 @@ export default {
             this.formattedTaskSequenceData = this.formatTaskSequenceData(this.taskSequenceData);
             console.log(this.formattedTaskSequenceData);
             this.selectedOperation = 2;
-            this.cellNames = this.formattedTaskSequenceData.filter(e => e.type == 'cell').map(e => e.displayName).filter(e => e != 'Incoming-Outside' || e != 'Shipping/Delivery');
+            this.cellNames = this.formattedTaskSequenceData.filter(e => e.type == 'cell').filter(e => e.displayName !== 'Incoming-Outside' || e.displayName !== 'Shipping/Delivery').map(e => e.displayName);
             this.cellNames.splice(this.cellNames.length-2, 0, "Cutback");
             console.log(this.cellNames);
         },

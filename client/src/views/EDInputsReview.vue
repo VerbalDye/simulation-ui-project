@@ -2401,6 +2401,7 @@ export default {
                 // console.log(this.workerData[index]);
                 worker.skills = worker.skills.filter(f => !operationIDs.includes(f.operation_id));
             }
+            console.log(worker.skills);
             // this.workerChanges.skills = this.workerChanges.skills.filter(e => e.worker_id !== w);
             // worker.skills.forEach(skill => {
             //     this.workerChanges.skills.push({ worker_id: w, operation_id: skill.operation_id });

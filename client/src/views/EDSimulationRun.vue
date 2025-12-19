@@ -128,15 +128,15 @@ export default {
         }
     },
     async mounted() {
-        this.$loadScript("http://172.28.0.58/assets/js-client-8.5.0/cloud-client.js")
-            .then(async () => {
-                await this.getAPIKey();
-                this.cloudClient = CloudClient.create(this.apiKey, "http://172.28.0.58");
-            })
-            .catch(() => {
-                // Failed to fetch script
-                console.log("Oops");
-            });
+        // this.$loadScript("http://172.28.0.58/assets/js-client-8.5.0/cloud-client.js")
+        //     .then(async () => {
+        //         await this.getAPIKey();
+        //         this.cloudClient = CloudClient.create(this.apiKey, "http://172.28.0.58");
+        //     })
+        //     .catch(() => {
+        //         // Failed to fetch script
+        //         console.log("Oops");
+        //     });
         this.getExperimentID();
         await this.getRunning();
         if (this.status == 'Running') {

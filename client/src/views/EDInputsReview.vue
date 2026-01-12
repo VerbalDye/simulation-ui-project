@@ -2632,7 +2632,7 @@ export default {
             }
         },
         timeChange(e, day, type) {
-            let parsedTime = e.target.value.split(":")[0] + e.target.value.split(":")[1] + ":00"
+            let parsedTime = e.target.value.split(":")[0] + ":" + e.target.value.split(":")[1] + ":00"
             this.closingData[day][type] = parsedTime;
             if (type == 'ends') {
                 if (parseInt(this.closingData[day].starts.split(":")[0] + this.closingData[day].starts.split(":")[1]) > parseInt(this.closingData[day].ends.split(":")[0] + this.closingData[day].ends.split(":")[1])) {

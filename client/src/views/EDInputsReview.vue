@@ -2632,10 +2632,10 @@ export default {
             }
         },
         timeChange(e, day, type) {
-            e.target.value = e.target.value.split(":")[0] + ":00:00"
-            this.closingData[day][type] = e.target.value;
+            let parsedTime = e.target.value.split(":")[0] + e.target.value.split(":")[1] + ":00"
+            this.closingData[day][type] = parsedTime;
             if (type == 'ends') {
-                if (parseInt(this.closingData[day].starts.split(":")[0]) > parseInt(this.closingData[day].ends.split(":")[0])) {
+                if (parseInt(this.closingData[day].starts.split(":")[0] + this.closingData[day].starts.split(":")[1]) > parseInt(this.closingData[day].ends.split(":")[0] + this.closingData[day].ends.split(":")[1])) {
                     e.target.value = this.closingData[day].starts;
                     this.closingData[day].ends = this.closingData[day].starts;
                 }

@@ -899,13 +899,13 @@
                                     <tr v-if="this.closingData[day].opens">
                                         <th><label :for="day + '-start'">Start:</label></th>
                                         <td><input :name="day + '-start'" :id="day + '-start'" type="time"
-                                                :value="this.closingData[day].starts" step="3600"
+                                                :value="this.closingData[day].starts" step="60"
                                                 @change="timeChange($event, day, 'starts')" /></td>
                                     </tr>
                                     <tr v-if="this.closingData[day].opens && this.closingData[day].closes">
                                         <th><label :for="day + '-end'">End:</label></th>
                                         <td><input :name="day + '-end'" :id="day + '-end'" type="time"
-                                                :value="this.closingData[day].ends" step="3600"
+                                                :value="this.closingData[day].ends" step="60"
                                                 @change="timeChange($event, day, 'ends')" /></td>
                                     </tr>
                                 </table>

@@ -34,6 +34,7 @@ const JobCore = require('./JobCore');
 const JobList = require('./JobList');
 const JobLocation = require('./JobLocation');
 const JobMix = require('./JobMix');
+const LaborUtilization = require('./LaborUtilization');
 const Log = require('./Log');
 const ModelObject = require('./Model');
 const Operation = require('./Operation');
@@ -505,6 +506,15 @@ ExperimentJobMix.belongsTo(JobMix, {
     foreignKey: 'job_mix_id'
 });
 
+// Experiment-LaborUtilization
+Experiment.hasMany(LaborUtilization, {
+    foreignKey: 'experiment_id'
+});
+LaborUtilization.belongsTo(Experiment, {
+    foreignKey: 'experiment_id',
+    onDelete: 'CASCADE'
+});
+
 // Experiment-Log
 Experiment.hasMany(Log, {
     foreignKey: 'experiment_id'
@@ -772,6 +782,7 @@ module.exports = {
     JobList,
     JobLocation,
     JobMix,
+    LaborUtilization,
     Log,
     ModelObject,
     Operation,

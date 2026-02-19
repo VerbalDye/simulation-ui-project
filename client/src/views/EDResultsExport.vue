@@ -223,7 +223,8 @@ export default {
                 this.getThroughput(),
                 this.getExperimentData(),
                 this.getAssetData(),
-                this.getGoalData()
+                this.getGoalData(),
+                this.getLaborUtilizationData(),
             ])
             if (this.experimentData.scenario.scenario_id == 8) {
                 await this.getCanonReplication();

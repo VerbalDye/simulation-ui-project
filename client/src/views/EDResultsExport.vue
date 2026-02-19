@@ -52,6 +52,9 @@
                     <button class="space"
                         @click="downloadData(throughputData, experimentData.experiment_name + '-throughput')">Download
                         Throughput</button>
+                    <button class="space" v-if="this.experimentData.scenario_id == 4"
+                        @click="downloadData(laborUtilizationData, experimentData.experiment_name + '-labor-utilization')">Download
+                        Labor Utilization</button>
                 </div>
             </Collapsable>
             <div class="flex-right space">
@@ -83,6 +86,7 @@ export default {
             experimentData: null,
             goalData: null,
             assetData: null,
+            laborUtilizationData: null,
             selectedCells: [],
             cellOptions: [],
             running: null,
@@ -116,7 +120,7 @@ export default {
         },
         async getExperimentData() {
             let data = await dataRequest("/api/experiment/" + this.experimentID, "GET");
-            // console.log(data);
+            console.log(data);
             this.experimentData = data;
         },
         async getAssetData() {
@@ -147,6 +151,11 @@ export default {
             })
             console.log(this.cellOptions);
             console.log(this.productionScheduleData);
+        },
+        async getLaborUtilizationData() {
+            let data = await dataRequest("/api/experiment/labor-utilization/" + this.experimentID, "GET");
+            // console.log(data);
+            this.laborUtilizationData = data;
         },
         testReplication(data, test) {
             let method = test.method;
@@ -251,7 +260,8 @@ export default {
     mounted() {
         this.createCollapsableObject();
         this.getExperimentID();
-        this.getData();
+        this.getData()
+
     }
 }
 </script>

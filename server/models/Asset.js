@@ -50,7 +50,7 @@ Asset.init(
         run_unattended: {
             type: DataTypes.BOOLEAN,
             defaultValue: '0'
-        }
+        },
         created: {
             type: DataTypes.DATE,
             allowNull: false,

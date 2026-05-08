@@ -102,7 +102,7 @@ export default {
         },
         async getData() {
             await Promise.allSettled([
-                this.getSkillsData(),
+                this.getOperationData(),
                 this.getShiftsData()
             ])
         }

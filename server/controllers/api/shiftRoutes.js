@@ -11,4 +11,20 @@ router.get('/', (req, res) => {
         });
 });
 
+router.post('/', withAuth, withAdminAuth, (req, res) => {
+    Shift.create({
+        crew: req.body.crew,
+        begin: req.body.begin,
+        end: req.body.end,
+        default: 1
+    })
+        .then(dbShiftData => {
+            res.json(dbShiftData);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
+        });
+});
+
 module.exports = router;

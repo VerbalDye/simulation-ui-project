@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
         });
 });
 
-router.post('/', withAuth, withAdminAuth, (req, res) => {
+router.post('/', (req, res) => {
     Shift.create({
         crew: req.body.crew,
         begin: req.body.begin,

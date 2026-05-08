@@ -9,6 +9,8 @@
             <li class="sidebar-header"><router-link to="/admin/route-task"><i class="bi bi-bezier2"></i><div class="sidebar-text">Route and Task</div></router-link></li>
             <li class="sidebar-header"><router-link to="/admin/core"><i class="bi bi-tools"></i><div class="sidebar-text">Core</div></router-link></li>
             <li class="sidebar-header"><router-link to="/admin/hours-of-operation"><i class="bi bi-clock-fill"></i><div class="sidebar-text">Hours of Operation</div></router-link></li>
+            <li class="sidebar-header"><router-link to="/admin/worker"><i class="bi bi-person-raised-hand"></i><div class="sidebar-text">Worker</div></router-link></li>
+            <li class="sidebar-header"><router-link to="/admin/shift"><i class="bi bi-calendar"></i><div class="sidebar-text">Shift</div></router-link></li>
         </ul>
     </nav>
 </template>

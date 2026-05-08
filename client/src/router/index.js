@@ -70,6 +70,18 @@ const routes = [
     meta: { requiresAdmin: true }
   },
   {
+    path: '/admin/shift',
+    name: 'admin-shift',
+    component: () => import('../views/AdminShift.vue'),
+    meta: { requiresAdmin: true }
+  },
+  {
+    path: '/admin/worker',
+    name: 'admin-worker',
+    component: () => import('../views/AdminWorker.vue'),
+    meta: { requiresAdmin: true }
+  },
+  {
     path: '/equipment',
     name: 'equipment',
     component: () => import('../views/Equipment.vue'),

@@ -109,7 +109,7 @@ export default {
     },
     mounted() {
         this.locationSearch = window.location.search;
-        getData();
+        this.getData();
     }
 }
 </script>

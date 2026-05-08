@@ -3,7 +3,11 @@ const sequelize = require('../../config/connection');
 const { Shift } = require('../../models');
 
 router.get('/', (req, res) => {
-    Shift.findAll()
+    Shift.findAll({
+        where: {
+            is_default: 1
+        }
+    })
         .then(dbShiftData => res.json(dbShiftData))
         .catch(err => {
             console.log(err);
